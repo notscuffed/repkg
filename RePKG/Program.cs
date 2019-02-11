@@ -9,7 +9,7 @@ namespace RePKG
     {
         private static void Main(string[] args)
         {
-            if (args[0] == "interactive")
+            if (args.Length > 0 && args[0] == "interactive")
             {
                 InteractiveConsole();
                 return;

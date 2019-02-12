@@ -17,20 +17,5 @@ namespace RePKG.Package
             Path = path;
             Entries = new List<Entry>();
         }
-
-        public void Dump(string path)
-        {
-            var directoryInfo = new DirectoryInfo(path);
-
-            if (!directoryInfo.Exists)
-                Directory.CreateDirectory(path);
-
-            var directory = directoryInfo.FullName;
-
-            foreach (var entry in Entries)
-            {
-                entry.WriteTo(directory);
-            }
-        }
     }
 }

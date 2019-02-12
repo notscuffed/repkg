@@ -39,16 +39,16 @@ namespace RePKG.Command
             {
                 var newEntries = entries.ToList();
                 if (_options.SortBy == "extension")
-                    newEntries.Sort((a, b) => String.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
+                    newEntries.Sort((a, b) => String.Compare(a.EntryPath, b.EntryPath, StringComparison.OrdinalIgnoreCase));
                 else if (_options.SortBy == "size")
                     newEntries.Sort((a, b) => a.Length.CompareTo(b.Length));
                 else 
-                    newEntries.Sort((a, b) => String.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase));
+                    newEntries.Sort((a, b) => String.Compare(a.EntryPath, b.EntryPath, StringComparison.OrdinalIgnoreCase));
             }
 
             foreach (var entry in entries)
             {
-                Console.WriteLine(@"* " + entry.Name + $@" - {entry.Length} bytes");
+                Console.WriteLine(@"* " + entry.EntryPath + $@" - {entry.Length} bytes");
             }
         }
 

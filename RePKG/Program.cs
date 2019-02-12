@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using CommandLine;
 using RePKG.Command;
+using RePKG.Properties;
 
 namespace RePKG
 {
     internal class Program
     {
+        public static bool Closing;
+
         private static void Main(string[] args)
         {
+            Console.CancelKeyPress += Cancel;
+
             if (args.Length > 0 && args[0] == "interactive")
             {
                 InteractiveConsole();
@@ -21,6 +27,13 @@ namespace RePKG
                 .WithNotParsed(NotParsedAction);
         }
 
+        private static void Cancel(object sender, ConsoleCancelEventArgs e)
+        {
+            Closing = true;
+            e.Cancel = true;
+            Console.WriteLine(Resources.Terminating);
+        }
+
         private static void InteractiveConsole()
         {
             Console.WriteLine(@"RePKG started in interactive mode. You can now type commands");
@@ -28,8 +41,15 @@ namespace RePKG
             
             string line;
 
-            while ((line = Console.ReadLine()) != string.Empty)
+            while (!string.IsNullOrEmpty(line = Console.ReadLine()))
             {
+
+                if (line == "test")
+                {
+                    Thread.Sleep(10000);
+                    continue;
+                }
+
                 var debugArgs = line.SplitArguments();
 
                 Parser.Default.ParseArguments<ExtractOptions, InfoOptions>(debugArgs)

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace RePKG.Texture
 {
-    public static class TexBitmapExtractor
+    public static class TexDecompiler
     {
         // source: http://csharpexamples.com/fast-image-processing-c/
         private static unsafe void CopyRawPixelsIntoBitmap(byte[] data, int dataStride, Bitmap processedBitmap, bool invertedColorOrder)
@@ -53,7 +53,7 @@ namespace RePKG.Texture
             processedBitmap.UnlockBits(bitmapData);
         }
 
-        public static Bitmap Extract(Tex tex)
+        public static Bitmap Decompile(Tex tex)
         {
             var bytes = tex.Mipmaps[0].Bytes;
 

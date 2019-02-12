@@ -126,8 +126,14 @@
   <data name="UnrecognizedFileExtension" xml:space="preserve">
     <value>Unrecognized file extension: {0}</value>
   </data>
-  <data name="ExtractingFileName" xml:space="preserve">
+  <data name="ExtractingName" xml:space="preserve">
     <value>* Extracting: {0}</value>
+  </data>
+  <data name="DecompilingName" xml:space="preserve">
+    <value>* Decompiling: {0}</value>
+  </data>
+  <data name="CopyingFileName" xml:space="preserve">
+    <value>* Copying: {0}</value>
   </data>
   <data name="OutputDirectory" xml:space="preserve">
     <value>Output directory: {0}</value>
@@ -151,5 +157,14 @@
   </data>
   <data name="Done" xml:space="preserve">
     <value>Done</value>
+  </data>
+  <data name="FailedToDecompile" xml:space="preserve">
+    <value>Failed to decompile</value>
+  </data>
+  <data name="SkippingAlreadyExists" xml:space="preserve">
+    <value>* Skipping, already exists: {0}</value>
+  </data>
+  <data name="Terminating" xml:space="preserve">
+    <value>Terminating...</value>
   </data>
 </root>

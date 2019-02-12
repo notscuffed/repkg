@@ -61,6 +61,24 @@ namespace RePKG.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to * Copying: {0}.
+        /// </summary>
+        internal static string CopyingFileName {
+            get {
+                return ResourceManager.GetString("CopyingFileName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to * Decompiling: {0}.
+        /// </summary>
+        internal static string DecompilingName {
+            get {
+                return ResourceManager.GetString("DecompilingName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Done.
         /// </summary>
         internal static string Done {
@@ -72,9 +90,9 @@ namespace RePKG.Properties {
         /// <summary>
         ///   Looks up a localized string similar to * Extracting: {0}.
         /// </summary>
-        internal static string ExtractingFileName {
+        internal static string ExtractingName {
             get {
-                return ResourceManager.GetString("ExtractingFileName", resourceCulture);
+                return ResourceManager.GetString("ExtractingName", resourceCulture);
             }
         }
         
@@ -95,6 +113,15 @@ namespace RePKG.Properties {
         internal static string ExtractingTexture {
             get {
                 return ResourceManager.GetString("ExtractingTexture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to decompile.
+        /// </summary>
+        internal static string FailedToDecompile {
+            get {
+                return ResourceManager.GetString("FailedToDecompile", resourceCulture);
             }
         }
         
@@ -149,6 +176,24 @@ namespace RePKG.Properties {
         internal static string PackageEntries {
             get {
                 return ResourceManager.GetString("PackageEntries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to * Skipping, already exists: {0}.
+        /// </summary>
+        internal static string SkippingAlreadyExists {
+            get {
+                return ResourceManager.GetString("SkippingAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminating....
+        /// </summary>
+        internal static string Terminating {
+            get {
+                return ResourceManager.GetString("Terminating", resourceCulture);
             }
         }
         

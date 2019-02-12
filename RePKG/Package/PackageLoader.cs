@@ -73,19 +73,8 @@ namespace RePKG.Package
 
             entry.Offset = _reader.ReadInt32();
             entry.Length = _reader.ReadInt32();
-            entry.Type = GetEntryType(entry);
 
             return entry;
-        }
-
-        private EntryType GetEntryType(Entry entry)
-        {
-            var name = entry.Name;
-
-            if (name.EndsWith(".tex", StringComparison.OrdinalIgnoreCase))
-                return EntryType.TEX;
-
-            return EntryType.Binary;
         }
 
         private void Close()

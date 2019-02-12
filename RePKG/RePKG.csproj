@@ -107,4 +107,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Release (
+ilrepack /out:"$(TargetDir)output.exe" /wildcards /parallel "$(TargetPath)" "$(TargetDir)*.dll"
+)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

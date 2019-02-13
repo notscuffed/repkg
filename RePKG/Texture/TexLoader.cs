@@ -19,7 +19,7 @@ namespace RePKG.Texture
             return buffer;
         }
 
-        public static Tex LoadTex(byte[] bytes)
+        public static Tex LoadTex(byte[] bytes, int maxMipmapsToLoad = -1)
         {
             var stream = new MemoryStream(bytes);
             var reader = new BinaryReader(stream, Encoding.ASCII);
@@ -65,7 +65,14 @@ namespace RePKG.Texture
 
                 tex.MipmapCount = reader.ReadInt32();
 
-                for (var i = 0; i < tex.MipmapCount; i++)
+                if (maxMipmapsToLoad == 0)
+                    return tex;
+
+                var mipmapCount = tex.MipmapCount;
+                if (maxMipmapsToLoad > 0)
+                    mipmapCount = Math.Min(maxMipmapsToLoad, mipmapCount);
+
+                for (var i = 0; i < mipmapCount; i++)
                 {
                     tex.Mipmaps.Add(ReadMipmap(reader));
                 }

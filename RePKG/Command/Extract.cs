@@ -240,7 +240,7 @@ namespace RePKG.Command
 
             try
             {
-                var tex = TexLoader.LoadTex(bytes);
+                var tex = TexLoader.LoadTex(bytes, 1);
 
                 if (_options.DebugInfo)
                     tex.DebugInfo();
@@ -270,16 +270,16 @@ namespace RePKG.Command
         [Option('e', "onlyexts", HelpText = "Only extract files with specified extensions (delimited by comma \",\")")]
         public string OnlyExts { get; set; }
 
-        [Option('d', "debuginfo", HelpText = "Print debug info while extracting/decompiling", Default = false)]
+        [Option('d', "debuginfo", HelpText = "Print debug info while extracting/decompiling")]
         public bool DebugInfo { get; set; }
 
-        [Option('t', "tex", HelpText = "Decompile all tex files from specified directory in input", Default = false)]
+        [Option('t', "tex", HelpText = "Decompile all tex files from specified directory in input")]
         public bool TexDirectory { get; set; }
 
-        [Option('s', "singledir", HelpText = "Should all extracted files be put in one directory instead of their entry path", Default = false)]
+        [Option('s', "singledir", HelpText = "Should all extracted files be put in one directory instead of their entry path")]
         public bool SingleDir { get; set; }
 
-        [Option('r', "recursive", HelpText = "Recursive search in all subfolders of specified directory", Default = false)]
+        [Option('r', "recursive", HelpText = "Recursive search in all subfolders of specified directory")]
         public bool Recursive { get; set; }
 
         [Option('c', "copyproject", HelpText = "Copy project.json and preview.jpg from beside .pkg into output directory")]

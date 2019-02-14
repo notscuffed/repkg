@@ -2,10 +2,7 @@
 Wallpaper engine PKG unpacker/TEX decompiler, written in C#.
 Made using information obtained from reverse engineering "resourcecompiler.exe" in wallpaper engine bin's folder.
 
-I don't know if anyone will find this project useful, uploaded it mainly because I wanted to learn to use git.
-Made in 2 days including reverse engineering, feel free to report errors or request a pull if you have fixed/added something.
-
-Initially I wanted to make it be able to extract and repack stuff but I found that repacking is not really that useful. 
+Feel free to report errors or request a pull if you have fixed/added something.
 
 # Features
 - Unpack PKG files
@@ -20,10 +17,10 @@ Initially I wanted to make it be able to extract and repack stuff but I found th
 -o, --output          (Default: ./output) Output directory
 -i, --ignoreexts      Don't extract files with specified extensions (delimited by comma ",")
 -e, --onlyexts        Only extract files with specified extensions (delimited by comma ",")
--d, --debuginfo       (Default: false) Print debug info while extracting/decompiling
--t, --tex             (Default: false) Decompile all tex files from specified directory in input
--s, --singledir       (Default: false) Should all extracted files be put in one directory instead of their entry path
--r, --recursive       (Default: false) Recursive search in all subfolders of specified directory
+-d, --debuginfo       Print debug info while extracting/decompiling
+-t, --tex             Decompile all tex files from specified directory in input
+-s, --singledir       Should all extracted files be put in one directory instead of their entry path
+-r, --recursive       Recursive search in all subfolders of specified directory
 -c, --copyproject     Copy project.json and preview.jpg from beside .pkg into output directory
 --no-tex-decompile    Don't decompile .tex files while extracting .pkg
 --overwrite           Overwrite all existing files

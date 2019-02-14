@@ -37,13 +37,12 @@ namespace RePKG.Command
 
             if (_options.Sort)
             {
-                var newEntries = entries.ToList();
                 if (_options.SortBy == "extension")
-                    newEntries.Sort((a, b) => String.Compare(a.EntryPath, b.EntryPath, StringComparison.OrdinalIgnoreCase));
+                    entries.Sort((a, b) => String.Compare(a.EntryPath, b.EntryPath, StringComparison.OrdinalIgnoreCase));
                 else if (_options.SortBy == "size")
-                    newEntries.Sort((a, b) => a.Length.CompareTo(b.Length));
+                    entries.Sort((a, b) => a.Length.CompareTo(b.Length));
                 else 
-                    newEntries.Sort((a, b) => String.Compare(a.EntryPath, b.EntryPath, StringComparison.OrdinalIgnoreCase));
+                    entries.Sort((a, b) => String.Compare(a.EntryPath, b.EntryPath, StringComparison.OrdinalIgnoreCase));
             }
 
             foreach (var entry in entries)

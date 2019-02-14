@@ -43,16 +43,15 @@ namespace RePKG
 
             while (!string.IsNullOrEmpty(line = Console.ReadLine()))
             {
-
                 if (line == "test")
                 {
                     Thread.Sleep(10000);
                     continue;
                 }
 
-                var debugArgs = line.SplitArguments();
+                var interactiveArgs = line.SplitArguments();
 
-                Parser.Default.ParseArguments<ExtractOptions, InfoOptions>(debugArgs)
+                Parser.Default.ParseArguments<ExtractOptions, InfoOptions>(interactiveArgs)
                     .WithParsed<ExtractOptions>(Extract.Action)
                     .WithParsed<InfoOptions>(Info.Action)
                     .WithNotParsed(NotParsedAction);

@@ -35,6 +35,13 @@ namespace RePKG
             return builder.ToString();
         }
 
+        public static string GetSafeFilename(this string filename)
+        {
+
+            return string.Join("_", filename.Split(Path.GetInvalidFileNameChars()));
+
+        }
+
         public static string[] SplitArguments(this string commandLine)
         {
             var parmChars = commandLine.ToCharArray();

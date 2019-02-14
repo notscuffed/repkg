@@ -38,7 +38,7 @@ namespace RePKG.Texture
                 if (tex.Magic2 != "TEXI0001")
                     throw new InvalidTexHeaderMagic("TEXI0001", tex.Magic2);
 
-                tex.DxtCompression = reader.ReadInt32();
+                tex.Format = (TexFormat)reader.ReadInt32();
                 tex._unkInt_1 = reader.ReadInt32();
                 tex.TextureWidth = reader.ReadInt32();
                 tex.TextureHeight = reader.ReadInt32();

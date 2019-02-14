@@ -1,14 +1,15 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using RePKG.Texture;
 
-namespace RePKG.Texture
+namespace RePKG
 {
-    public static class TexDecompiler
+    public static class Helper
     {
         // source: http://csharpexamples.com/fast-image-processing-c/
-        private static unsafe void CopyRawPixelsIntoBitmap(byte[] data, int dataStride, Bitmap processedBitmap, bool invertedColorOrder)
+        public static unsafe void CopyRawPixelsIntoBitmap(byte[] data, int dataStride, Bitmap processedBitmap, bool invertedColorOrder)
         {
             var bitmapData = processedBitmap.LockBits(new Rectangle(0, 0, processedBitmap.Width, processedBitmap.Height), ImageLockMode.ReadWrite, processedBitmap.PixelFormat);
  
@@ -53,33 +54,41 @@ namespace RePKG.Texture
             processedBitmap.UnlockBits(bitmapData);
         }
 
-        public static Bitmap Decompile(Tex tex)
+        public static ImageFormat ConvertFIFFormat(FreeImageFormat format)
         {
-            var bytes = tex.Mipmaps[0].Bytes;
-
-            if (tex.Mipmaps[0].LZ4Compressed == 1)
-                bytes = TexLoader.DecompressLZ4(bytes, tex.Mipmaps[0].PixelCount);
-
-            if (tex.TextureContainerVersion == TexMipmapVersion.Version3)
+            switch (format)
             {
-                if (tex.ImageFormat != FreeImageFormat.FIF_UNKNOWN)
-                    return new Bitmap(new MemoryStream(bytes));
+                case FreeImageFormat.FIF_BMP:
+                    return ImageFormat.Bmp;
+                case FreeImageFormat.FIF_ICO:
+                    return ImageFormat.Icon;
+                case FreeImageFormat.FIF_JPEG:
+                case FreeImageFormat.FIF_JNG:
+                case FreeImageFormat.FIF_J2K:
+                case FreeImageFormat.FIF_JP2:
+                    return ImageFormat.Jpeg;
+                case FreeImageFormat.FIF_PNG:
+                    return ImageFormat.Png;
+                case FreeImageFormat.FIF_TIFF:
+                    return ImageFormat.Tiff;
+                case FreeImageFormat.FIF_GIF:
+                    return ImageFormat.Gif;
+                default:
+                    return null;
             }
+        }
 
-            if (tex.DxtCompression > 0)
-                bytes = DXT.DecompressImage(tex.Mipmaps[0].Width, tex.Mipmaps[0].Height, bytes, DXT.DXTFlags.DXT5);
+        public static string GetExtension(FreeImageFormat format)
+        {
+            var str = format.ToString().Split('_').Last();
 
-            var width = tex.ImageWidth;
-            var textureWidth = tex.Mipmaps[0].Width;
-            var height = tex.ImageHeight;
-            var bitmap = new Bitmap(width, height);
+            if (str == null)
+                return string.Empty;
 
-            if (tex.TextureContainerVersion == TexMipmapVersion.Version3)
-                CopyRawPixelsIntoBitmap(bytes, textureWidth * 4, bitmap, false);
-            else // V2 has inverted color order
-                CopyRawPixelsIntoBitmap(bytes, textureWidth * 4, bitmap, true);
+            if (format == FreeImageFormat.FIF_JPEG)
+                str = str.Replace("JPEG", "JPG");
 
-            return bitmap;
+            return $".{str.ToLower()}";
         }
     }
 }

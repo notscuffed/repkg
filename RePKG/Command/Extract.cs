@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using CommandLine;
@@ -81,14 +79,22 @@ namespace RePKG.Command
 
             foreach (var file in directoryInfo.EnumerateFiles("*.tex", flags))
             {
-                var bitmap = DecompileTex(File.ReadAllBytes(file.FullName), file.FullName);
+                try
+                {
+                    var tex = LoadTex(File.ReadAllBytes(file.FullName), file.FullName);
 
-                if (bitmap == null)
-                    continue;
+                    if (tex == null)
+                        continue;
 
-                var name = Path.GetFileNameWithoutExtension(file.Name) + ".png"; 
-                bitmap.Save(Path.Combine(_options.OutputDirectory, name));
-                bitmap.Dispose();
+                    var name = Path.GetFileNameWithoutExtension(file.Name);
+                    tex.DecompileAndSave(Path.Combine(_options.OutputDirectory, name), _options.Overwrite);
+                    tex.SaveFormatInfo(Path.Combine(_options.OutputDirectory, name), _options.Overwrite);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(Resources.FailedToDecompile);
+                    Console.WriteLine(e);
+                }
             }
         }
 
@@ -124,21 +130,22 @@ namespace RePKG.Command
                 ExtractPKG(fileInfo);
             else if (fileInfo.Extension.Equals(".tex", StringComparison.OrdinalIgnoreCase))
             {
-                var output = Path.GetFileNameWithoutExtension(fileInfo.Name) + ".png";
-
-                if (!_options.Overwrite && File.Exists(output))
+                try
                 {
-                    Console.WriteLine(Resources.SkippingAlreadyExists, output);
-                    return;
+                    var tex = LoadTex(File.ReadAllBytes(fileInfo.FullName), fileInfo.FullName);
+
+                    if (tex == null)
+                        return;
+
+                    var name = Path.GetFileNameWithoutExtension(fileInfo.Name);
+                    tex.DecompileAndSave(Path.Combine(_options.OutputDirectory, name), _options.Overwrite);
+                    tex.SaveFormatInfo(Path.Combine(_options.OutputDirectory, name), _options.Overwrite);
                 }
-
-                var bitmap = DecompileTex(File.ReadAllBytes(fileInfo.FullName), fileInfo.FullName);
-
-                if (bitmap == null)
-                    return;
-
-                bitmap.Save(Path.Combine(_options.OutputDirectory, output));
-                bitmap.Dispose();
+                catch (Exception e)
+                {
+                    Console.WriteLine(Resources.FailedToDecompile);
+                    Console.WriteLine(e);
+                }
             }
             else
                 Console.WriteLine(Resources.UnrecognizedFileExtension, fileInfo.Extension);
@@ -187,13 +194,13 @@ namespace RePKG.Command
             if (!string.IsNullOrEmpty(_options.IgnoreExts))
             {
                 entries = from entry in package.Entries
-                    where !_skipExtArray.Any(s => entry.EntryPath.EndsWith(s, StringComparison.OrdinalIgnoreCase))
+                    where !_skipExtArray.Any(s => entry.FullName.EndsWith(s, StringComparison.OrdinalIgnoreCase))
                     select entry;
             }
             else if (!string.IsNullOrEmpty(_options.OnlyExts))
             {
                 entries = from entry in package.Entries
-                    where _onlyExtArray.Any(s => entry.EntryPath.EndsWith(s, StringComparison.OrdinalIgnoreCase))
+                    where _onlyExtArray.Any(s => entry.FullName.EndsWith(s, StringComparison.OrdinalIgnoreCase))
                     select entry;
             }
 
@@ -211,11 +218,10 @@ namespace RePKG.Command
             {
                 var outputPath = Path.Combine(outputDirectory, fileToCopy.Name);
 
-                if (_options.Overwrite || !File.Exists(outputPath))
-                    File.Copy(fileToCopy.FullName, outputPath, true);
-                else
+                if (!_options.Overwrite || File.Exists(outputPath))
                     Console.WriteLine(Resources.SkippingAlreadyExists, outputPath);
-            }
+                else
+                    File.Copy(fileToCopy.FullName, outputPath, true);            }
         }
         
         [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
@@ -234,36 +240,36 @@ namespace RePKG.Command
             Directory.CreateDirectory(Path.GetDirectoryName(filePath));
             var outputPath = filePath + entry.Extension;
 
-            if (!_options.Overwrite && !File.Exists(outputPath))
+            if (!_options.Overwrite && File.Exists(outputPath))
+                Console.WriteLine(Resources.SkippingAlreadyExists, outputPath);
+            else
             {
                 Console.WriteLine(Resources.ExtractingName, entry.FullName);
                 entry.WriteTo(outputPath);
             }
-            else
-                Console.WriteLine(Resources.SkippingAlreadyExists, outputPath);
             
             // decompile and save
             if (_options.NoTexDecompile || entry.Type != EntryType.TEX)
                 return;
 
-            var imageOutputPath = filePath + ".png";
-
-            if (!_options.Overwrite && File.Exists(imageOutputPath))
+            try
             {
-                Console.WriteLine(Resources.SkippingAlreadyExists, imageOutputPath);
-                return;
+                var tex = LoadTex(entry.Data, entry.FullName);
+
+                if (tex == null)
+                    return;
+
+                tex.DecompileAndSave(filePath, _options.Overwrite);
+                tex.SaveFormatInfo(filePath, _options.Overwrite);
             }
-
-            var bitmap = DecompileTex(entry.Data, entry.FullName);
-
-            if (bitmap == null)
-                return;
-
-            bitmap.Save(imageOutputPath, ImageFormat.Png);
-            bitmap.Dispose();
+            catch (Exception e)
+            {
+                Console.WriteLine(Resources.FailedToDecompile);
+                Console.WriteLine(e);
+            }
         }
 
-        private static Bitmap DecompileTex(byte[] bytes, string name)
+        private static Tex LoadTex(byte[] bytes, string name)
         {
             if (Program.Closing)
                 Environment.Exit(0);
@@ -277,7 +283,7 @@ namespace RePKG.Command
                 if (_options.DebugInfo)
                     tex.DebugInfo();
 
-                return TexDecompiler.Decompile(tex);
+                return tex;
             }
             catch (Exception e)
             {

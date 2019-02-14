@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using CommandLine;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using RePKG.Package;
 using RePKG.Properties;
 
@@ -77,11 +77,15 @@ namespace RePKG.Command
                 Console.WriteLine(Resources.UnrecognizedFileExtension, file.Extension);
         }
 
+        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
         private static void InfoPKG(FileInfo file, string name)
         {
-            Console.WriteLine(Resources.InfoAboutPackage, name);
-
             var projectInfo = GetProjectInfo(file);
+
+            if (!MatchesFilter(projectInfo))
+                return;
+
+            Console.WriteLine(Resources.InfoAboutPackage, name);
 
             if (projectInfo != null && _projectInfoToPrint != null && _projectInfoToPrint.Length > 0)
             {
@@ -131,7 +135,6 @@ namespace RePKG.Command
                     Console.WriteLine(@"* " + entry.FullName + $@" - {entry.Length} bytes");
                 }
             }
-
         }
 
         private static void InfoTEX(FileInfo file)
@@ -150,6 +153,21 @@ namespace RePKG.Command
                 return null;
 
             return JsonConvert.DeserializeObject(File.ReadAllText(projectJson[0].FullName));
+        }
+
+        private static bool MatchesFilter(dynamic project)
+        {
+            if (project == null)
+                return true;
+
+            if (!string.IsNullOrEmpty(_options.TitleFilter))
+            {
+                var title = (string) project.title;
+                if (!title.Contains(_options.TitleFilter, StringComparison.OrdinalIgnoreCase))
+                    return false;
+            }
+
+            return true;
         }
     }
 
@@ -173,5 +191,8 @@ namespace RePKG.Command
 
         [Option('e', "printentries", HelpText = "Print entries in packages")]
         public bool PrintEntries { get; set; }
+
+        [Option("title-filter", HelpText = "Title filter")]
+        public string TitleFilter { get; set; }
     }
 }

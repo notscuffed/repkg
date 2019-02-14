@@ -34,7 +34,7 @@ namespace RePKG.Texture
 
         public Tex()
         {
-            Format = TexFormat.RGBA8888;
+            Format = TexFormat.BGRA8888;
             ImageFormat = FreeImageFormat.FIF_UNKNOWN;
             Mipmaps = new List<TexMipmap>();
         }
@@ -63,6 +63,8 @@ namespace RePKG.Texture
             if (ImageFormat != FreeImageFormat.FIF_UNKNOWN)
                 return bytes;
 
+            var invertedColorOrder = false;
+
             switch (Format)
             {
                 case TexFormat.DXT5:
@@ -74,7 +76,8 @@ namespace RePKG.Texture
                 case TexFormat.DXT1:
                     bytes = DXT.DecompressImage(Mipmaps[0].Width, Mipmaps[0].Height, bytes, DXT.DXTFlags.DXT1);
                     break;
-                case TexFormat.RGBA8888:
+                case TexFormat.BGRA8888:
+                    invertedColorOrder = true;
                     break;
                 default:
                     throw new NotImplementedException($"Format: \"{Format.ToString()}\" ({(int)Format})");
@@ -85,10 +88,8 @@ namespace RePKG.Texture
             var height = ImageHeight;
             var bitmap = new Bitmap(width, height);
 
-            if (TextureContainerVersion == TexMipmapVersion.Version3)
-                Helper.CopyRawPixelsIntoBitmap(bytes, textureWidth * 4, bitmap, false);
-            else // V2 has inverted color order
-                Helper.CopyRawPixelsIntoBitmap(bytes, textureWidth * 4, bitmap, true);
+
+            Helper.CopyRawPixelsIntoBitmap(bytes, textureWidth * 4, bitmap, invertedColorOrder);
 
             var stream = new MemoryStream();
             bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
@@ -137,7 +138,7 @@ namespace RePKG.Texture
 
     public enum TexFormat
     {
-        RGBA8888,
+        BGRA8888,
         RA88,
         A8,
         DXT5,

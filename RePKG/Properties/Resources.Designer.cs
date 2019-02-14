@@ -135,7 +135,8 @@ namespace RePKG.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Info about package {0}.
+        ///   Looks up a localized string similar to 
+        ///### Package info: {0}.
         /// </summary>
         internal static string InfoAboutPackage {
             get {

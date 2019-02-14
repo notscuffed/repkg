@@ -16,7 +16,7 @@ namespace RePKG.Command
         private static ExtractOptions _options;
         private static string[] _skipExtArray;
         private static string[] _onlyExtArray;
-        private static readonly string[] _projectFiles = {"project.json", "preview.jpg", "preview.png"};
+        private static readonly string[] _projectFiles = {"project.json"};
 
         public static void Action(ExtractOptions options)
         {
@@ -152,83 +152,75 @@ namespace RePKG.Command
                 Console.WriteLine(Resources.UnrecognizedFileExtension, fileInfo.Extension);
         }
 
-        private static string GetProjectName(FileInfo packageFile, string defaultProjectName)
-        {
-            var directory = packageFile.Directory;
-            if (directory == null)
-                return defaultProjectName;
-
-            var projectJson = directory.GetFiles("project.json");
-            if (projectJson.Length == 0 || !projectJson[0].Exists)
-                return defaultProjectName;
-
-            dynamic json = JsonConvert.DeserializeObject(File.ReadAllText(projectJson[0].FullName));
-            return json.title;
-        }
-
         private static void ExtractPKG(FileInfo file, bool appendFolderName = false, string defaultProjectName = "")
         {
+            Console.WriteLine(Resources.ExtractingPackage, file.FullName);
+
+            // Load package
             var loader = new PackageLoader(true);
             var package = loader.Load(file);
+            
+            // Get output directory
             string outputDirectory;
-
-            Console.WriteLine(Resources.ExtractingPackage, file.FullName);
-            IEnumerable<Entry> entries = package.Entries;
-
-            if (!_options.SingleDir && appendFolderName)
-            {
-                if (_options.UseName)
-                {
-                    var name = GetProjectName(file, defaultProjectName).GetSafeFilename();
-                    outputDirectory = Path.Combine(_options.OutputDirectory, name);
-                }
-                else
-                {
-                    outputDirectory = Path.Combine(_options.OutputDirectory, defaultProjectName);
-                }
-            }
+            var preview = string.Empty;
+            if (appendFolderName)
+                GetProjectFolderNameAndPreviewImage(file, defaultProjectName, out outputDirectory, out preview);
             else
-            {
-                outputDirectory = _options.OutputDirectory;                
-            }
+                outputDirectory = _options.OutputDirectory;
 
-            if (!string.IsNullOrEmpty(_options.IgnoreExts))
-            {
-                entries = from entry in package.Entries
-                    where !_skipExtArray.Any(s => entry.FullName.EndsWith(s, StringComparison.OrdinalIgnoreCase))
-                    select entry;
-            }
-            else if (!string.IsNullOrEmpty(_options.OnlyExts))
-            {
-                entries = from entry in package.Entries
-                    where _onlyExtArray.Any(s => entry.FullName.EndsWith(s, StringComparison.OrdinalIgnoreCase))
-                    select entry;
-            }
-
+            // Extract package entries
+            var entries = FilterEntries(package.Entries);
             foreach (var entry in entries)
             {
                 ExtractEntry(entry, ref outputDirectory);
             }
-
+            
+            // Copy project files project.json/preview image
             if (!_options.CopyProject || _options.SingleDir || file.Directory == null)
                 return;
 
-            var files = file.Directory.GetFiles().Where(x => _projectFiles.Contains(x.Name, StringComparer.OrdinalIgnoreCase));
+            var files = file.Directory.GetFiles().Where(x =>
+                x.Name.Equals(preview, StringComparison.OrdinalIgnoreCase) ||
+                _projectFiles.Contains(x.Name, StringComparer.OrdinalIgnoreCase));
 
-            foreach (var fileToCopy in files)
+            CopyFiles(files, outputDirectory);
+        }
+
+        private static void CopyFiles(IEnumerable<FileInfo> files, string outputDirectory)
+        {
+            foreach (var file in files)
             {
-                var outputPath = Path.Combine(outputDirectory, fileToCopy.Name);
+                var outputPath = Path.Combine(outputDirectory, file.Name);
 
                 if (!_options.Overwrite && File.Exists(outputPath))
                     Console.WriteLine(Resources.SkippingAlreadyExists, outputPath);
                 else
                 {
-                    File.Copy(fileToCopy.FullName, outputPath, true);
-                    Console.WriteLine(Resources.CopyingFileName, fileToCopy.FullName);
+                    File.Copy(file.FullName, outputPath, true);
+                    Console.WriteLine(Resources.CopyingFileName, file.FullName);
                 }
             }
         }
-        
+
+        private static IEnumerable<Entry> FilterEntries(IEnumerable<Entry> entries)
+        {
+            if (!string.IsNullOrEmpty(_options.IgnoreExts))
+            {
+                return from entry in entries
+                    where !_skipExtArray.Any(s => entry.FullName.EndsWith(s, StringComparison.OrdinalIgnoreCase))
+                    select entry;
+            }
+
+            if (!string.IsNullOrEmpty(_options.OnlyExts))
+            {
+                return from entry in entries
+                    where _onlyExtArray.Any(s => entry.FullName.EndsWith(s, StringComparison.OrdinalIgnoreCase))
+                    select entry;
+            }
+
+            return entries;
+        }
+
         [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
         private static void ExtractEntry(Entry entry, ref string outputDirectory)
         {
@@ -272,6 +264,42 @@ namespace RePKG.Command
                 Console.WriteLine(Resources.FailedToDecompile);
                 Console.WriteLine(e);
             }
+        }
+
+        private static void GetProjectInfo(FileInfo packageFile, ref string title,  ref string preview)
+        {
+            var directory = packageFile.Directory;
+            if (directory == null)
+                return;
+
+            var projectJson = directory.GetFiles("project.json");
+            if (projectJson.Length == 0 || !projectJson[0].Exists)
+                return;
+
+            dynamic json = JsonConvert.DeserializeObject(File.ReadAllText(projectJson[0].FullName));
+            title = json.title;
+            preview = json.preview;
+        }
+
+        private static void GetProjectFolderNameAndPreviewImage(FileInfo packageFile, string defaultProjectName, out string outputDirectory, out string preview)
+        {
+            preview = string.Empty;
+
+            if (_options.SingleDir)
+            {
+                outputDirectory = _options.OutputDirectory;
+                return;
+            }
+
+            if (_options.UseName)
+            {
+                var name = defaultProjectName;
+                GetProjectInfo(packageFile, ref name, ref preview);
+                outputDirectory = Path.Combine(_options.OutputDirectory, name.GetSafeFilename());
+                return;
+            }
+
+            outputDirectory = Path.Combine(_options.OutputDirectory, defaultProjectName);
         }
 
         private static Tex LoadTex(byte[] bytes, string name)

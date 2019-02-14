@@ -139,7 +139,8 @@
     <value>Output directory: {0}</value>
   </data>
   <data name="InfoAboutPackage" xml:space="preserve">
-    <value>Info about package {0}</value>
+    <value>
+### Package info: {0}</value>
   </data>
   <data name="PackageEntries" xml:space="preserve">
     <value>Package entries:</value>

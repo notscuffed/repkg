@@ -1,13 +1,27 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using RePKG.Texture;
 
 namespace RePKG
 {
     public static class Helper
     {
+        public static IEnumerable<string> GetPropertyKeysForDynamic(dynamic dynamicToGetPropertiesFor)
+        {
+            JObject attributesAsJObject = dynamicToGetPropertiesFor;
+            var values = attributesAsJObject.ToObject<Dictionary<string, object>>();
+            var toReturn = new List<string>();
+            foreach (var key in values.Keys)
+            {
+                toReturn.Add(key);                
+            }
+            return toReturn;
+        }
+
         // source: http://csharpexamples.com/fast-image-processing-c/
         public static unsafe void CopyRawPixelsIntoBitmap(byte[] data, int dataStride, Bitmap processedBitmap, bool invertedColorOrder)
         {

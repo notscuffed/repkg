@@ -77,7 +77,7 @@ namespace RePKG.Texture
                 case TexFormat.RGBA8888:
                     break;
                 default:
-                    throw new NotImplementedException(Format.ToString() + (int)Format);
+                    throw new NotImplementedException($"Format: \"{Format.ToString()}\" ({(int)Format})");
             }
 
             var width = ImageWidth;

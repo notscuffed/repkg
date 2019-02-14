@@ -87,6 +87,7 @@ namespace RePKG.Command
                         continue;
 
                     var name = Path.GetFileNameWithoutExtension(file.Name);
+
                     tex.DecompileAndSave(Path.Combine(_options.OutputDirectory, name), _options.Overwrite);
                     tex.SaveFormatInfo(Path.Combine(_options.OutputDirectory, name), _options.Overwrite);
                 }

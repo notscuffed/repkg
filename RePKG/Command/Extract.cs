@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using CommandLine;
+using Newtonsoft.Json;
 using RePKG.Package;
 using RePKG.Properties;
 using RePKG.Texture;
@@ -99,8 +100,10 @@ namespace RePKG.Command
             {
                 foreach (var file in directoryInfo.EnumerateFiles("*.pkg", SearchOption.AllDirectories))
                 {
-                    var directoryName = file.DirectoryName.Substring(rootDirectoryLength);
-                    ExtractPKG(file, Path.Combine(_options.OutputDirectory, directoryName));
+                    if (file.Directory == null || file.Directory.FullName.Length < rootDirectoryLength)
+                        ExtractPKG(file);
+                    else
+                        ExtractPKG(file, true, file.Directory.FullName.Substring(rootDirectoryLength));
                 }
 
                 return;
@@ -110,18 +113,15 @@ namespace RePKG.Command
             {
                 foreach (var file in directory.EnumerateFiles("*.pkg"))
                 {
-                    var directoryName = file.DirectoryName.Substring(rootDirectoryLength);
-                    ExtractPKG(file, Path.Combine(_options.OutputDirectory, directoryName));
+                    ExtractPKG(file, true, directory.FullName.Substring(rootDirectoryLength));
                 }
             }
         }
 
         private static void ExtractFile(FileInfo fileInfo)
         {
-            var opt = _options;
-
             if (fileInfo.Extension.Equals(".pkg", StringComparison.OrdinalIgnoreCase))
-                ExtractPKG(fileInfo, _options.OutputDirectory);
+                ExtractPKG(fileInfo);
             else if (fileInfo.Extension.Equals(".tex", StringComparison.OrdinalIgnoreCase))
             {
                 var output = Path.GetFileNameWithoutExtension(fileInfo.Name) + ".png";
@@ -144,13 +144,45 @@ namespace RePKG.Command
                 Console.WriteLine(Resources.UnrecognizedFileExtension, fileInfo.Extension);
         }
 
-        private static void ExtractPKG(FileInfo file, string outputDirectory)
+        private static string GetProjectName(FileInfo packageFile, string defaultProjectName)
+        {
+            var directory = packageFile.Directory;
+            if (directory == null)
+                return defaultProjectName;
+
+            var projectJson = directory.GetFiles("project.json");
+            if (projectJson.Length == 0 || !projectJson[0].Exists)
+                return defaultProjectName;
+
+            dynamic json = JsonConvert.DeserializeObject(File.ReadAllText(projectJson[0].FullName));
+            return json.title;
+        }
+
+        private static void ExtractPKG(FileInfo file, bool appendFolderName = false, string defaultProjectName = "")
         {
             var loader = new PackageLoader(true);
             var package = loader.Load(file);
+            string outputDirectory;
 
             Console.WriteLine(Resources.ExtractingPackage, file.FullName);
             IEnumerable<Entry> entries = package.Entries;
+
+            if (!_options.SingleDir && appendFolderName)
+            {
+                if (_options.UseName)
+                {
+                    var name = GetProjectName(file, defaultProjectName).GetSafeFilename();
+                    outputDirectory = Path.Combine(_options.OutputDirectory, name);
+                }
+                else
+                {
+                    outputDirectory = Path.Combine(_options.OutputDirectory, defaultProjectName);
+                }
+            }
+            else
+            {
+                outputDirectory = _options.OutputDirectory;                
+            }
 
             if (!string.IsNullOrEmpty(_options.IgnoreExts))
             {
@@ -284,6 +316,9 @@ namespace RePKG.Command
 
         [Option('c', "copyproject", HelpText = "Copy project.json and preview.jpg from beside .pkg into output directory")]
         public bool CopyProject { get; set; }
+
+        [Option('n', "usename", HelpText = "Use name from project.json as project subfolder name instead of id")]
+        public bool UseName { get; set; }
 
         [Option("no-tex-decompile", HelpText = "Don't decompile .tex files while extracting .pkg")]
         public bool NoTexDecompile { get; set; }

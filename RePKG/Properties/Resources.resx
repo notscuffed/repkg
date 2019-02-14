@@ -167,4 +167,13 @@
   <data name="Terminating" xml:space="preserve">
     <value>Terminating...</value>
   </data>
+  <data name="UnknownSearchType" xml:space="preserve">
+    <value>Unknown search type: {0}</value>
+  </data>
+  <data name="InvalidSearchType" xml:space="preserve">
+    <value>Invalid search type: {0}</value>
+  </data>
+  <data name="ProjectFileNotFoundInDirectory" xml:space="preserve">
+    <value>Project file not found in directory</value>
+  </data>
 </root>

@@ -162,6 +162,15 @@ namespace RePKG.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid search type: {0}.
+        /// </summary>
+        internal static string InvalidSearchType {
+            get {
+                return ResourceManager.GetString("InvalidSearchType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Output directory: {0}.
         /// </summary>
         internal static string OutputDirectory {
@@ -180,6 +189,15 @@ namespace RePKG.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Project file not found in directory.
+        /// </summary>
+        internal static string ProjectFileNotFoundInDirectory {
+            get {
+                return ResourceManager.GetString("ProjectFileNotFoundInDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to * Skipping, already exists: {0}.
         /// </summary>
         internal static string SkippingAlreadyExists {
@@ -194,6 +212,15 @@ namespace RePKG.Properties {
         internal static string Terminating {
             get {
                 return ResourceManager.GetString("Terminating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown search type: {0}.
+        /// </summary>
+        internal static string UnknownSearchType {
+            get {
+                return ResourceManager.GetString("UnknownSearchType", resourceCulture);
             }
         }
         

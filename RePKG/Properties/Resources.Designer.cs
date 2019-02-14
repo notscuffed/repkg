@@ -189,6 +189,15 @@ namespace RePKG.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The path exceeds 255 characters, skipping: {0}.
+        /// </summary>
+        internal static string PathTooLong {
+            get {
+                return ResourceManager.GetString("PathTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project file not found in directory.
         /// </summary>
         internal static string ProjectFileNotFoundInDirectory {
@@ -203,6 +212,15 @@ namespace RePKG.Properties {
         internal static string SkippingAlreadyExists {
             get {
                 return ResourceManager.GetString("SkippingAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipping {0} because {1} is null.
+        /// </summary>
+        internal static string SkippingBecauseNull {
+            get {
+                return ResourceManager.GetString("SkippingBecauseNull", resourceCulture);
             }
         }
         

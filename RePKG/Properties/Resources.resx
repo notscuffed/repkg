@@ -176,4 +176,10 @@
   <data name="ProjectFileNotFoundInDirectory" xml:space="preserve">
     <value>Project file not found in directory</value>
   </data>
+  <data name="PathTooLong" xml:space="preserve">
+    <value>The path exceeds 255 characters, skipping: {0}</value>
+  </data>
+  <data name="SkippingBecauseNull" xml:space="preserve">
+    <value>Skipping {0} because {1} is null</value>
+  </data>
 </root>

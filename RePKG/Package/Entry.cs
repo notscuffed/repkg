@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using RePKG.Properties;
 
 namespace RePKG.Package
 {
@@ -28,7 +29,20 @@ namespace RePKG.Package
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentException($"{nameof(filePath)} is null or empty");
 
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            if (filePath.Length > 255)
+            {
+                Console.WriteLine(Resources.PathTooLong, filePath);
+                return;
+            }
+
+            var directoryName = Path.GetDirectoryName(filePath);
+            if (directoryName == null)
+            {
+                Console.WriteLine(Resources.SkippingBecauseNull, filePath, nameof(directoryName));
+                return;
+            }
+
+            Directory.CreateDirectory(directoryName);
 
             var stream = File.Open(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
             stream.Write(Data, 0, Data.Length);

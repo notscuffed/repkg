@@ -4,7 +4,6 @@ using System.Threading;
 using CommandLine;
 using RePKG.Command;
 using RePKG.Properties;
-using RePKG.Texture;
 
 namespace RePKG
 {

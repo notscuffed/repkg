@@ -16,7 +16,7 @@ namespace RePKG.Command
         private static ExtractOptions _options;
         private static string[] _skipExtArray;
         private static string[] _onlyExtArray;
-        private static readonly string[] _projectFiles = {"project.json", "preview.jpg"};
+        private static readonly string[] _projectFiles = {"project.json", "preview.jpg", "preview.png"};
 
         public static void Action(ExtractOptions options)
         {
@@ -219,10 +219,14 @@ namespace RePKG.Command
             {
                 var outputPath = Path.Combine(outputDirectory, fileToCopy.Name);
 
-                if (!_options.Overwrite || File.Exists(outputPath))
+                if (!_options.Overwrite && File.Exists(outputPath))
                     Console.WriteLine(Resources.SkippingAlreadyExists, outputPath);
                 else
-                    File.Copy(fileToCopy.FullName, outputPath, true);            }
+                {
+                    File.Copy(fileToCopy.FullName, outputPath, true);
+                    Console.WriteLine(Resources.CopyingFileName, fileToCopy.FullName);
+                }
+            }
         }
         
         [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]

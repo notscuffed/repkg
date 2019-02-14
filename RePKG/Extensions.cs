@@ -6,6 +6,10 @@ namespace RePKG
 {
     public static class Extensions
     {
+        public static bool Contains(this string haystack, string needle, StringComparison comparer)
+        {
+            return haystack?.IndexOf(needle, comparer) >= 0;
+        }
         public static string ReadStringI32Size(this BinaryReader reader)
         {
             var size = reader.ReadInt32();

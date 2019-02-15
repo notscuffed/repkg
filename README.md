@@ -5,9 +5,9 @@ Made using information obtained from reverse engineering "resourcecompiler.exe" 
 Feel free to report errors or request a pull if you have fixed/added something.
 
 # Features
-- Unpack PKG files
-- Decompile TEX to PNG
 - Convert PKG into wallpaper engine project
+- Unpack PKG files
+- Decompile TEX
 - Show info about PKG/TEX files
 
 ### Commands
@@ -22,13 +22,18 @@ Feel free to report errors or request a pull if you have fixed/added something.
 -s, --singledir       Should all extracted files be put in one directory instead of their entry path
 -r, --recursive       Recursive search in all subfolders of specified directory
 -c, --copyproject     Copy project.json and preview.jpg from beside .pkg into output directory
+-n, --usename         Use name from project.json as project subfolder name instead of id
 --no-tex-decompile    Don't decompile .tex files while extracting .pkg
 --overwrite           Overwrite all existing files
 ```
  - info - Shows info and entries in PKG/TEX file
 ```
--s, --sort            (Default: false) Sort entries a-z
--b, --sortby          (Default: name) Sort by ... (available options: name, extension, size)
+-s, --sort             Sort entries
+-b, --sortby           (Default: name) Sort by ... (available options: name, extension, size)
+-t, --tex              Get info about all tex files from specified directory in input
+-p, --projectinfo      Select info from project.json to print (delimit using comma)
+-e, --printentries     Print entries in packages
+--title-filter         Title filter
 ```
  
 ### Examples

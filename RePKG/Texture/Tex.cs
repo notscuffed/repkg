@@ -34,7 +34,7 @@ namespace RePKG.Texture
 
         public Tex()
         {
-            Format = TexFormat.BGRA8888;
+            Format = TexFormat.ARGB8888;
             ImageFormat = FreeImageFormat.FIF_UNKNOWN;
             Mipmaps = new List<TexMipmap>();
         }
@@ -76,7 +76,7 @@ namespace RePKG.Texture
                 case TexFormat.DXT1:
                     bytes = DXT.DecompressImage(Mipmaps[0].Width, Mipmaps[0].Height, bytes, DXT.DXTFlags.DXT1);
                     break;
-                case TexFormat.BGRA8888:
+                case TexFormat.ARGB8888:
                     invertedColorOrder = true;
                     break;
                 default:
@@ -138,7 +138,7 @@ namespace RePKG.Texture
 
     public enum TexFormat
     {
-        BGRA8888,
+        ARGB8888,
         RA88,
         A8,
         DXT5,

@@ -77,8 +77,13 @@ namespace RePKG.Command
             if (_options.Recursive)
                 flags = SearchOption.AllDirectories;
 
+            Directory.CreateDirectory(_options.OutputDirectory);
+            
             foreach (var file in directoryInfo.EnumerateFiles("*.tex", flags))
             {
+                if (!file.Extension.Equals(".tex", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                
                 try
                 {
                     var tex = LoadTex(File.ReadAllBytes(file.FullName), file.FullName);

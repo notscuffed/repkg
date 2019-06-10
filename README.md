@@ -47,7 +47,7 @@ repkg extract -e tex -s -o ./output E:\Games\steamapps\workshop\content\431960
 ```
 Extract all files from specific .pkg to output directory while keeping their paths from .pkg
 ```
-repkg extract -o ./output E:\Games\steamapps\workshop\content\431960
+repkg extract -o ./output E:\Games\steamapps\workshop\content\431960\scene.pkg
 ```
 Convert all .tex files from specific folder to png
 ```

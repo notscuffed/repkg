@@ -38,7 +38,7 @@ namespace RePKG.Texture
                 if (tex.Magic2 != "TEXI0001")
                     throw new InvalidTexHeaderMagic("TEXI0001", tex.Magic2);
 
-                tex.Format = (TexFormat)reader.ReadInt32();
+                tex.Format = (TexFormat) reader.ReadInt32();
                 tex._unkInt_1 = reader.ReadInt32();
                 tex.TextureWidth = reader.ReadInt32();
                 tex.TextureHeight = reader.ReadInt32();
@@ -49,19 +49,33 @@ namespace RePKG.Texture
                 // mipmap header
                 tex.TextureContainerMagic = reader.ReadNString();
 
+                var version = 0;
                 if (tex.TextureContainerMagic == "TEXB0003")
                 {
                     tex.TextureContainerVersion = TexMipmapVersion.Version3;
                     tex._unkIntCont_0 = reader.ReadInt32();
                     tex.ImageFormat = (FreeImageFormat) reader.ReadInt32();
+                    version = 3;
                 }
                 else if (tex.TextureContainerMagic == "TEXB0002")
                 {
                     tex.TextureContainerVersion = TexMipmapVersion.Version2;
                     tex._unkIntCont_0 = reader.ReadInt32();
+                    version = 2;
+                }
+                else if (tex.TextureContainerMagic == "TEXB0001")
+                {
+                    tex.TextureContainerVersion = TexMipmapVersion.Version1;
+                    tex._unkIntCont_0 = reader.ReadInt32();
+
+                    // don't know how to detect others yet
+                    if (tex.Format == TexFormat.DXT3)
+                        tex.Format = TexFormat.DXT5;
+                    
+                    version = 1;
                 }
                 else
-                    throw new InvalidTexHeaderMagic("TEXB0003/TEXB0002", tex.TextureContainerMagic);
+                    throw new InvalidTexHeaderMagic("TEXB0001/TEXB0002/TEXB0003", tex.TextureContainerMagic);
 
                 tex.MipmapCount = reader.ReadInt32();
 
@@ -74,7 +88,7 @@ namespace RePKG.Texture
 
                 for (var i = 0; i < mipmapCount; i++)
                 {
-                    tex.Mipmaps.Add(ReadMipmap(reader));
+                    tex.Mipmaps.Add(ReadMipmap(reader, version));
                 }
             }
             finally
@@ -85,14 +99,25 @@ namespace RePKG.Texture
             return tex;
         }
 
-        private static TexMipmap ReadMipmap(BinaryReader reader)
+        private static TexMipmap ReadMipmap(BinaryReader reader, int version)
         {
             var mipmap = new TexMipmap();
-            mipmap.Width = reader.ReadInt32();
-            mipmap.Height = reader.ReadInt32();
-            mipmap.LZ4Compressed = reader.ReadInt32();
-            mipmap.PixelCount = reader.ReadInt32();
-            mipmap.BytesCount = reader.ReadInt32();
+            
+            if (version == 1)
+            {
+                mipmap.Width = reader.ReadInt32();
+                mipmap.Height = reader.ReadInt32();
+                mipmap.BytesCount = reader.ReadInt32();
+            }
+            else
+            {
+                mipmap.Width = reader.ReadInt32();
+                mipmap.Height = reader.ReadInt32();
+                mipmap.LZ4Compressed = reader.ReadInt32();
+                mipmap.PixelCount = reader.ReadInt32();
+                mipmap.BytesCount = reader.ReadInt32();
+            }
+
             mipmap.Bytes = new byte[mipmap.BytesCount];
             reader.Read(mipmap.Bytes, 0, mipmap.BytesCount);
 

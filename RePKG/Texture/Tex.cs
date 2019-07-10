@@ -63,7 +63,7 @@ namespace RePKG.Texture
             if (ImageFormat != FreeImageFormat.FIF_UNKNOWN)
                 return bytes;
 
-            var invertedColorOrder = false;
+            var invertedColorOrder = TextureContainerVersion == TexMipmapVersion.Version1;
 
             switch (Format)
             {
@@ -133,7 +133,8 @@ namespace RePKG.Texture
     public enum TexMipmapVersion
     {
         Version3,
-        Version2
+        Version2,
+        Version1
     }
 
     public enum TexFormat

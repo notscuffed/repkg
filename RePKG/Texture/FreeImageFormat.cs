@@ -1,4 +1,5 @@
-﻿namespace RePKG.Texture
+﻿// ReSharper disable InconsistentNaming
+namespace RePKG.Texture
 {
     public enum FreeImageFormat
 	{

@@ -3,6 +3,6 @@
     public enum EntryType
     {
         Binary,
-        TEX
+        Tex
     }
 }

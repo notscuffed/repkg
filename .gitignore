@@ -3,6 +3,10 @@
 ################################################################################
 
 /packages
-/.vs
-/RePKG/obj
-/RePKG/bin
+/**/.vs
+/**/.idea
+/**/obj
+/**/bin
+/RePKG.Tests/Output/*
+/RePKG.Tests/TestTextures/*
+/RePKG.Tests/TestTexturesValidated/*

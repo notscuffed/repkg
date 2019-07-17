@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-
 
 namespace RePKG.Texture
 {
@@ -12,26 +10,24 @@ namespace RePKG.Texture
     {
         public string Magic; // always: TEXV0005
         public string Magic2; // always: TEXI0001
+        public int FormatId;
         public TexFormat Format;
-        public int _unkInt_1; 
+        public TexFlags Flags;
         public int TextureWidth;
         public int TextureHeight;
         public int ImageWidth;
         public int ImageHeight;
-        public uint _unkInt_2;
-
-        //public byte _unkByte_0;
-        //public byte _unkByte_1;
-        //public ushort _unkShort_0;
-
+        public uint UnkInt0;
         public string TextureContainerMagic;
         public TexMipmapVersion TextureContainerVersion;
-        public int _unkIntCont_0;
+        public int UnkIntCont0;
         public FreeImageFormat ImageFormat;
         public int MipmapCount;
 
-        public List<TexMipmap> Mipmaps;
+        public readonly List<TexMipmap> Mipmaps;
 
+        public bool IsGif => (Flags & TexFlags.IsGif) == TexFlags.IsGif;
+        
         public Tex()
         {
             Format = TexFormat.ARGB8888;
@@ -39,32 +35,16 @@ namespace RePKG.Texture
             Mipmaps = new List<TexMipmap>();
         }
 
-        public void DebugInfo()
-        {
-            var type = typeof(Tex);
-            var flags = BindingFlags.Instance | BindingFlags.Public;
-
-            foreach (var field in type.GetFields(flags).Where(
-                f => _membersToDebug.Contains(f.Name) || f.Name.StartsWith("_unk")))
-                Console.WriteLine($@"{field.Name}: {field.GetValue(this)}");
-
-            foreach (var property in type.GetProperties(flags).Where(
-                f => _membersToDebug.Contains(f.Name) || f.Name.StartsWith("_unk")))
-                Console.WriteLine($@"{property.Name}: {property.GetValue(this)}");
-        }
-
         public byte[] Decompile()
         {
             var bytes = Mipmaps[0].Bytes;
 
-            if (Mipmaps[0].LZ4Compressed == 1)
-                bytes = TexLoader.DecompressLZ4(bytes, Mipmaps[0].PixelCount);
+            if (Mipmaps[0].Lz4Compressed == 1)
+                bytes = TexLoader.DecompressLz4(bytes, Mipmaps[0].PixelCount);
 
             if (ImageFormat != FreeImageFormat.FIF_UNKNOWN)
                 return bytes;
-
-            var invertedColorOrder = TextureContainerVersion == TexMipmapVersion.Version1;
-
+            
             switch (Format)
             {
                 case TexFormat.DXT5:
@@ -77,7 +57,6 @@ namespace RePKG.Texture
                     bytes = DXT.DecompressImage(Mipmaps[0].Width, Mipmaps[0].Height, bytes, DXT.DXTFlags.DXT1);
                     break;
                 case TexFormat.ARGB8888:
-                    invertedColorOrder = true;
                     break;
                 default:
                     throw new NotImplementedException($"Format: \"{Format.ToString()}\" ({(int)Format})");
@@ -88,8 +67,7 @@ namespace RePKG.Texture
             var height = ImageHeight;
             var bitmap = new Bitmap(width, height);
 
-
-            Helper.CopyRawPixelsIntoBitmap(bytes, textureWidth * 4, bitmap, invertedColorOrder);
+            Helper.CopyRawPixelsIntoBitmap(bytes, textureWidth * 4, bitmap, true);
 
             var stream = new MemoryStream();
             bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
@@ -126,8 +104,6 @@ namespace RePKG.Texture
             // ReSharper disable LocalizableElement
             File.WriteAllText(path, $"{{\r\n\t\"format\" : \"{format}\"\r\n}}");
         }
-
-        private static readonly string[] _membersToDebug = {"Format", "ImageFormat"};
     }
 
     public enum TexMipmapVersion
@@ -136,14 +112,27 @@ namespace RePKG.Texture
         Version2,
         Version1
     }
-
+    
+    // ReSharper disable InconsistentNaming
     public enum TexFormat
     {
         ARGB8888,
-        RA88,
-        A8,
         DXT5,
         DXT3,
         DXT1
+    }
+    
+    [Flags]
+    public enum TexFlags
+    {
+        NoInterpolation = 1,
+        ClampUVs = 2,
+        IsGif = 4,
+        // Placeholders
+        Unk3 = 8,
+        Unk4 = 16,
+        Unk5 = 32,
+        Unk6 = 64,
+        Unk7 = 128,
     }
 }

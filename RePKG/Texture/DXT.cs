@@ -20,12 +20,15 @@
 
 // most of the algorithms and data used in this Class-file has been ported from LibSquish!
 // http://code.google.com/p/libsquish/
+// ReSharper disable InconsistentNaming
 
+using System;
 
 namespace RePKG.Texture
 {
     public static class DXT
     {
+        [Flags]
         public enum DXTFlags
         {
             DXT1 = 1 << 0,

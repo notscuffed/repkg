@@ -21,7 +21,7 @@ namespace RePKG.Package
             FullName = fullName;
 
             if (Extension.Equals(".tex", StringComparison.OrdinalIgnoreCase))
-                Type = EntryType.TEX;
+                Type = EntryType.Tex;
         }
 
         public void WriteTo(string filePath)

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace RePKG.Package
 {
@@ -8,7 +7,7 @@ namespace RePKG.Package
         private Stream _stream;
         private BinaryReader _reader;
         private Package _package;
-        public bool LoadEntryDataInMemory;
+        public readonly bool LoadEntryDataInMemory;
 
         public PackageLoader(bool loadEntryDataInMemory)
         {

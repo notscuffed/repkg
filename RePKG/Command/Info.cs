@@ -57,7 +57,7 @@ namespace RePKG.Command
             {
                 foreach (var file in directory.EnumerateFiles("*.pkg"))
                 {
-                    InfoPKG(file, file.FullName.Substring(rootDirectoryLength));
+                    InfoPkg(file, file.FullName.Substring(rootDirectoryLength));
                 }
             }
         }
@@ -70,15 +70,15 @@ namespace RePKG.Command
         private static void InfoFile(FileInfo file)
         {
             if (file.Extension.Equals(".pkg", StringComparison.OrdinalIgnoreCase))
-                InfoPKG(file, Path.GetFullPath(file.Name));
+                InfoPkg(file, Path.GetFullPath(file.Name));
             else if (file.Extension.Equals(".tex", StringComparison.OrdinalIgnoreCase))
-                InfoTEX(file);
+                InfoTex(file);
             else
                 Console.WriteLine(Resources.UnrecognizedFileExtension, file.Extension);
         }
 
         [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
-        private static void InfoPKG(FileInfo file, string name)
+        private static void InfoPkg(FileInfo file, string name)
         {
             var projectInfo = GetProjectInfo(file);
 
@@ -137,7 +137,7 @@ namespace RePKG.Command
             }
         }
 
-        private static void InfoTEX(FileInfo file)
+        private static void InfoTex(FileInfo file)
         {
 
         }

@@ -30,14 +30,14 @@ namespace RePKG
             var bytesPerPixel = Image.GetPixelFormatSize(processedBitmap.PixelFormat) / 8;
             var heightInPixels = bitmapData.Height;
             var widthInBytes = bitmapData.Width * bytesPerPixel;
-            var PtrFirstPixel = (byte*)bitmapData.Scan0;
+            var ptrFirstPixel = (byte*)bitmapData.Scan0;
 
             if (invertedColorOrder)
             {
                 // BGRA
                 Parallel.For(0, heightInPixels, y =>
                 {
-                    var currentLine = PtrFirstPixel + y * bitmapData.Stride;
+                    var currentLine = ptrFirstPixel + y * bitmapData.Stride;
                     var currentLineData = y * dataStride;
                     for (var x = 0; x < widthInBytes; x = x + bytesPerPixel)
                     {
@@ -53,7 +53,7 @@ namespace RePKG
                 // RGBA
                 Parallel.For(0, heightInPixels, y =>
                 {
-                    var currentLine = PtrFirstPixel + y * bitmapData.Stride;
+                    var currentLine = ptrFirstPixel + y * bitmapData.Stride;
                     var currentLineData = y * dataStride;
                     for (var x = 0; x < widthInBytes; x = x + bytesPerPixel)
                     {
@@ -66,30 +66,6 @@ namespace RePKG
             }
 
             processedBitmap.UnlockBits(bitmapData);
-        }
-
-        public static ImageFormat ConvertFIFFormat(FreeImageFormat format)
-        {
-            switch (format)
-            {
-                case FreeImageFormat.FIF_BMP:
-                    return ImageFormat.Bmp;
-                case FreeImageFormat.FIF_ICO:
-                    return ImageFormat.Icon;
-                case FreeImageFormat.FIF_JPEG:
-                case FreeImageFormat.FIF_JNG:
-                case FreeImageFormat.FIF_J2K:
-                case FreeImageFormat.FIF_JP2:
-                    return ImageFormat.Jpeg;
-                case FreeImageFormat.FIF_PNG:
-                    return ImageFormat.Png;
-                case FreeImageFormat.FIF_TIFF:
-                    return ImageFormat.Tiff;
-                case FreeImageFormat.FIF_GIF:
-                    return ImageFormat.Gif;
-                default:
-                    return null;
-            }
         }
 
         public static string GetExtension(FreeImageFormat format)

@@ -132,6 +132,8 @@ namespace RePKG.Command
 
         private static void ExtractFile(FileInfo fileInfo)
         {
+            Directory.CreateDirectory(_options.OutputDirectory);
+            
             if (fileInfo.Extension.Equals(".pkg", StringComparison.OrdinalIgnoreCase))
                 ExtractPkg(fileInfo);
             else if (fileInfo.Extension.Equals(".tex", StringComparison.OrdinalIgnoreCase))

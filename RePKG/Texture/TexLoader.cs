@@ -51,6 +51,12 @@ namespace RePKG.Texture
                     case 7:
                         tex.Format = TexFormat.DXT1;
                         break;
+                    case 8:
+                        tex.Format = TexFormat.RG8;
+                        break;
+                    case 9:
+                        tex.Format = TexFormat.R8;
+                        break;
                     default:
                         throw new Exception(
                             $"Unknown tex format id: {tex.FormatId} for {tex.TextureContainerMagic}");

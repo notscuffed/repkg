@@ -9,5 +9,14 @@ namespace RePKG.Tests
 
         [Test]
         public void V2_ARGB8888() => Test(nameof(V2_ARGB8888));
+        
+        [Test]
+        public void V2_R8() => Test(nameof(V2_R8));
+        
+        [Test]
+        public void V2_RG88() => Test(nameof(V2_RG88));
+        
+        [Test]
+        public void V2_ARGB8888N() => Test(nameof(V2_ARGB8888N));
     }
 }

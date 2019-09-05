@@ -27,7 +27,7 @@ namespace RePKG.Texture
         public readonly List<TexMipmap> Mipmaps;
 
         public bool IsGif => (Flags & TexFlags.IsGif) == TexFlags.IsGif;
-        
+
         public Tex()
         {
             Format = TexFormat.ARGB8888;
@@ -44,30 +44,43 @@ namespace RePKG.Texture
 
             if (ImageFormat != FreeImageFormat.FIF_UNKNOWN)
                 return bytes;
-            
-            switch (Format)
-            {
-                case TexFormat.DXT5:
-                    bytes = DXT.DecompressImage(Mipmaps[0].Width, Mipmaps[0].Height, bytes, DXT.DXTFlags.DXT5);
-                    break;
-                case TexFormat.DXT3:
-                    bytes = DXT.DecompressImage(Mipmaps[0].Width, Mipmaps[0].Height, bytes, DXT.DXTFlags.DXT3);
-                    break;
-                case TexFormat.DXT1:
-                    bytes = DXT.DecompressImage(Mipmaps[0].Width, Mipmaps[0].Height, bytes, DXT.DXTFlags.DXT1);
-                    break;
-                case TexFormat.ARGB8888:
-                    break;
-                default:
-                    throw new NotImplementedException($"Format: \"{Format.ToString()}\" ({(int)Format})");
-            }
 
             var width = ImageWidth;
             var textureWidth = Mipmaps[0].Width;
             var height = ImageHeight;
             var bitmap = new Bitmap(width, height);
 
-            Helper.CopyRawPixelsIntoBitmap(bytes, textureWidth * 4, bitmap, true);
+            switch (Format)
+            {
+                case TexFormat.DXT5:
+                    bytes = DXT.DecompressImage(Mipmaps[0].Width, Mipmaps[0].Height, bytes, DXT.DXTFlags.DXT5);
+                    Helper.CopyRawPixelsIntoBitmap(bytes, textureWidth, bitmap, true);
+                    break;
+
+                case TexFormat.DXT3:
+                    bytes = DXT.DecompressImage(Mipmaps[0].Width, Mipmaps[0].Height, bytes, DXT.DXTFlags.DXT3);
+                    Helper.CopyRawPixelsIntoBitmap(bytes, textureWidth, bitmap, true);
+                    break;
+
+                case TexFormat.DXT1:
+                    bytes = DXT.DecompressImage(Mipmaps[0].Width, Mipmaps[0].Height, bytes, DXT.DXTFlags.DXT1);
+                    Helper.CopyRawPixelsIntoBitmap(bytes, textureWidth, bitmap, true);
+                    break;
+
+                case TexFormat.R8:
+                    Helper.CopyRawR8PixelsIntoBitmap(bytes, textureWidth, bitmap);
+                    break;
+                
+                case TexFormat.RG8:
+                    Helper.CopyRawRG88PixelsIntoBitmap(bytes, textureWidth, bitmap);
+                    break;
+
+                case TexFormat.ARGB8888:
+                    Helper.CopyRawPixelsIntoBitmap(bytes, textureWidth, bitmap, true);
+                    break;
+                default:
+                    throw new NotImplementedException($"Format: \"{Format.ToString()}\" ({(int) Format})");
+            }
 
             var stream = new MemoryStream();
             bitmap.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
@@ -81,7 +94,9 @@ namespace RePKG.Texture
         public void DecompileAndSave(string path, bool overwrite)
         {
             if (!overwrite && File.Exists(path + Helper.GetExtension(
-                ImageFormat == FreeImageFormat.FIF_UNKNOWN ? FreeImageFormat.FIF_PNG : ImageFormat)))
+                                              ImageFormat == FreeImageFormat.FIF_UNKNOWN
+                                                  ? FreeImageFormat.FIF_PNG
+                                                  : ImageFormat)))
                 return;
 
             var bytes = Decompile();
@@ -100,7 +115,7 @@ namespace RePKG.Texture
                 return;
 
             var format = Format.ToString().Split('.').Last().ToLower();
-            
+
             // ReSharper disable LocalizableElement
             File.WriteAllText(path, $"{{\r\n\t\"format\" : \"{format}\"\r\n}}");
         }
@@ -112,22 +127,25 @@ namespace RePKG.Texture
         Version2,
         Version1
     }
-    
+
     // ReSharper disable InconsistentNaming
     public enum TexFormat
     {
         ARGB8888,
         DXT5,
         DXT3,
-        DXT1
+        DXT1,
+        R8,
+        RG8,
     }
-    
+
     [Flags]
     public enum TexFlags
     {
         NoInterpolation = 1,
         ClampUVs = 2,
         IsGif = 4,
+
         // Placeholders
         Unk3 = 8,
         Unk4 = 16,

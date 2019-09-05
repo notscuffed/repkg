@@ -24,7 +24,7 @@ namespace RePKG.Tests
             Directory.CreateDirectory($"{BasePath}\\{ValidatedDirectoryName}\\");
         }
 
-        protected void Test(string name, bool validateBytes = false, Action<Tex, byte[]> validateTex = null)
+        protected void Test(string name, bool validateBytes = true, Action<Tex, byte[]> validateTex = null)
         {
             var texture = TexLoader.LoadTex(LoadTestFile(name));
             var bytes = texture.Decompile();

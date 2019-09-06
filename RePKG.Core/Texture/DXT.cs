@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) <2011> <by Xalcon @ mmowned.com-Forum>
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the "Software"),
@@ -24,14 +24,14 @@
 
 using System;
 
-namespace RePKG.Texture
+namespace RePKG.Core.Texture
 {
     public static class DXT
     {
         [Flags]
         public enum DXTFlags
         {
-            DXT1 = 1 << 0,
+            DXT1 = 1,
             DXT3 = 1 << 1,
             DXT5 = 1 << 2,
             // Additional Enums not implemented :o

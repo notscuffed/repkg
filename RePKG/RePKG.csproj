@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>RePKG</RootNamespace>
     <AssemblyName>RePKG</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -75,7 +75,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup> 
+  <ItemGroup>
     <Reference Include="netstandard" />
   </ItemGroup>
   <ItemGroup>
@@ -84,14 +84,12 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Package\EntryType.cs" />
-    <Compile Include="Texture\DXT.cs" />
     <Compile Include="Package\Entry.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Package\Package.cs" />
     <Compile Include="Package\PackageLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Texture\FreeImageFormat.cs" />
     <Compile Include="Texture\Tex.cs" />
     <Compile Include="Texture\TexLoader.cs" />
     <Compile Include="Texture\TexMipmap.cs" />
@@ -118,6 +116,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RePKG.Application\RePKG.Application.csproj">
+      <Project>{ddffd8d1-3961-4f1b-b778-1cac5622aa19}</Project>
+      <Name>RePKG.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RePKG.Core\RePKG.Core.csproj">
+      <Project>{43cffa8a-bdb4-4a09-9d07-95fa09cccec9}</Project>
+      <Name>RePKG.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

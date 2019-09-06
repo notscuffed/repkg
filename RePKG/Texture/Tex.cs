@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using RePKG.Core.Texture;
 
 namespace RePKG.Texture
 {
@@ -71,7 +72,7 @@ namespace RePKG.Texture
                     Helper.CopyRawR8PixelsIntoBitmap(bytes, textureWidth, bitmap);
                     break;
                 
-                case TexFormat.RG8:
+                case TexFormat.RG88:
                     Helper.CopyRawRG88PixelsIntoBitmap(bytes, textureWidth, bitmap);
                     break;
 
@@ -126,17 +127,6 @@ namespace RePKG.Texture
         Version3,
         Version2,
         Version1
-    }
-
-    // ReSharper disable InconsistentNaming
-    public enum TexFormat
-    {
-        ARGB8888,
-        DXT5,
-        DXT3,
-        DXT1,
-        R8,
-        RG8,
     }
 
     [Flags]

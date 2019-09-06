@@ -11,16 +11,4 @@ namespace RePKG
             Bytes = bytes;
         }
     }
-
-    public class InvalidTexHeaderMagic : Exception
-    {
-        public string Expected;
-        public string Got;
-
-        public InvalidTexHeaderMagic(string expected, string got)
-        {
-            Expected = expected;
-            Got = got;
-        }
-    }
 }

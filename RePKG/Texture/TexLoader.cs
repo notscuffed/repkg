@@ -2,6 +2,8 @@
 using System.IO;
 using System.Text;
 using K4os.Compression.LZ4;
+using RePKG.Application.Exceptions;
+using RePKG.Core.Texture;
 
 namespace RePKG.Texture
 {
@@ -29,12 +31,12 @@ namespace RePKG.Texture
                 tex = new Tex {Magic = reader.ReadNString()};
 
                 if (tex.Magic != "TEXV0005")
-                    throw new InvalidTexHeaderMagic("TEXV0005", tex.Magic);
+                    throw new UnknownTexHeaderMagicException("TEXV0005", tex.Magic);
 
                 tex.Magic2 = reader.ReadNString();
 
                 if (tex.Magic2 != "TEXI0001")
-                    throw new InvalidTexHeaderMagic("TEXI0001", tex.Magic2);
+                    throw new UnknownTexHeaderMagicException("TEXI0001", tex.Magic2);
 
                 tex.FormatId = reader.ReadInt32();
                 switch (tex.FormatId)
@@ -52,7 +54,7 @@ namespace RePKG.Texture
                         tex.Format = TexFormat.DXT1;
                         break;
                     case 8:
-                        tex.Format = TexFormat.RG8;
+                        tex.Format = TexFormat.RG88;
                         break;
                     case 9:
                         tex.Format = TexFormat.R8;
@@ -89,7 +91,7 @@ namespace RePKG.Texture
                     tex.UnkIntCont0 = reader.ReadInt32();
                 }
                 else
-                    throw new InvalidTexHeaderMagic("TEXB0001/TEXB0002/TEXB0003", tex.TextureContainerMagic);
+                    throw new UnknownTexHeaderMagicException("TEXB0001/TEXB0002/TEXB0003", tex.TextureContainerMagic);
 
                 tex.MipmapCount = reader.ReadInt32();
 

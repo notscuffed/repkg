@@ -3,14 +3,23 @@ using System.Drawing;
 using System.IO;
 using RePKG.Core.Texture;
 
-namespace RePKG.Tests
+namespace RePKG.Application.Texture
 {
-    public static class PreviewWriter
+    public static class TexPreviewWriter
     {
-        public static void WriteTexture(Tex texture, string fileNameWithoutExtension)
+        public static void WriteTexture(Tex texture, string fileNameWithoutExtension, bool overwrite = true)
         {
             var mipmap = texture.FirstMipmap;
             var outputBytes = mipmap.Bytes;
+
+            var extension = "png";
+            if (mipmap.IsImage)
+                extension = mipmap.Format.GetFileExtension();
+
+            var filePath = $"{fileNameWithoutExtension}.{extension}";
+
+            if (!overwrite && File.Exists(filePath))
+                return;
             
             // If mipmap is in raw pixels format, then convert into png
             if (!mipmap.IsImage)
@@ -24,13 +33,13 @@ namespace RePKG.Tests
                 switch (mipmap.Format)
                 {
                     case MipmapFormat.RGBA8888:
-                        Helper.CopyRawPixelsIntoBitmap(outputBytes, textureWidth, bitmap, true);
+                        BitmapHelper.CopyRawPixelsIntoBitmap(outputBytes, textureWidth, bitmap);
                         break;
                     case MipmapFormat.RG88:
-                        Helper.CopyRawRG88PixelsIntoBitmap(outputBytes, textureWidth, bitmap);
+                        BitmapHelper.CopyRawRG88PixelsIntoBitmap(outputBytes, textureWidth, bitmap);
                         break;
                     case MipmapFormat.R8:
-                        Helper.CopyRawR8PixelsIntoBitmap(outputBytes, textureWidth, bitmap);
+                        BitmapHelper.CopyRawR8PixelsIntoBitmap(outputBytes, textureWidth, bitmap);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(
@@ -49,11 +58,9 @@ namespace RePKG.Tests
             }
             
             // save output
-            var extension = "png";
-            if (mipmap.IsImage)
-                extension = mipmap.Format.GetFileExtension();
             
-            using (var stream = File.Open($"{fileNameWithoutExtension}.{extension}",
+            
+            using (var stream = File.Open(filePath,
                 FileMode.Create,
                 FileAccess.Write,
                 FileShare.Read))

@@ -11,7 +11,7 @@ namespace RePKG.Core.Texture
             
             switch (tex.Header.Format)
             {
-                case TexFormat.ARGB8888:
+                case TexFormat.RGBA8888:
                     return MipmapFormat.RGBA8888;
                 case TexFormat.DXT5:
                     return MipmapFormat.CompressedDXT5;

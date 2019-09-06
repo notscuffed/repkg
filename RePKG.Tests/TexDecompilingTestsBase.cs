@@ -12,6 +12,7 @@ namespace RePKG.Tests
         protected const string OutputDirectoryName = "Output";
         protected const string InputDirectoryName = "TestTextures";
         protected string BasePath;
+        protected TexReader _reader;
 
         [SetUp]
         protected void SetUp()
@@ -22,17 +23,18 @@ namespace RePKG.Tests
 
             Directory.CreateDirectory($"{BasePath}\\{OutputDirectoryName}\\");
             Directory.CreateDirectory($"{BasePath}\\{ValidatedDirectoryName}\\");
-        }
 
-        protected void Test(string name, bool validateBytes = true, Action<Tex, byte[]> validateTex = null)
-        {
             var headerReader = new TexHeaderReader();
             var mipmapDecompressor = new TexMipmapDecompressor();
             var mipmapReader = new TexMipmapReader(mipmapDecompressor);
             var containerReader = new TexMipmapContainerReader(mipmapReader);
-            var reader = new TexReader(headerReader, containerReader);
 
-            var texture = reader.ReadFromStream(LoadTestFile(name));
+            _reader = new TexReader(headerReader, containerReader);
+        }
+
+        protected void Test(string name, bool validateBytes = true, Action<Tex, byte[]> validateTex = null)
+        {
+            var texture = _reader.ReadFromStream(LoadTestFile(name));
 
             var firstMipmap = texture.FirstMipmap;
             var bytes = firstMipmap.Bytes;
@@ -46,7 +48,7 @@ namespace RePKG.Tests
             else
             {
                 SaveValidatedBytes(bytes, name);
-                PreviewWriter.WriteTexture(texture, $"{BasePath}\\{OutputDirectoryName}\\{name}");
+                TexPreviewWriter.WriteTexture(texture, $"{BasePath}\\{OutputDirectoryName}\\{name}");
             }
         }
 

@@ -81,7 +81,6 @@
   <ItemGroup>
     <Compile Include="Command\Extract.cs" />
     <Compile Include="Command\Info.cs" />
-    <Compile Include="Exceptions.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Package\EntryType.cs" />
     <Compile Include="Package\Entry.cs" />
@@ -90,9 +89,6 @@
     <Compile Include="Package\PackageLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Texture\Tex.cs" />
-    <Compile Include="Texture\TexLoader.cs" />
-    <Compile Include="Texture\TexMipmap.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -5,7 +5,7 @@ using RePKG.Application.Exceptions;
 
 namespace RePKG.Application
 {
-    static class Extensions
+    internal static class Extensions
     {
         public static string ReadNString(this BinaryReader reader, int maxLength = -1)
         {

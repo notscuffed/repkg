@@ -5,9 +5,10 @@ using System.IO;
 using System.Linq;
 using CommandLine;
 using Newtonsoft.Json;
+using RePKG.Application.Texture;
+using RePKG.Core.Texture;
 using RePKG.Package;
 using RePKG.Properties;
-using RePKG.Texture;
 
 namespace RePKG.Command
 {
@@ -17,6 +18,20 @@ namespace RePKG.Command
         private static string[] _skipExtArray;
         private static string[] _onlyExtArray;
         private static readonly string[] ProjectFiles = {"project.json"};
+
+        private static readonly ITexReader _texReader;
+        private static readonly ITexJsonInfoGenerator _texJsonInfoGenerator;
+
+        static Extract()
+        {
+            var texHeaderReader = new TexHeaderReader();
+            var texMipmapDecompressor = new TexMipmapDecompressor();
+            var texMipmapReader = new TexMipmapReader(texMipmapDecompressor);
+            var texMipmapContainerReader = new TexMipmapContainerReader(texMipmapReader);
+            
+            _texReader = new TexReader(texHeaderReader, texMipmapContainerReader);
+            _texJsonInfoGenerator = new TexJsonInfoGenerator();
+        }
 
         public static void Action(ExtractOptions options)
         {
@@ -79,22 +94,23 @@ namespace RePKG.Command
 
             Directory.CreateDirectory(_options.OutputDirectory);
 
-            foreach (var file in directoryInfo.EnumerateFiles("*.tex", flags))
+            foreach (var fileInfo in directoryInfo.EnumerateFiles("*.tex", flags))
             {
-                if (!file.Extension.Equals(".tex", StringComparison.OrdinalIgnoreCase))
+                if (!fileInfo.Extension.Equals(".tex", StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 try
                 {
-                    var tex = LoadTex(File.ReadAllBytes(file.FullName), file.FullName);
+                    var tex = LoadTex(File.ReadAllBytes(fileInfo.FullName), fileInfo.FullName);
 
                     if (tex == null)
                         continue;
+                    
+                    var filePath = Path.Combine(_options.OutputDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name));
 
-                    var name = Path.GetFileNameWithoutExtension(file.Name);
-
-                    tex.DecompileAndSave(Path.Combine(_options.OutputDirectory, name), _options.Overwrite);
-                    tex.SaveFormatInfo(Path.Combine(_options.OutputDirectory, name), _options.Overwrite);
+                    TexPreviewWriter.WriteTexture(tex, filePath, _options.Overwrite);
+                    var jsonInfo = _texJsonInfoGenerator.GenerateInfo(tex);
+                    File.WriteAllText($"{filePath}.tex-json", jsonInfo);
                 }
                 catch (Exception e)
                 {
@@ -133,7 +149,7 @@ namespace RePKG.Command
         private static void ExtractFile(FileInfo fileInfo)
         {
             Directory.CreateDirectory(_options.OutputDirectory);
-            
+
             if (fileInfo.Extension.Equals(".pkg", StringComparison.OrdinalIgnoreCase))
                 ExtractPkg(fileInfo);
             else if (fileInfo.Extension.Equals(".tex", StringComparison.OrdinalIgnoreCase))
@@ -145,9 +161,11 @@ namespace RePKG.Command
                     if (tex == null)
                         return;
 
-                    var name = Path.GetFileNameWithoutExtension(fileInfo.Name);
-                    tex.DecompileAndSave(Path.Combine(_options.OutputDirectory, name), _options.Overwrite);
-                    tex.SaveFormatInfo(Path.Combine(_options.OutputDirectory, name), _options.Overwrite);
+                    var filePath = Path.Combine(_options.OutputDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name));
+
+                    TexPreviewWriter.WriteTexture(tex, filePath, _options.Overwrite);
+                    var jsonInfo = _texJsonInfoGenerator.GenerateInfo(tex);
+                    File.WriteAllText($"{filePath}.tex-json", jsonInfo);
                 }
                 catch (Exception e)
                 {
@@ -260,9 +278,10 @@ namespace RePKG.Command
 
                 if (tex == null)
                     return;
-
-                tex.DecompileAndSave(filePath, _options.Overwrite);
-                tex.SaveFormatInfo(filePath, _options.Overwrite);
+                
+                TexPreviewWriter.WriteTexture(tex, filePath, _options.Overwrite);
+                var jsonInfo = _texJsonInfoGenerator.GenerateInfo(tex);
+                File.WriteAllText($"{filePath}.tex-json", jsonInfo);
             }
             catch (Exception e)
             {
@@ -317,9 +336,7 @@ namespace RePKG.Command
 
             try
             {
-                var tex = TexLoader.LoadTex(bytes, 1);
-
-                return tex;
+                return _texReader.ReadFromStream(new MemoryStream(bytes));
             }
             catch (Exception e)
             {

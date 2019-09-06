@@ -6,10 +6,10 @@ namespace RePKG.Tests
     public class Texb3DecompilingTests : TexDecompilingTestsBase
     {
         [Test]
-        public void V3_ARGB8888_JPEG() => Test(nameof(V3_ARGB8888_JPEG));
+        public void V3_RGBA8888_JPEG() => Test(nameof(V3_RGBA8888_JPEG));
 
         [Test]
-        public void V3_ARGB8888_GIF() => Test(nameof(V3_ARGB8888_GIF),
+        public void V3_RGBA8888_GIF() => Test(nameof(V3_RGBA8888_GIF),
             validateTex: (tex, _) => Assert.IsTrue(tex.IsGif));
 
         [Test]

@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 using RePKG.Application.Texture;
 using RePKG.Core.Texture;
 using RePKG.Package;
-using RePKG.Properties;
 
 namespace RePKG.Command
 {
@@ -28,7 +27,7 @@ namespace RePKG.Command
             var texMipmapDecompressor = new TexMipmapDecompressor();
             var texMipmapReader = new TexMipmapReader(texMipmapDecompressor);
             var texMipmapContainerReader = new TexMipmapContainerReader(texMipmapReader);
-            
+
             _texReader = new TexReader(texHeaderReader, texMipmapContainerReader);
             _texJsonInfoGenerator = new TexJsonInfoGenerator();
         }
@@ -60,17 +59,17 @@ namespace RePKG.Command
                     else
                         ExtractPkgDirectory(directoryInfo);
 
-                    Console.WriteLine(Resources.Done);
+                    Console.WriteLine("Done");
                     return;
                 }
 
-                Console.WriteLine(Resources.InputNotFound);
+                Console.WriteLine("Input file not found");
                 Console.WriteLine(options.Input);
                 return;
             }
 
             ExtractFile(fileInfo);
-            Console.WriteLine(Resources.Done);
+            Console.WriteLine("Done");
         }
 
         private static string[] NormalizeExtensions(string[] array)
@@ -105,8 +104,9 @@ namespace RePKG.Command
 
                     if (tex == null)
                         continue;
-                    
-                    var filePath = Path.Combine(_options.OutputDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name));
+
+                    var filePath = Path.Combine(_options.OutputDirectory,
+                        Path.GetFileNameWithoutExtension(fileInfo.Name));
 
                     TexPreviewWriter.WriteTexture(tex, filePath, _options.Overwrite);
                     var jsonInfo = _texJsonInfoGenerator.GenerateInfo(tex);
@@ -114,7 +114,7 @@ namespace RePKG.Command
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(Resources.FailedToDecompile);
+                    Console.WriteLine("Failed to write texture");
                     Console.WriteLine(e);
                 }
             }
@@ -154,14 +154,15 @@ namespace RePKG.Command
                 ExtractPkg(fileInfo);
             else if (fileInfo.Extension.Equals(".tex", StringComparison.OrdinalIgnoreCase))
             {
+                var tex = LoadTex(File.ReadAllBytes(fileInfo.FullName), fileInfo.FullName);
+
+                if (tex == null)
+                    return;
+
                 try
                 {
-                    var tex = LoadTex(File.ReadAllBytes(fileInfo.FullName), fileInfo.FullName);
-
-                    if (tex == null)
-                        return;
-
-                    var filePath = Path.Combine(_options.OutputDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name));
+                    var filePath = Path.Combine(_options.OutputDirectory,
+                        Path.GetFileNameWithoutExtension(fileInfo.Name));
 
                     TexPreviewWriter.WriteTexture(tex, filePath, _options.Overwrite);
                     var jsonInfo = _texJsonInfoGenerator.GenerateInfo(tex);
@@ -169,17 +170,17 @@ namespace RePKG.Command
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(Resources.FailedToDecompile);
+                    Console.WriteLine($"");
                     Console.WriteLine(e);
                 }
             }
             else
-                Console.WriteLine(Resources.UnrecognizedFileExtension, fileInfo.Extension);
+                Console.WriteLine($"Unrecognized file extension: {fileInfo.Extension}");
         }
 
         private static void ExtractPkg(FileInfo file, bool appendFolderName = false, string defaultProjectName = "")
         {
-            Console.WriteLine(Resources.ExtractingPackage, file.FullName);
+            Console.WriteLine($"\r\n### Extracting package: {file.FullName}");
 
             // Load package
             var loader = new PackageLoader(true);
@@ -218,11 +219,11 @@ namespace RePKG.Command
                 var outputPath = Path.Combine(outputDirectory, file.Name);
 
                 if (!_options.Overwrite && File.Exists(outputPath))
-                    Console.WriteLine(Resources.SkippingAlreadyExists, outputPath);
+                    Console.WriteLine($"* Skipping, already exists: {outputPath}");
                 else
                 {
                     File.Copy(file.FullName, outputPath, true);
-                    Console.WriteLine(Resources.CopyingFileName, file.FullName);
+                    Console.WriteLine($"* Copying: {file.FullName}");
                 }
             }
         }
@@ -261,10 +262,10 @@ namespace RePKG.Command
             var outputPath = filePath + entry.Extension;
 
             if (!_options.Overwrite && File.Exists(outputPath))
-                Console.WriteLine(Resources.SkippingAlreadyExists, outputPath);
+                Console.WriteLine($"* Skipping, already exists: {outputPath}");
             else
             {
-                Console.WriteLine(Resources.ExtractingName, entry.FullName);
+                Console.WriteLine($"* Extracting: {entry.FullName}");
                 entry.WriteTo(outputPath);
             }
 
@@ -272,20 +273,21 @@ namespace RePKG.Command
             if (_options.NoTexDecompile || entry.Type != EntryType.Tex)
                 return;
 
+
+            var tex = LoadTex(entry.Data, entry.FullName);
+
+            if (tex == null)
+                return;
+
             try
             {
-                var tex = LoadTex(entry.Data, entry.FullName);
-
-                if (tex == null)
-                    return;
-                
                 TexPreviewWriter.WriteTexture(tex, filePath, _options.Overwrite);
                 var jsonInfo = _texJsonInfoGenerator.GenerateInfo(tex);
                 File.WriteAllText($"{filePath}.tex-json", jsonInfo);
             }
             catch (Exception e)
             {
-                Console.WriteLine(Resources.FailedToDecompile);
+                Console.WriteLine("Failed to write texture");
                 Console.WriteLine(e);
             }
         }
@@ -332,7 +334,7 @@ namespace RePKG.Command
             if (Program.Closing)
                 Environment.Exit(0);
 
-            Console.WriteLine(Resources.DecompilingName, name);
+            Console.WriteLine("* Reading: {0}", name);
 
             try
             {
@@ -340,7 +342,7 @@ namespace RePKG.Command
             }
             catch (Exception e)
             {
-                Console.WriteLine(Resources.FailedToDecompile);
+                Console.WriteLine("Failed to read texture");
                 Console.WriteLine(e);
             }
 

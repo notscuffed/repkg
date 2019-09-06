@@ -6,7 +6,6 @@ using System.Linq;
 using CommandLine;
 using Newtonsoft.Json;
 using RePKG.Package;
-using RePKG.Properties;
 
 namespace RePKG.Command
 {
@@ -36,17 +35,17 @@ namespace RePKG.Command
                     else
                         InfoPkgDirectory(directoryInfo);
 
-                    Console.WriteLine(Resources.Done);
+                    Console.WriteLine("Done");
                     return;
                 }
 
-                Console.WriteLine(Resources.InputNotFound);
+                Console.WriteLine("Input file/directory doesn't exist!");
                 Console.WriteLine(options.Input);
                 return;
             }
             
             InfoFile(fileInfo);
-            Console.WriteLine(Resources.Done);
+            Console.WriteLine("Done");
         }
 
         private static void InfoPkgDirectory(DirectoryInfo directoryInfo)
@@ -74,7 +73,7 @@ namespace RePKG.Command
             else if (file.Extension.Equals(".tex", StringComparison.OrdinalIgnoreCase))
                 InfoTex(file);
             else
-                Console.WriteLine(Resources.UnrecognizedFileExtension, file.Extension);
+                Console.WriteLine($"Unrecognized file extension: {file.Extension}");
         }
 
         [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
@@ -85,7 +84,7 @@ namespace RePKG.Command
             if (!MatchesFilter(projectInfo))
                 return;
 
-            Console.WriteLine(Resources.InfoAboutPackage, name);
+            Console.WriteLine($"\r\n### Package info: {name}");
 
             if (projectInfo != null && _projectInfoToPrint != null && _projectInfoToPrint.Length > 0)
             {
@@ -111,7 +110,7 @@ namespace RePKG.Command
 
             if (_options.PrintEntries)
             {
-                Console.WriteLine(Resources.PackageEntries);
+                Console.WriteLine("Package entries:");
 
                 var loader = new PackageLoader(false);
                 var package = loader.Load(file);

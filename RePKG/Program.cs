@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using CommandLine;
 using RePKG.Command;
-using RePKG.Properties;
 
 namespace RePKG
 {
@@ -31,13 +30,13 @@ namespace RePKG
         {
             Closing = true;
             e.Cancel = true;
-            Console.WriteLine(Resources.Terminating);
+            Console.WriteLine("Terminating...");
         }
 
         private static void InteractiveConsole()
         {
-            Console.WriteLine(@"RePKG started in interactive mode. You can now type commands");
-            Console.WriteLine(@"Type ""help"" for commands");
+            Console.WriteLine("RePKG started in interactive mode. You can now type commands");
+            Console.WriteLine("Type \"help\" for commands");
             
             string line;
 

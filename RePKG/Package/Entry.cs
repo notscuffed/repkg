@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using RePKG.Properties;
 
 namespace RePKG.Package
 {
@@ -31,14 +30,14 @@ namespace RePKG.Package
 
             if (filePath.Length > 255)
             {
-                Console.WriteLine(Resources.PathTooLong, filePath);
+                Console.WriteLine("The path exceeds 255 characters, skipping: {0}", filePath);
                 return;
             }
 
             var directoryName = Path.GetDirectoryName(filePath);
             if (directoryName == null)
             {
-                Console.WriteLine(Resources.SkippingBecauseNull, filePath, nameof(directoryName));
+                Console.WriteLine("Skipping {0} because {1} is null", filePath, nameof(directoryName));
                 return;
             }
 

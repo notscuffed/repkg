@@ -42,12 +42,6 @@ namespace RePKG
 
             while (!string.IsNullOrEmpty(line = Console.ReadLine()))
             {
-                if (line == "test")
-                {
-                    Thread.Sleep(10000);
-                    continue;
-                }
-
                 var interactiveArgs = line.SplitArguments();
 
                 Parser.Default.ParseArguments<ExtractOptions, InfoOptions>(interactiveArgs)

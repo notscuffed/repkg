@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using CommandLine;
 using Newtonsoft.Json;
-using RePKG.Package;
+using RePKG.Application.Package;
+using RePKG.Core.Package.Interfaces;
 
 namespace RePKG.Command
 {
@@ -13,6 +13,13 @@ namespace RePKG.Command
     {
         private static InfoOptions _options;
         private static string[] _projectInfoToPrint;
+
+        private static readonly IPackageReader _reader;
+
+        static Info()
+        {
+            _reader = new PackageReader();
+        }
 
         public static void Action(InfoOptions options)
         {
@@ -75,8 +82,7 @@ namespace RePKG.Command
             else
                 Console.WriteLine($"Unrecognized file extension: {file.Extension}");
         }
-
-        [SuppressMessage("ReSharper", "PossibleNullReferenceException")]
+        
         private static void InfoPkg(FileInfo file, string name)
         {
             var projectInfo = GetProjectInfo(file);
@@ -86,7 +92,9 @@ namespace RePKG.Command
 
             Console.WriteLine($"\r\n### Package info: {name}");
 
-            if (projectInfo != null && _projectInfoToPrint != null && _projectInfoToPrint.Length > 0)
+            if (projectInfo != null && 
+                _projectInfoToPrint != null &&
+                _projectInfoToPrint.Length > 0)
             {
                 IEnumerable<string> projectInfoEnumerator;
 
@@ -111,9 +119,8 @@ namespace RePKG.Command
             if (_options.PrintEntries)
             {
                 Console.WriteLine("Package entries:");
-
-                var loader = new PackageLoader(false);
-                var package = loader.Load(file);
+                
+                var package = _reader.ReadFromStream(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read));
 
                 var entries = package.Entries;
 
@@ -121,17 +128,17 @@ namespace RePKG.Command
                 {
                     if (_options.SortBy == "extension")
                         entries.Sort((a, b) =>
-                            String.Compare(a.EntryPath, b.EntryPath, StringComparison.OrdinalIgnoreCase));
+                            String.Compare(a.FullPath, b.FullPath, StringComparison.OrdinalIgnoreCase));
                     else if (_options.SortBy == "size")
                         entries.Sort((a, b) => a.Length.CompareTo(b.Length));
                     else
                         entries.Sort((a, b) =>
-                            String.Compare(a.EntryPath, b.EntryPath, StringComparison.OrdinalIgnoreCase));
+                            String.Compare(a.FullPath, b.FullPath, StringComparison.OrdinalIgnoreCase));
                 }
 
                 foreach (var entry in entries)
                 {
-                    Console.WriteLine(@"* " + entry.FullName + $@" - {entry.Length} bytes");
+                    Console.WriteLine(@"* " + entry.FullPath + $@" - {entry.Length} bytes");
                 }
             }
         }

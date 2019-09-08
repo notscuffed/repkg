@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\RePKG.Core\RePKG.Core.csproj"/>
+        <ProjectReference Include="..\RePKG.Core\RePKG.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="K4os.Compression.LZ4" Version="1.1.11"/>
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.2"/>
+        <PackageReference Include="K4os.Compression.LZ4" Version="1.1.11" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     </ItemGroup>
 </Project>

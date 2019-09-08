@@ -5,9 +5,12 @@ using System.IO;
 using System.Linq;
 using CommandLine;
 using Newtonsoft.Json;
+using RePKG.Application.Package;
 using RePKG.Application.Texture;
+using RePKG.Core.Package;
+using RePKG.Core.Package.Enums;
+using RePKG.Core.Package.Interfaces;
 using RePKG.Core.Texture;
-using RePKG.Package;
 
 namespace RePKG.Command
 {
@@ -20,6 +23,7 @@ namespace RePKG.Command
 
         private static readonly ITexReader _texReader;
         private static readonly ITexJsonInfoGenerator _texJsonInfoGenerator;
+        private static readonly IPackageReader _packageReader;
 
         static Extract()
         {
@@ -30,6 +34,8 @@ namespace RePKG.Command
 
             _texReader = new TexReader(texHeaderReader, texMipmapContainerReader);
             _texJsonInfoGenerator = new TexJsonInfoGenerator();
+            
+            _packageReader = new PackageReader();
         }
 
         public static void Action(ExtractOptions options)
@@ -183,8 +189,7 @@ namespace RePKG.Command
             Console.WriteLine($"\r\n### Extracting package: {file.FullName}");
 
             // Load package
-            var loader = new PackageLoader(true);
-            var package = loader.Load(file);
+            var package = _packageReader.ReadFromStream(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read));
 
             // Get output directory
             string outputDirectory;
@@ -228,19 +233,19 @@ namespace RePKG.Command
             }
         }
 
-        private static IEnumerable<Entry> FilterEntries(IEnumerable<Entry> entries)
+        private static IEnumerable<PackageEntry> FilterEntries(IEnumerable<PackageEntry> entries)
         {
             if (!string.IsNullOrEmpty(_options.IgnoreExts))
             {
                 return from entry in entries
-                    where !_skipExtArray.Any(s => entry.FullName.EndsWith(s, StringComparison.OrdinalIgnoreCase))
+                    where !_skipExtArray.Any(s => entry.FullPath.EndsWith(s, StringComparison.OrdinalIgnoreCase))
                     select entry;
             }
 
             if (!string.IsNullOrEmpty(_options.OnlyExts))
             {
                 return from entry in entries
-                    where _onlyExtArray.Any(s => entry.FullName.EndsWith(s, StringComparison.OrdinalIgnoreCase))
+                    where _onlyExtArray.Any(s => entry.FullPath.EndsWith(s, StringComparison.OrdinalIgnoreCase))
                     select entry;
             }
 
@@ -248,25 +253,27 @@ namespace RePKG.Command
         }
 
         [SuppressMessage("ReSharper", "AssignNullToNotNullAttribute")]
-        private static void ExtractEntry(Entry entry, ref string outputDirectory)
+        private static void ExtractEntry(PackageEntry entry, ref string outputDirectory)
         {
             if (Program.Closing)
                 Environment.Exit(0);
 
             // save raw
-            var filePath = _options.SingleDir
+            var filePathWithoutExtension = _options.SingleDir
                 ? Path.Combine(outputDirectory, entry.Name)
-                : Path.Combine(outputDirectory, entry.EntryPath, entry.Name);
+                : Path.Combine(outputDirectory, entry.DirectoryPath, entry.Name);
 
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-            var outputPath = filePath + entry.Extension;
+            var filePath = filePathWithoutExtension + entry.Extension;
+            
+            Directory.CreateDirectory(Path.GetDirectoryName(filePathWithoutExtension));
 
-            if (!_options.Overwrite && File.Exists(outputPath))
-                Console.WriteLine($"* Skipping, already exists: {outputPath}");
+            if (!_options.Overwrite && File.Exists(filePath))
+                Console.WriteLine($"* Skipping, already exists: {filePath}");
             else
             {
-                Console.WriteLine($"* Extracting: {entry.FullName}");
-                entry.WriteTo(outputPath);
+                Console.WriteLine($"* Extracting: {entry.FullPath}");
+                
+                File.WriteAllBytes(filePath, entry.Bytes);
             }
 
             // decompile and save
@@ -274,16 +281,16 @@ namespace RePKG.Command
                 return;
 
 
-            var tex = LoadTex(entry.Data, entry.FullName);
+            var tex = LoadTex(entry.Bytes, entry.FullPath);
 
             if (tex == null)
                 return;
 
             try
             {
-                TexPreviewWriter.WriteTexture(tex, filePath, _options.Overwrite);
+                TexPreviewWriter.WriteTexture(tex, filePathWithoutExtension, _options.Overwrite);
                 var jsonInfo = _texJsonInfoGenerator.GenerateInfo(tex);
-                File.WriteAllText($"{filePath}.tex-json", jsonInfo);
+                File.WriteAllText($"{filePathWithoutExtension}.tex-json", jsonInfo);
             }
             catch (Exception e)
             {

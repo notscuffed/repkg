@@ -9,7 +9,7 @@ namespace RePKG.Core.Texture
         public TexHeader Header { get; set; }
         public TexMipmapContainer MipmapsContainer { get; set; }
         
-        public bool IsGif => (Header?.Flags & TexFlags.IsGif).GetValueOrDefault() == TexFlags.IsGif;
+        public bool IsGif => HasFlag(TexFlags.IsGif);
         public TexMipmap FirstMipmap => MipmapsContainer?.Mipmaps.FirstOrDefault();
         
         public bool HasFlag(TexFlags flag)

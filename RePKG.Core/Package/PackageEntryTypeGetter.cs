@@ -14,7 +14,7 @@ namespace RePKG.Core.Package
 
             switch (extension.ToLower())
             {
-                case "tex":
+                case ".tex":
                     return EntryType.Tex;
 
                 default:

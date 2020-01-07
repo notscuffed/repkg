@@ -24,6 +24,8 @@ namespace RePKG.Application
         
         public static string ReadStringI32Size(this BinaryReader reader, int maxLength = -1)
         {
+            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            
             var size = reader.ReadInt32();
 
             if (maxLength > -1)
@@ -35,6 +37,15 @@ namespace RePKG.Application
             var bytes = reader.ReadBytes(size);
 
             return Encoding.UTF8.GetString(bytes);
+        }
+        
+        public static void WriteStringI32Size(this BinaryWriter writer, string input)
+        {
+            if (writer == null) throw new ArgumentNullException(nameof(writer));
+            if (input == null) throw new ArgumentNullException(nameof(input));
+            
+            writer.Write(input.Length);
+            writer.Write(Encoding.UTF8.GetBytes(input));
         }
 
         /// <summary>

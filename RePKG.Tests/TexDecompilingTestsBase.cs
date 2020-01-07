@@ -17,9 +17,7 @@ namespace RePKG.Tests
         [SetUp]
         protected void SetUp()
         {
-            BasePath =
-                AppContext.BaseDirectory.Split(new[] {"RePKG.Tests"}, StringSplitOptions.RemoveEmptyEntries)[0] +
-                "RePKG.Tests";
+            BasePath = TestHelper.BasePath;
 
             Directory.CreateDirectory($"{BasePath}\\{OutputDirectoryName}\\");
             Directory.CreateDirectory($"{BasePath}\\{ValidatedDirectoryName}\\");
@@ -78,25 +76,18 @@ namespace RePKG.Tests
             var validatedBytes = File.ReadAllBytes($"{BasePath}\\{ValidatedDirectoryName}\\{name}.bytes");
 
             Assert.AreEqual(bytes.Length, validatedBytes.Length);
-
-            var areEqual = true;
-            var index = 0;
-
+            
             for (var i = 0; i < validatedBytes.Length; i++)
             {
-                if (validatedBytes[i] != bytes[i])
-                {
-                    areEqual = false;
-                    index = i;
-                    break;
-                }
-            }
-
-            if (!areEqual)
+                if (validatedBytes[i] == bytes[i])
+                    continue;
+                
                 throw new Exception(
-                    $"Decompiled tex bytes are not the same at index: {index}\r\n" +
-                    $"Expected: {validatedBytes[index]}\r\n" +
-                    $"Actual: {bytes[index]}");
+                    $"Decompiled tex bytes are not the same at index: {i}\r\n" +
+                    $"Expected: {validatedBytes[i]}\r\n" +
+                    $"Actual: {bytes[i]}");
+            }
+            
         }
     }
 }

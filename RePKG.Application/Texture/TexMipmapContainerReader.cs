@@ -13,7 +13,7 @@ namespace RePKG.Application.Texture
         {
             _texMipmapReader = texMipmapReader;
         }
-        
+
         public TexMipmapContainer ReadFromStream(Stream stream)
         {
             using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
@@ -21,25 +21,25 @@ namespace RePKG.Application.Texture
                 var magic = reader.ReadNString(16);
 
                 TexMipmapContainer container;
-                
+
                 switch (magic)
                 {
-                    case "TEXB0003":
-                        container = ReadV3(reader);
+                    case "TEXB0001":
+                        container = ReadV1(reader);
                         break;
 
                     case "TEXB0002":
                         container = ReadV2(reader);
                         break;
 
-                    case "TEXB0001":
-                        container = ReadV1(reader);
+                    case "TEXB0003":
+                        container = ReadV3(reader);
                         break;
 
                     default:
                         throw new UnknownTexMipmapContainerMagicException(magic);
                 }
-                
+
                 container.ImageFormat.AssertValid();
 
                 return container;
@@ -54,8 +54,8 @@ namespace RePKG.Application.Texture
                 tex.MipmapsContainer.Mipmaps.Add(mipmap);
             }
         }
-        
-        private TexMipmapContainer ReadV1(BinaryReader reader)
+
+        private static TexMipmapContainer ReadV1(BinaryReader reader)
         {
             return new TexMipmapContainer
             {
@@ -66,7 +66,7 @@ namespace RePKG.Application.Texture
             };
         }
 
-        private TexMipmapContainer ReadV2(BinaryReader reader)
+        private static TexMipmapContainer ReadV2(BinaryReader reader)
         {
             return new TexMipmapContainer
             {
@@ -77,7 +77,7 @@ namespace RePKG.Application.Texture
             };
         }
 
-        private TexMipmapContainer ReadV3(BinaryReader reader)
+        private static TexMipmapContainer ReadV3(BinaryReader reader)
         {
             return new TexMipmapContainer
             {

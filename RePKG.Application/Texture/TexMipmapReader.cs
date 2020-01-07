@@ -40,7 +40,7 @@ namespace RePKG.Application.Texture
                             Width = reader.ReadInt32(),
                             Height = reader.ReadInt32(),
                             IsLZ4Compressed = reader.ReadInt32() == 1,
-                            PixelCount = reader.ReadInt32(),
+                            DecompressedBytesCount = reader.ReadInt32(),
                             BytesCount = reader.ReadInt32()
                         };
                         break;

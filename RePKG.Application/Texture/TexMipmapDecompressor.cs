@@ -9,7 +9,7 @@ namespace RePKG.Application.Texture
         {
             if (mipmap.IsLZ4Compressed)
             {
-                mipmap.Bytes = Lz4Decompress(mipmap.Bytes, mipmap.PixelCount);
+                mipmap.Bytes = Lz4Decompress(mipmap.Bytes, mipmap.DecompressedBytesCount);
                 mipmap.IsLZ4Compressed = false;
             }
 

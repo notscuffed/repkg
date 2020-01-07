@@ -8,19 +8,16 @@ namespace RePKG.Tests
 {
     public class TexDecompressingTests
     {
-        protected const string ValidatedDirectoryName = "TestTexturesValidated";
-        protected const string OutputDirectoryName = "Output";
-        protected const string InputDirectoryName = "TestTextures";
-        protected string BasePath;
+        public const string ValidatedDirectoryName = "TestTexturesValidated";
+        public const string OutputDirectoryName = "Output";
+        public const string InputDirectoryName = "TestTextures";
         protected TexReader _reader;
 
         [SetUp]
-        protected void SetUp()
+        public void SetUp()
         {
-            BasePath = TestHelper.BasePath;
-
-            Directory.CreateDirectory($"{BasePath}\\{OutputDirectoryName}\\");
-            Directory.CreateDirectory($"{BasePath}\\{ValidatedDirectoryName}\\");
+            Directory.CreateDirectory($"{TestHelper.BasePath}\\{OutputDirectoryName}\\");
+            Directory.CreateDirectory($"{TestHelper.BasePath}\\{ValidatedDirectoryName}\\");
 
             var headerReader = new TexHeaderReader();
             var mipmapDecompressor = new TexMipmapDecompressor();
@@ -63,22 +60,22 @@ namespace RePKG.Tests
             else
             {
                 SaveValidatedBytes(bytes, name);
-                TexPreviewWriter.WriteTexture(texture, $"{BasePath}\\{OutputDirectoryName}\\{name}");
+                TexPreviewWriter.WriteTexture(texture, $"{TestHelper.BasePath}\\{OutputDirectoryName}\\{name}");
             }
         }
 
-        private Stream LoadTestFile(string name)
+        public static Stream LoadTestFile(string name)
         {
             return File.Open(
-                $"{BasePath}\\{InputDirectoryName}\\{name}.tex",
+                $"{TestHelper.BasePath}\\{InputDirectoryName}\\{name}.tex",
                 FileMode.Open,
                 FileAccess.Read,
                 FileShare.Read);
         }
 
-        private void SaveValidatedBytes(byte[] bytes, string name)
+        public static void SaveValidatedBytes(byte[] bytes, string name)
         {
-            using (var stream = File.Open($"{BasePath}\\{ValidatedDirectoryName}\\{name}.bytes",
+            using (var stream = File.Open($"{TestHelper.BasePath}\\{ValidatedDirectoryName}\\{name}.bytes",
                 FileMode.Create,
                 FileAccess.Write,
                 FileShare.Read))
@@ -88,9 +85,9 @@ namespace RePKG.Tests
             }
         }
 
-        private void ValidateBytes(byte[] bytes, string name)
+        public static void ValidateBytes(byte[] bytes, string name)
         {
-            var validatedBytes = File.ReadAllBytes($"{BasePath}\\{ValidatedDirectoryName}\\{name}.bytes");
+            var validatedBytes = File.ReadAllBytes($"{TestHelper.BasePath}\\{ValidatedDirectoryName}\\{name}.bytes");
 
             Assert.AreEqual(bytes.Length, validatedBytes.Length);
 
@@ -100,7 +97,7 @@ namespace RePKG.Tests
                     continue;
 
                 throw new Exception(
-                    $"Decompiled tex bytes are not the same at index: {i}\r\n" +
+                    $"Decompresssed tex bytes are not the same at index: {i}\r\n" +
                     $"Expected: {validatedBytes[i]}\r\n" +
                     $"Actual: {bytes[i]}");
             }

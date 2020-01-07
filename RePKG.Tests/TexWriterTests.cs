@@ -1,56 +1,78 @@
+using System;
 using System.IO;
-using System.Text;
 using NUnit.Framework;
-using RePKG.Application;
-using RePKG.Application.Package;
-using RePKG.Core.Package;
-using RePKG.Core.Package.Interfaces;
+using RePKG.Application.Texture;
 
 namespace RePKG.Tests
 {
-    [TestFixture]
     public class TexWriterTests
     {
-        [Test]
-        public void TestWriteAndRead()
+        private TexReader _reader;
+        private TexWriter _writer;
+        
+        [SetUp]
+        public void Setup()
         {
-            var package = new Package {Magic = "PKGV0005"};
+            var headerReader = new TexHeaderReader();
+            var mipmapDecompressor = new TexMipmapDecompressor();
+            var mipmapReader = new TexMipmapReader(mipmapDecompressor);
+            var containerReader = new TexMipmapContainerReader(mipmapReader);
+
+            mipmapReader.DecompressMipmapBytes = false;
+            mipmapReader.ReadMipmapBytes = true;
             
-            package.Entries.Add(new PackageEntry
-            {
-                Bytes = Encoding.ASCII.GetBytes("Hello world!"),
-                FullPath = "hello_world.txt",
-            });
+            _reader = new TexReader(headerReader, containerReader);
+
+            var headerWriter = new TexHeaderWriter();
+            var mipmapWriter = new TexMipmapWriter();
+            var containerWriter = new TexMipmapContainerWriter(mipmapWriter);
+            _writer = new TexWriter(headerWriter, containerWriter);
+        }
+        
+        
+        [Test]
+        [TestCase("V1_DXT5")]
+        [TestCase("V1_RGBA8888")]
+        [TestCase("V2_DXT5")]
+        [TestCase("V2_RGBA8888")]
+        [TestCase("V2_R8")]
+        [TestCase("V2_RG88")]
+        [TestCase("V2_RGBA8888N")]
+        [TestCase("V3_RGBA8888_JPEG")]
+        [TestCase("V3_RGBA8888_GIF")]
+        [TestCase("V3_DXT1")]
+        [TestCase("V3_DXT3")]
+        [TestCase("V3_DXT5")]
+        public void TestWriteAndRead(string name)
+        {
+            // Load file
+            var file = TexDecompressingTests.LoadTestFile(name);
+            var inputBytes = new byte[file.Length];
+            var bytesRead = file.Read(inputBytes, 0, (int) file.Length);
+            Assert.AreEqual(file.Length, bytesRead, "Failed to read input file");
+            file.Close();
             
-            package.Entries.Add(new PackageEntry
-            {
-                Bytes = Encoding.ASCII.GetBytes("Test"),
-                FullPath = "test.txt",
-            });
+            // Read tex
+            var memoryStream = new MemoryStream(inputBytes);
+            var tex = _reader.ReadFromStream(memoryStream);
 
-            // Write
-            IPackageWriter writer = new PackageWriter();
-            var stream = new MemoryStream();
-            writer.WriteToStream(package, stream);
-
-            // Read
-            stream.Position = 0;
-            var packageReader = new PackageReader {ReadEntryBytes = true};
-            var readPackage = packageReader.ReadFromStream(stream);
-
+            // Write tex
+            var outputMemoryStream = new MemoryStream(inputBytes.Length);
+            _writer.WriteToStream(tex, outputMemoryStream);
+            var outputBytes = outputMemoryStream.ToArray();
+            
             // Verify
-            Assert.AreEqual(package.Magic, readPackage.Magic);
-            Assert.AreEqual(package.Entries.Count, readPackage.Entries.Count);
-
-            for (var i = 0; i < package.Entries.Count; i++)
+            Assert.AreEqual(inputBytes.Length, outputBytes.Length, "Written tex size doesn't match input size");
+            
+            for (var i = 0; i < inputBytes.Length; i++)
             {
-                var entry = package.Entries[i];
-                var readEntry = readPackage.Entries[i];
-                
-                Assert.AreEqual(entry.Bytes, readEntry.Bytes);
-                Assert.AreEqual(entry.Extension, readEntry.Extension);
-                Assert.AreEqual(entry.Length, readEntry.Length);
-                Assert.AreEqual(entry.Offset, readEntry.Offset);
+                if (inputBytes[i] == outputBytes[i])
+                    continue;
+
+                throw new Exception(
+                    $"Rewritten tex bytes are not the same at index: {i}\r\n" +
+                    $"Expected: {inputBytes[i]}\r\n" +
+                    $"Actual: {outputBytes[i]}");
             }
         }
     }

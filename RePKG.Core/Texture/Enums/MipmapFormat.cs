@@ -35,6 +35,7 @@ namespace RePKG.Core.Texture
         /// <summary>
         /// Windows or OS/2 Bitmap File (*.BMP)
         /// </summary>
+        /// Keep '= 1000' because MipmapFormatExtensions.IsImage uses this to check if format is an image format
         ImageBMP = 1000,
 
         /// <summary>

@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <RootNamespace>RePKG</RootNamespace>
         <OutputType>Exe</OutputType>
         <TargetFramework>net472</TargetFramework>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
         <Version>0.2.0</Version>
-        <Copyright>Copyright © NotScuffed 2019</Copyright>
+        <Copyright>Copyright © NotScuffed 2020</Copyright>
     </PropertyGroup>
     
     <ItemGroup>
@@ -20,8 +20,10 @@
     <ItemGroup>
       <Reference Include="Microsoft.CSharp" />
     </ItemGroup>
-    
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="if $(ConfigurationName) == Release ( ilrepack /out:&quot;$(TargetDir)output.exe&quot; /wildcards /parallel &quot;$(TargetPath)&quot; &quot;$(TargetDir)*.dll&quot; )" />
-    </Target>
+
+    <ItemGroup>
+        <None Include="$(ProjectDir)/../Licenses.txt"
+              CopyToOutputDirectory="PreserveNewest"
+              CopyToPublishDirectory="PreserveNewest"/>
+    </ItemGroup>
 </Project>

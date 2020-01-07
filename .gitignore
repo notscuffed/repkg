@@ -1,12 +1,9 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/packages
-/**/.vs
-/**/.idea
-/**/obj
-/**/bin
-/RePKG.Tests/Output/*
-/RePKG.Tests/TestTextures/*
-/RePKG.Tests/TestTexturesValidated/*
+﻿packages
+.vs
+.idea
+obj
+bin
+Publish
+RePKG.Tests/Output/*
+RePKG.Tests/TestTextures/*
+RePKG.Tests/TestTexturesValidated/*

@@ -2,6 +2,6 @@
     <PropertyGroup>
         <TargetFramework>net472</TargetFramework>
         <Version>0.2.0</Version>
-        <Copyright>Copyright © NotScuffed 2019</Copyright>
+        <Copyright>Copyright © NotScuffed 2020</Copyright>
     </PropertyGroup>
 </Project>

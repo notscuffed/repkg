@@ -6,7 +6,7 @@ using RePKG.Core.Texture;
 
 namespace RePKG.Tests
 {
-    public class TexDecompilingTestsBase
+    public class TexDecompressingTests
     {
         protected const string ValidatedDirectoryName = "TestTexturesValidated";
         protected const string OutputDirectoryName = "Output";
@@ -30,14 +30,31 @@ namespace RePKG.Tests
             _reader = new TexReader(headerReader, containerReader);
         }
 
-        protected void Test(string name, bool validateBytes = true, Action<Tex, byte[]> validateTex = null)
+        [Test]
+        [TestCase("V1_DXT5", true, null)]
+        [TestCase("V1_RGBA8888", true, null)]
+        [TestCase("V2_DXT5", true, null)]
+        [TestCase("V2_RGBA8888", true, null)]
+        [TestCase("V2_R8", true, null)]
+        [TestCase("V2_RG88", true, null)]
+        [TestCase("V2_RGBA8888N", true, null)]
+        [TestCase("V3_RGBA8888_JPEG", true, null)]
+        [TestCase("V3_RGBA8888_GIF", true, TexFlags.IsGif)]
+        [TestCase("V3_DXT1", true, null)]
+        [TestCase("V3_DXT3", true, null)]
+        [TestCase("V3_DXT5", true, null)]
+        public void TestTexDecompressing(
+            string name,
+            bool validateBytes = true,
+            TexFlags? validateFlags = TexFlags.None)
         {
             var texture = _reader.ReadFromStream(LoadTestFile(name));
 
             var firstMipmap = texture.FirstMipmap;
             var bytes = firstMipmap.Bytes;
 
-            validateTex?.Invoke(texture, bytes);
+            if (validateFlags.HasValue)
+                Assert.IsTrue(texture.Header.Flags.HasFlag(validateFlags));
 
             if (validateBytes)
             {
@@ -50,7 +67,7 @@ namespace RePKG.Tests
             }
         }
 
-        protected Stream LoadTestFile(string name)
+        private Stream LoadTestFile(string name)
         {
             return File.Open(
                 $"{BasePath}\\{InputDirectoryName}\\{name}.tex",
@@ -59,7 +76,7 @@ namespace RePKG.Tests
                 FileShare.Read);
         }
 
-        protected void SaveValidatedBytes(byte[] bytes, string name)
+        private void SaveValidatedBytes(byte[] bytes, string name)
         {
             using (var stream = File.Open($"{BasePath}\\{ValidatedDirectoryName}\\{name}.bytes",
                 FileMode.Create,
@@ -71,23 +88,22 @@ namespace RePKG.Tests
             }
         }
 
-        protected void ValidateBytes(byte[] bytes, string name)
+        private void ValidateBytes(byte[] bytes, string name)
         {
             var validatedBytes = File.ReadAllBytes($"{BasePath}\\{ValidatedDirectoryName}\\{name}.bytes");
 
             Assert.AreEqual(bytes.Length, validatedBytes.Length);
-            
+
             for (var i = 0; i < validatedBytes.Length; i++)
             {
                 if (validatedBytes[i] == bytes[i])
                     continue;
-                
+
                 throw new Exception(
                     $"Decompiled tex bytes are not the same at index: {i}\r\n" +
                     $"Expected: {validatedBytes[i]}\r\n" +
                     $"Actual: {bytes[i]}");
             }
-            
         }
     }
 }

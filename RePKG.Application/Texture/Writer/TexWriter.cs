@@ -8,14 +8,14 @@ namespace RePKG.Application.Texture
     public class TexWriter : ITexWriter
     {
         private readonly ITexHeaderWriter _texHeaderWriter;
-        private readonly ITexMipmapContainerWriter _texMipmapContainerWriter;
+        private readonly ITexImageContainerWriter _texImageContainerWriter;
 
         public TexWriter(
             ITexHeaderWriter texHeaderWriter,
-            ITexMipmapContainerWriter texMipmapContainerWriter)
+            ITexImageContainerWriter texImageContainerWriter)
         {
             _texHeaderWriter = texHeaderWriter;
-            _texMipmapContainerWriter = texMipmapContainerWriter;
+            _texImageContainerWriter = texImageContainerWriter;
         }
 
         public void WriteToStream(Tex tex, Stream stream)
@@ -33,9 +33,9 @@ namespace RePKG.Application.Texture
             }
             
             _texHeaderWriter.WriteToStream(tex.Header, stream);
-            _texMipmapContainerWriter.WriteToStream(tex.MipmapsContainer, stream);
+            _texImageContainerWriter.WriteToStream(tex.ImagesContainer, stream);
             
-            _texMipmapContainerWriter.WriteMipmapsToStream(tex, stream);
+            _texImageContainerWriter.WriteImagesToStream(tex, stream);
         }
     }
 }

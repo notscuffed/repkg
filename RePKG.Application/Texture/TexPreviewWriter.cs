@@ -9,7 +9,7 @@ namespace RePKG.Application.Texture
     {
         public static void WriteTexture(Tex texture, string fileNameWithoutExtension, bool overwrite = true)
         {
-            var mipmap = texture.FirstMipmap;
+            var mipmap = texture.FirstImage.FirstMipmap;
             var outputBytes = mipmap.Bytes;
 
             var extension = "png";

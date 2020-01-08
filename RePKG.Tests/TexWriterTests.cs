@@ -15,8 +15,8 @@ namespace RePKG.Tests
         {
             var headerReader = new TexHeaderReader();
             var mipmapDecompressor = new TexMipmapDecompressor();
-            var mipmapReader = new TexMipmapReader(mipmapDecompressor);
-            var containerReader = new TexMipmapContainerReader(mipmapReader);
+            var mipmapReader = new TexImageReader(mipmapDecompressor);
+            var containerReader = new TexImageContainerReader(mipmapReader);
             var frameInfoReader = new TexFrameInfoReader();
 
             mipmapReader.DecompressMipmapBytes = false;
@@ -25,8 +25,8 @@ namespace RePKG.Tests
             _reader = new TexReader(headerReader, containerReader, frameInfoReader);
 
             var headerWriter = new TexHeaderWriter();
-            var mipmapWriter = new TexMipmapWriter();
-            var containerWriter = new TexMipmapContainerWriter(mipmapWriter);
+            var mipmapWriter = new TexImageWriter();
+            var containerWriter = new TexImageContainerWriter(mipmapWriter);
             _writer = new TexWriter(headerWriter, containerWriter);
         }
         

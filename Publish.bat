@@ -7,11 +7,12 @@ SET outputDirectory=%~dp0\Publish
 del %outputDirectory%\RePKG.zip
 msbuild /p:OutputPath="%outputDirectory%" /p:Configuration=Release RePKG
 
-ilrepack /out:"%outputDirectory%\output.exe" /wildcards /parallel "%outputDirectory%\RePKG.exe" "%outputDirectory%\*.dll"
-del %outputDirectory%\RePKG.exe
-move %outputDirectory%\output.exe %outputDirectory%\RePKG.exe
+move %outputDirectory%\RePKG.exe %outputDirectory%\input.exe
+ilrepack /out:"%outputDirectory%\RePKG.exe" /wildcards /parallel "%outputDirectory%\input.exe" "%outputDirectory%\*.dll"
+del %outputDirectory%\input.exe
 del %outputDirectory%\*.dll
 del %outputDirectory%\*.pdb
 del %outputDirectory%\*.config
+del %outputDirectory%\*.json
 cd %outputDirectory%
 7z a -tzip RePKG.zip *

@@ -92,9 +92,7 @@ namespace RePKG.Command
 
             Console.WriteLine($"\r\n### Package info: {name}");
 
-            if (projectInfo != null && 
-                _projectInfoToPrint != null &&
-                _projectInfoToPrint.Length > 0)
+            if (projectInfo != null && _projectInfoToPrint?.Length > 0)
             {
                 IEnumerable<string> projectInfoEnumerator;
 
@@ -177,7 +175,7 @@ namespace RePKG.Command
         }
     }
 
-    [Verb("info", HelpText = "Show info about PKG/TEX")]
+    [Verb("info", HelpText = "Dumps PKG/TEX info.")]
     public class InfoOptions
     {
         [Value(0, Required = true, HelpText = "Path to file which you want to get info about", MetaName = "Input file")]
@@ -189,10 +187,10 @@ namespace RePKG.Command
         [Option('b', "sortby", HelpText = "Sort by ... (available options: name, extension, size)", Default = "name")]
         public string SortBy { get; set; }
 
-        [Option('t', "tex", HelpText = "Get info about all tex files from specified directory in input")]
+        [Option('t', "tex", HelpText = "Dump info about all tex files from specified directory")]
         public bool TexDirectory { get; set; }
 
-        [Option('p', "projectinfo", HelpText = "Select info from project.json to print (delimit using comma)")]
+        [Option('p', "projectinfo", HelpText = "Keys to dump from project.json (delimit using comma) (* for all)")]
         public string ProjectInfo { get; set; }
 
         [Option('e', "printentries", HelpText = "Print entries in packages")]

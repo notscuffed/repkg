@@ -31,8 +31,9 @@ namespace RePKG.Command
             var texMipmapDecompressor = new TexMipmapDecompressor();
             var texMipmapReader = new TexMipmapReader(texMipmapDecompressor);
             var texMipmapContainerReader = new TexMipmapContainerReader(texMipmapReader);
+            var texFrameInfoReader = new TexFrameInfoReader();
 
-            _texReader = new TexReader(texHeaderReader, texMipmapContainerReader);
+            _texReader = new TexReader(texHeaderReader, texMipmapContainerReader, texFrameInfoReader);
             _texJsonInfoGenerator = new TexJsonInfoGenerator();
             
             _packageReader = new PackageReader();

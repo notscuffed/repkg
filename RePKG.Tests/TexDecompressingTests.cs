@@ -23,8 +23,9 @@ namespace RePKG.Tests
             var mipmapDecompressor = new TexMipmapDecompressor();
             var mipmapReader = new TexMipmapReader(mipmapDecompressor);
             var containerReader = new TexMipmapContainerReader(mipmapReader);
+            var frameInfoReader = new TexFrameInfoReader();
 
-            _reader = new TexReader(headerReader, containerReader);
+            _reader = new TexReader(headerReader, containerReader, frameInfoReader);
         }
 
         [Test]
@@ -36,10 +37,10 @@ namespace RePKG.Tests
         [TestCase("V2_RG88", true, null)]
         [TestCase("V2_RGBA8888N", true, null)]
         [TestCase("V3_RGBA8888_JPEG", true, null)]
-        [TestCase("V3_RGBA8888_GIF", true, TexFlags.IsGif)]
         [TestCase("V3_DXT1", true, null)]
         [TestCase("V3_DXT3", true, null)]
         [TestCase("V3_DXT5", true, null)]
+        [TestCase("V3_RGBA8888_GIF_TEXS0003", true, TexFlags.IsGif)]
         public void TestTexDecompressing(
             string name,
             bool validateBytes = true,

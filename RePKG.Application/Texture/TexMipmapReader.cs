@@ -43,6 +43,7 @@ namespace RePKG.Application.Texture
                             DecompressedBytesCount = reader.ReadInt32(),
                             BytesCount = reader.ReadInt32()
                         };
+
                         break;
                     default:
                         throw new NotImplementedException($"Tex mipmap container version: {version} is not supported!");
@@ -51,6 +52,9 @@ namespace RePKG.Application.Texture
                 mipmap.Format = TexMipmapFormatGetter.GetFormatForTex(tex);
 
                 ReadBytes(reader, mipmap);
+                
+                if (tex.IsGif)
+                    mipmap.Unk0 = reader.ReadInt32();
 
                 return mipmap;
             }

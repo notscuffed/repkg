@@ -10,5 +10,6 @@ namespace RePKG.Core.Texture
         public int BytesCount { get; set; }
         public bool IsLZ4Compressed { get; set; }
         public bool IsImage => Format.IsImage();
+        public int? Unk0 { get; set; }
     }
 }

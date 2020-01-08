@@ -17,11 +17,12 @@ namespace RePKG.Tests
             var mipmapDecompressor = new TexMipmapDecompressor();
             var mipmapReader = new TexMipmapReader(mipmapDecompressor);
             var containerReader = new TexMipmapContainerReader(mipmapReader);
+            var frameInfoReader = new TexFrameInfoReader();
 
             mipmapReader.DecompressMipmapBytes = false;
             mipmapReader.ReadMipmapBytes = true;
             
-            _reader = new TexReader(headerReader, containerReader);
+            _reader = new TexReader(headerReader, containerReader, frameInfoReader);
 
             var headerWriter = new TexHeaderWriter();
             var mipmapWriter = new TexMipmapWriter();
@@ -39,10 +40,10 @@ namespace RePKG.Tests
         [TestCase("V2_RG88")]
         [TestCase("V2_RGBA8888N")]
         [TestCase("V3_RGBA8888_JPEG")]
-        [TestCase("V3_RGBA8888_GIF")]
         [TestCase("V3_DXT1")]
         [TestCase("V3_DXT3")]
         [TestCase("V3_DXT5")]
+        [TestCase("V3_RGBA8888_GIF_TEXS0003")]
         public void TestWriteAndRead(string name)
         {
             // Load file

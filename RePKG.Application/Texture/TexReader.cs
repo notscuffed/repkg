@@ -9,14 +9,16 @@ namespace RePKG.Application.Texture
     {
         private readonly ITexHeaderReader _texHeaderReader;
         private readonly ITexMipmapContainerReader _texMipmapContainerReader;
+        private readonly ITexFrameInfoReader _texFrameInfoReader;
 
         public TexReader(
             ITexHeaderReader texHeaderReader,
-            ITexMipmapContainerReader texMipmapContainerReader
-        )
+            ITexMipmapContainerReader texMipmapContainerReader,
+            ITexFrameInfoReader texFrameInfoReader)
         {
             _texHeaderReader = texHeaderReader;
             _texMipmapContainerReader = texMipmapContainerReader;
+            _texFrameInfoReader = texFrameInfoReader;
         }
 
         public Tex ReadFromStream(Stream stream)
@@ -37,7 +39,10 @@ namespace RePKG.Application.Texture
                 tex.MipmapsContainer = _texMipmapContainerReader.ReadFromStream(stream);
 
                 _texMipmapContainerReader.ReadMipmapsFromStream(stream, tex);
-                
+
+                if (tex.IsGif)
+                    _texFrameInfoReader.ReadFromStream(stream);
+
                 return tex;
             }
         }

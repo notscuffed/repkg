@@ -48,7 +48,12 @@ namespace RePKG.Application.Texture
 
         public void ReadMipmapsFromStream(Stream stream, Tex tex)
         {
-            for (var i = 0; i < tex.MipmapsContainer.MipmapCount; i++)
+            var mipmapCount = tex.MipmapsContainer.MipmapCount;
+
+            if (tex.IsGif)
+                mipmapCount = tex.MipmapsContainer.UnkIntCont0;
+
+            for (var i = 0; i < mipmapCount; i++)
             {
                 var mipmap = _texMipmapReader.ReadFromStream(stream, tex);
                 tex.MipmapsContainer.Mipmaps.Add(mipmap);

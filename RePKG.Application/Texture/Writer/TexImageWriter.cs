@@ -1,20 +1,19 @@
 using System;
 using System.IO;
-using System.Text;
 using RePKG.Core.Texture;
 
 namespace RePKG.Application.Texture
 {
     public class TexImageWriter : ITexImageWriter
     {
-        public void WriteToStream(Tex tex, TexImage image, Stream stream)
+        public void WriteTo(BinaryWriter writer, Tex tex, TexImage image)
         {
+            if (writer == null) throw new ArgumentNullException(nameof(writer));
             if (tex == null) throw new ArgumentNullException(nameof(tex));
             if (image == null) throw new ArgumentNullException(nameof(image));
-            if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-            Action<BinaryWriter, TexMipmap> mipmapWriter; 
-            
+            Action<BinaryWriter, TexMipmap> mipmapWriter;
+
             switch (tex.ImagesContainer.ImageContainerVersion)
             {
                 case TexImageContainerVersion.Version1:
@@ -28,14 +27,11 @@ namespace RePKG.Application.Texture
                     throw new ArgumentOutOfRangeException();
             }
             
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
+            writer.Write(image.Mipmaps.Length);
+
+            foreach (var mipmap in image.Mipmaps)
             {
-                writer.Write(image.Mipmaps.Length);
-                
-                foreach (var mipmap in image.Mipmaps)
-                {
-                    mipmapWriter(writer, mipmap);
-                }
+                mipmapWriter(writer, mipmap);
             }
         }
 

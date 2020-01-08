@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text;
 using RePKG.Application.Exceptions;
 using RePKG.Core.Texture;
 
@@ -8,29 +7,26 @@ namespace RePKG.Application.Texture
 {
     public class TexFrameInfoContainerWriter : ITexFrameInfoContainerWriter
     {
-        public void WriteToStream(TexFrameInfoContainer frameInfoContainer, Stream stream)
+        public void WriteTo(BinaryWriter writer, TexFrameInfoContainer frameInfoContainer)
         {
+            if (writer == null) throw new ArgumentNullException(nameof(writer));
             if (frameInfoContainer == null) throw new ArgumentNullException(nameof(frameInfoContainer));
-            if (stream == null) throw new ArgumentNullException(nameof(stream));
 
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
+            writer.WriteNString(frameInfoContainer.Magic);
+            writer.Write(frameInfoContainer.Frames.Length);
+
+            switch (frameInfoContainer.Magic)
             {
-                writer.WriteNString(frameInfoContainer.Magic);
-                writer.Write(frameInfoContainer.Frames.Length);
-                
-                switch (frameInfoContainer.Magic)
-                {
-                    case "TEXS0002":
-                        WriteV2(frameInfoContainer, writer);
-                        break;
+                case "TEXS0002":
+                    WriteV2(frameInfoContainer, writer);
+                    break;
 
-                    case "TEXS0003":
-                        WriteV3(frameInfoContainer, writer);
-                        break;
+                case "TEXS0003":
+                    WriteV3(frameInfoContainer, writer);
+                    break;
 
-                    default:
-                        throw new UnknownTexFrameInfoContainerMagicException(frameInfoContainer.Magic);
-                }
+                default:
+                    throw new UnknownTexFrameInfoContainerMagicException(frameInfoContainer.Magic);
             }
         }
 

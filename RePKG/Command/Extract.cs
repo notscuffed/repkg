@@ -278,10 +278,9 @@ namespace RePKG.Command
                 File.WriteAllBytes(filePath, entry.Bytes);
             }
 
-            // decompile and save
-            if (_options.NoTexDecompile || entry.Type != EntryType.Tex)
+            // convert and save
+            if (_options.NoTexConvert || entry.Type != EntryType.Tex)
                 return;
-
 
             var tex = LoadTex(entry.Bytes, entry.FullPath);
 
@@ -363,7 +362,7 @@ namespace RePKG.Command
     }
 
 
-    [Verb("extract", HelpText = "Extract .pkg/Decompile .tex")]
+    [Verb("extract", HelpText = "Extract PKG/Convert TEX into image.")]
     public class ExtractOptions
     {
         [Option('o', "output", Required = false, HelpText = "Output directory", Default = "./output")]
@@ -376,7 +375,7 @@ namespace RePKG.Command
         [Option('e', "onlyexts", HelpText = "Only extract files with specified extensions (delimited by comma \",\")")]
         public string OnlyExts { get; set; }
 
-        [Option('t', "tex", HelpText = "Decompile all tex files from specified directory in input")]
+        [Option('t', "tex", HelpText = "Convert all tex files into images from specified directory in input")]
         public bool TexDirectory { get; set; }
 
         [Option('s', "singledir", HelpText =
@@ -387,14 +386,14 @@ namespace RePKG.Command
         public bool Recursive { get; set; }
 
         [Option('c', "copyproject", HelpText =
-            "Copy project.json and preview.jpg from beside .pkg into output directory")]
+            "Copy project.json and preview.jpg from beside PKG into output directory")]
         public bool CopyProject { get; set; }
 
         [Option('n', "usename", HelpText = "Use name from project.json as project subfolder name instead of id")]
         public bool UseName { get; set; }
 
-        [Option("no-tex-decompile", HelpText = "Don't decompile .tex files while extracting .pkg")]
-        public bool NoTexDecompile { get; set; }
+        [Option("no-tex-convert", HelpText = "Don't convert TEX files into images while extracting PKG")]
+        public bool NoTexConvert { get; set; }
 
         [Option("overwrite", HelpText = "Overwrite all existing files")]
         public bool Overwrite { get; set; }

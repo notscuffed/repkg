@@ -1,14 +1,14 @@
 # RePKG
-Wallpaper engine PKG unpacker/TEX decompiler, written in C#.
-Made using information obtained from reverse engineering "resourcecompiler.exe" in wallpaper engine bin's folder.
+Wallpaper engine PKG unpacker/TEX converter, written in C#.
+PKG and TEX formats reverse engineered by me.
 
-Feel free to report errors or request a pull if you have fixed/added something.
+Feel free to report errors.
 
 # Features
+- Extract PKG files
 - Convert PKG into wallpaper engine project
-- Unpack PKG files
-- Decompile TEX
-- Show info about PKG/TEX files
+- Convert TEX to image
+- Dump PKG/TEX info
 
 ### Commands
 - help - shows those commands, use `help "extract"` and `help "info"` to see options for them
@@ -18,38 +18,38 @@ Feel free to report errors or request a pull if you have fixed/added something.
 -i, --ignoreexts      Don't extract files with specified extensions (delimited by comma ",")
 -e, --onlyexts        Only extract files with specified extensions (delimited by comma ",")
 -d, --debuginfo       Print debug info while extracting/decompiling
--t, --tex             Decompile all tex files from specified directory in input
+-t, --tex             Convert all TEX files into images from specified directory in input
 -s, --singledir       Should all extracted files be put in one directory instead of their entry path
 -r, --recursive       Recursive search in all subfolders of specified directory
--c, --copyproject     Copy project.json and preview.jpg from beside .pkg into output directory
+-c, --copyproject     Copy project.json and preview.jpg from beside PKG into output directory
 -n, --usename         Use name from project.json as project subfolder name instead of id
---no-tex-decompile    Don't decompile .tex files while extracting .pkg
+--no-tex-convert      Don't convert TEX files into images while extracting PKG
 --overwrite           Overwrite all existing files
 ```
- - info - Shows info and entries in PKG/TEX file
+- info - Dumps PKG/TEX info
 ```
--s, --sort             Sort entries
+-s, --sort             Sort entries a-z
 -b, --sortby           (Default: name) Sort by ... (available options: name, extension, size)
--t, --tex              Get info about all tex files from specified directory in input
--p, --projectinfo      Select info from project.json to print (delimit using comma)
+-t, --tex              Dump info about all TEX files from specified directory
+-p, --projectinfo      Keys to dump from project.json (delimit using comma) (* for all)
 -e, --printentries     Print entries in packages
 --title-filter         Title filter
 ```
  
 ### Examples
-Find .pkg files in subfolders of specified directory and make wallpaper engine projects out of them in output directory
+Simply extract PKG and convert TEX entries into images to output folder created in current directory
 ```
-repkg extract -c E:\Games\steamapps\workshop\content\431960
+repkg extract E:\Games\steamapps\workshop\content\123\scene.pkg
 ```
-Find .pkg files in subfolders of specified directory and only decompile .tex entries to png and put them in ./output omitting their paths from .pkg:
+Find PKG files in subfolders of specified directory and make wallpaper engine projects out of them in output directory
 ```
-repkg extract -e tex -s -o ./output E:\Games\steamapps\workshop\content\431960
+repkg extract -c E:\Games\steamapps\workshop\content\123
 ```
-Extract all files from specific .pkg to output directory while keeping their paths from .pkg
+Find PKG files in subfolders of specified directory and only convert TEX entries to png then put them in ./output omitting their paths from PKG:
 ```
-repkg extract -o ./output E:\Games\steamapps\workshop\content\431960\scene.pkg
+repkg extract -e tex -s -o ./output E:\Games\steamapps\workshop\content\123
 ```
-Convert all .tex files from specific folder to png
+Convert all TEX files to images from specific folder
 ```
 repkg extract -t -s E:\path\to\dir\with\tex\files
 ```

@@ -14,7 +14,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="CommandLineParser" Version="2.6.0" />
+        <PackageReference Include="CommandLineParser" Version="2.7.82" />
     </ItemGroup>
     
     <ItemGroup>
@@ -22,8 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="$(ProjectDir)/../Licenses.txt"
-              CopyToOutputDirectory="PreserveNewest"
-              CopyToPublishDirectory="PreserveNewest"/>
+        <None Include="$(ProjectDir)/../Licenses.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
 </Project>

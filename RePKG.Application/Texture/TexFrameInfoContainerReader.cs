@@ -5,7 +5,7 @@ using RePKG.Core.Texture;
 
 namespace RePKG.Application.Texture
 {
-    public class TexFrameInfoReader : ITexFrameInfoReader
+    public class TexFrameInfoContainerReader : ITexFrameInfoContainerReader
     {
         public TexFrameInfoContainer ReadFromStream(Stream stream)
         {
@@ -39,7 +39,7 @@ namespace RePKG.Application.Texture
 
         private static void ReadV2(TexFrameInfoContainer container, BinaryReader reader)
         {
-            
+            ReadFrames(container, reader);
         }
 
         private static void ReadV3(TexFrameInfoContainer container, BinaryReader reader)
@@ -47,18 +47,22 @@ namespace RePKG.Application.Texture
             container.Unk0 = reader.ReadInt32();
             container.Unk1 = reader.ReadInt32();
 
-            
+            ReadFrames(container, reader);
+        }
+
+        private static void ReadFrames(TexFrameInfoContainer container, BinaryReader reader)
+        {
             for (var i = 0; i < container.FrameCount; i++)
             {
-                var frame = new TexFrameInfo
+                container.Frames[i] = new TexFrameInfo
                 {
-                    Unk0 = reader.ReadInt32(),
+                    ImageId = reader.ReadInt32(),
                     Frametime = reader.ReadSingle(),
-                    FrameInMilliseconds = reader.ReadSingle(),
-                    Unk1 = reader.ReadSingle(),
+                    X = reader.ReadSingle(),
+                    Y = reader.ReadSingle(),
                     Width = reader.ReadSingle(),
-                    Unk2 = reader.ReadSingle(),
-                    Unk3 = reader.ReadSingle(),
+                    Unk0 = reader.ReadSingle(),
+                    Unk1 = reader.ReadSingle(),
                     Height = reader.ReadSingle(),
                 };
             }

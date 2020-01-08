@@ -29,9 +29,9 @@ namespace RePKG.Command
         {
             var texHeaderReader = new TexHeaderReader();
             var texMipmapDecompressor = new TexMipmapDecompressor();
-            var texMipmapReader = new TexImageReader(texMipmapDecompressor);
-            var texImageContainerReader = new TexImageContainerReader(texMipmapReader);
-            var texFrameInfoReader = new TexFrameInfoReader();
+            var texImageReader = new TexImageReader(texMipmapDecompressor);
+            var texImageContainerReader = new TexImageContainerReader(texImageReader);
+            var texFrameInfoReader = new TexFrameInfoContainerReader();
 
             _texReader = new TexReader(texHeaderReader, texImageContainerReader, texFrameInfoReader);
             _texJsonInfoGenerator = new TexJsonInfoGenerator();

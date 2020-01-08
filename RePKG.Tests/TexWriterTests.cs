@@ -13,21 +13,25 @@ namespace RePKG.Tests
         [SetUp]
         public void Setup()
         {
+            // Reader
             var headerReader = new TexHeaderReader();
             var mipmapDecompressor = new TexMipmapDecompressor();
             var mipmapReader = new TexImageReader(mipmapDecompressor);
             var containerReader = new TexImageContainerReader(mipmapReader);
-            var frameInfoReader = new TexFrameInfoReader();
+            var frameInfoReader = new TexFrameInfoContainerReader();
 
             mipmapReader.DecompressMipmapBytes = false;
             mipmapReader.ReadMipmapBytes = true;
             
             _reader = new TexReader(headerReader, containerReader, frameInfoReader);
 
+            // Writer
             var headerWriter = new TexHeaderWriter();
             var mipmapWriter = new TexImageWriter();
             var containerWriter = new TexImageContainerWriter(mipmapWriter);
-            _writer = new TexWriter(headerWriter, containerWriter);
+            var frameInfoWriter = new TexFrameInfoContainerWriter();
+            
+            _writer = new TexWriter(headerWriter, containerWriter, frameInfoWriter);
         }
         
         

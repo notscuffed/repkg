@@ -4,6 +4,6 @@ namespace RePKG.Core.Texture
 {
     public interface ITexImageWriter
     {
-        void WriteToStream(Tex tex, TexImage mipmap, Stream stream);
+        void WriteTo(BinaryWriter writer, Tex tex, TexImage mipmap);
     }
 }

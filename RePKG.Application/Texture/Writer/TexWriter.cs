@@ -1,5 +1,5 @@
+using System;
 using System.IO;
-using System.Text;
 using RePKG.Application.Exceptions;
 using RePKG.Core.Texture;
 
@@ -21,27 +21,27 @@ namespace RePKG.Application.Texture
             _texFrameInfoContainerWriter = texFrameInfoContainerWriter;
         }
 
-        public void WriteToStream(Tex tex, Stream stream)
+        public void WriteTo(BinaryWriter writer, Tex tex)
         {
+            if (writer == null) throw new ArgumentNullException(nameof(writer));
+            if (tex == null) throw new ArgumentNullException(nameof(tex));
+            
             if (tex.Magic1 != "TEXV0005")
                 throw new UnknownTexHeaderMagicException(nameof(tex.Magic1), tex.Magic1);
-            
+
             if (tex.Magic2 != "TEXI0001")
                 throw new UnknownTexHeaderMagicException(nameof(tex.Magic2), tex.Magic2);
             
-            using (var writer = new BinaryWriter(stream, Encoding.UTF8, true))
-            {
-                writer.WriteNString(tex.Magic1);
-                writer.WriteNString(tex.Magic2);
-            }
+            writer.WriteNString(tex.Magic1);
+            writer.WriteNString(tex.Magic2);
             
-            _texHeaderWriter.WriteToStream(tex.Header, stream);
-            _texImageContainerWriter.WriteToStream(tex.ImagesContainer, stream);
-            
-            _texImageContainerWriter.WriteImagesToStream(tex, stream);
-            
+            _texHeaderWriter.WriteTo(writer, tex.Header);
+            _texImageContainerWriter.WriteTo(writer, tex.ImagesContainer);
+
+            _texImageContainerWriter.WriteImagesTo(writer, tex);
+
             if (tex.IsGif)
-                _texFrameInfoContainerWriter.WriteToStream(tex.FrameInfoContainer, stream);
+                _texFrameInfoContainerWriter.WriteTo(writer, tex.FrameInfoContainer);
         }
     }
 }

@@ -3,13 +3,14 @@ using System.IO;
 using System.Text;
 using NUnit.Framework;
 using RePKG.Application.Texture;
+using RePKG.Core.Texture;
 
 namespace RePKG.Tests
 {
     public class TexWriterTests
     {
-        private TexReader _reader;
-        private TexWriter _writer;
+        private ITexReader _reader;
+        private ITexWriter _writer;
 
         [SetUp]
         public void Setup()
@@ -63,9 +64,10 @@ namespace RePKG.Tests
             var tex = _reader.ReadFrom(reader);
 
             // Write tex
-            var outputMemoryStream = new MemoryStream(inputBytes.Length);
-            _writer.WriteToStream(tex, outputMemoryStream);
-            var outputBytes = outputMemoryStream.ToArray();
+            var memoryStream = new MemoryStream(inputBytes.Length);
+            var writer = new BinaryWriter(memoryStream, Encoding.UTF8);
+            _writer.WriteTo(writer, tex);
+            var outputBytes = memoryStream.ToArray();
 
             // Verify
             Assert.AreEqual(inputBytes.Length, outputBytes.Length, "Written tex size doesn't match input size");

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text;
 using CommandLine;
 using Newtonsoft.Json;
 using RePKG.Application.Package;
@@ -35,7 +36,7 @@ namespace RePKG.Command
 
             _texReader = new TexReader(texHeaderReader, texImageContainerReader, texFrameInfoReader);
             _texJsonInfoGenerator = new TexJsonInfoGenerator();
-            
+
             _packageReader = new PackageReader();
         }
 
@@ -265,7 +266,7 @@ namespace RePKG.Command
                 : Path.Combine(outputDirectory, entry.DirectoryPath, entry.Name);
 
             var filePath = filePathWithoutExtension + entry.Extension;
-            
+
             Directory.CreateDirectory(Path.GetDirectoryName(filePathWithoutExtension));
 
             if (!_options.Overwrite && File.Exists(filePath))
@@ -273,7 +274,7 @@ namespace RePKG.Command
             else
             {
                 Console.WriteLine($"* Extracting: {entry.FullPath}");
-                
+
                 File.WriteAllBytes(filePath, entry.Bytes);
             }
 
@@ -346,7 +347,10 @@ namespace RePKG.Command
 
             try
             {
-                return _texReader.ReadFromStream(new MemoryStream(bytes));
+                using (var reader = new BinaryReader(new MemoryStream(bytes), Encoding.UTF8))
+                {
+                    return _texReader.ReadFrom(reader);
+                }
             }
             catch (Exception e)
             {

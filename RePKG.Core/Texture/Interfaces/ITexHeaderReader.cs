@@ -4,6 +4,6 @@ namespace RePKG.Core.Texture
 {
     public interface ITexHeaderReader
     {
-        TexHeader ReadFromStream(Stream stream);
+        TexHeader ReadFrom(BinaryReader reader);
     }
 }

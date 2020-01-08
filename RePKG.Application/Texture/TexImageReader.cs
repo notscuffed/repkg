@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text;
 using RePKG.Core.Texture;
 
 namespace RePKG.Application.Texture
@@ -16,40 +15,37 @@ namespace RePKG.Application.Texture
             _texMipmapDecompressor = texMipmapDecompressor;
         }
 
-        public TexImage ReadFromStream(Stream stream, Tex tex)
+        public TexImage ReadFrom(BinaryReader reader, Tex tex)
         {
-            using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
+            var version = tex.ImagesContainer.ImageContainerVersion;
+
+            var image = new TexImage(reader.ReadInt32());
+
+            Func<BinaryReader, TexMipmap> mipmapReader;
+            switch (version)
             {
-                var version = tex.ImagesContainer.ImageContainerVersion;
-
-                var image = new TexImage(reader.ReadInt32());
-
-                Func<BinaryReader, TexMipmap> mipmapReader;
-                switch (version)
-                {
-                    case TexImageContainerVersion.Version1:
-                        mipmapReader = ReadMipmapV1;
-                        break;
-                    case TexImageContainerVersion.Version2:
-                    case TexImageContainerVersion.Version3:
-                        mipmapReader = ReadMipmapV2And3;
-                        break;
-                    default:
-                        throw new NotImplementedException($"Tex image container version: {version} is not supported!");
-                }
-
-                var format = TexMipmapFormatGetter.GetFormatForTex(tex);
-                for (var i = 0; i < image.MipmapCount; i++)
-                {
-                    var mipmap = mipmapReader(reader);
-                    mipmap.Format = format;
-                    ReadBytes(reader, mipmap);
-                    
-                    image.Mipmaps[i] = mipmap;
-                }
-
-                return image;
+                case TexImageContainerVersion.Version1:
+                    mipmapReader = ReadMipmapV1;
+                    break;
+                case TexImageContainerVersion.Version2:
+                case TexImageContainerVersion.Version3:
+                    mipmapReader = ReadMipmapV2And3;
+                    break;
+                default:
+                    throw new NotImplementedException($"Tex image container version: {version} is not supported!");
             }
+
+            var format = TexMipmapFormatGetter.GetFormatForTex(tex);
+            for (var i = 0; i < image.MipmapCount; i++)
+            {
+                var mipmap = mipmapReader(reader);
+                mipmap.Format = format;
+                ReadBytes(reader, mipmap);
+
+                image.Mipmaps[i] = mipmap;
+            }
+
+            return image;
         }
 
         private static TexMipmap ReadMipmapV1(BinaryReader reader)
@@ -61,7 +57,7 @@ namespace RePKG.Application.Texture
                 BytesCount = reader.ReadInt32(),
             };
         }
-        
+
         private static TexMipmap ReadMipmapV2And3(BinaryReader reader)
         {
             return new TexMipmap()

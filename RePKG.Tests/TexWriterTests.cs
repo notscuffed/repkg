@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using NUnit.Framework;
 using RePKG.Application.Texture;
 
@@ -9,7 +10,7 @@ namespace RePKG.Tests
     {
         private TexReader _reader;
         private TexWriter _writer;
-        
+
         [SetUp]
         public void Setup()
         {
@@ -22,7 +23,7 @@ namespace RePKG.Tests
 
             mipmapReader.DecompressMipmapBytes = false;
             mipmapReader.ReadMipmapBytes = true;
-            
+
             _reader = new TexReader(headerReader, containerReader, frameInfoReader);
 
             // Writer
@@ -30,11 +31,11 @@ namespace RePKG.Tests
             var mipmapWriter = new TexImageWriter();
             var containerWriter = new TexImageContainerWriter(mipmapWriter);
             var frameInfoWriter = new TexFrameInfoContainerWriter();
-            
+
             _writer = new TexWriter(headerWriter, containerWriter, frameInfoWriter);
         }
-        
-        
+
+
         [Test]
         [TestCase("V1_DXT5")]
         [TestCase("V1_RGBA8888")]
@@ -51,24 +52,24 @@ namespace RePKG.Tests
         public void TestWriteAndRead(string name)
         {
             // Load file
-            var file = TexDecompressingTests.LoadTestFile(name);
-            var inputBytes = new byte[file.Length];
-            var bytesRead = file.Read(inputBytes, 0, (int) file.Length);
-            Assert.AreEqual(file.Length, bytesRead, "Failed to read input file");
-            file.Close();
-            
+            var inputFileReader = TexDecompressingTests.LoadTestFile(name);
+            var inputBytes = new byte[inputFileReader.BaseStream.Length];
+            var bytesRead = inputFileReader.Read(inputBytes, 0, (int) inputFileReader.BaseStream.Length);
+            Assert.AreEqual(inputFileReader.BaseStream.Length, bytesRead, "Failed to read input file");
+            inputFileReader.Close();
+
             // Read tex
-            var memoryStream = new MemoryStream(inputBytes);
-            var tex = _reader.ReadFromStream(memoryStream);
+            var reader = new BinaryReader(new MemoryStream(inputBytes), Encoding.UTF8);
+            var tex = _reader.ReadFrom(reader);
 
             // Write tex
             var outputMemoryStream = new MemoryStream(inputBytes.Length);
             _writer.WriteToStream(tex, outputMemoryStream);
             var outputBytes = outputMemoryStream.ToArray();
-            
+
             // Verify
             Assert.AreEqual(inputBytes.Length, outputBytes.Length, "Written tex size doesn't match input size");
-            
+
             for (var i = 0; i < inputBytes.Length; i++)
             {
                 if (inputBytes[i] == outputBytes[i])

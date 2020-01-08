@@ -1,5 +1,4 @@
 using System.IO;
-using System.Text;
 using RePKG.Application.Exceptions;
 using RePKG.Core.Texture;
 
@@ -14,43 +13,40 @@ namespace RePKG.Application.Texture
             _texImageReader = texImageReader;
         }
 
-        public TexImageContainer ReadFromStream(Stream stream)
+        public TexImageContainer ReadFrom(BinaryReader reader)
         {
-            using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
+            var magic = reader.ReadNString(16);
+
+            TexImageContainer container;
+
+            switch (magic)
             {
-                var magic = reader.ReadNString(16);
+                case "TEXB0001":
+                    container = ReadV1(reader);
+                    break;
 
-                TexImageContainer container;
+                case "TEXB0002":
+                    container = ReadV2(reader);
+                    break;
 
-                switch (magic)
-                {
-                    case "TEXB0001":
-                        container = ReadV1(reader);
-                        break;
+                case "TEXB0003":
+                    container = ReadV3(reader);
+                    break;
 
-                    case "TEXB0002":
-                        container = ReadV2(reader);
-                        break;
-
-                    case "TEXB0003":
-                        container = ReadV3(reader);
-                        break;
-
-                    default:
-                        throw new UnknownTexImageContainerMagicException(magic);
-                }
-
-                container.ImageFormat.AssertValid();
-
-                return container;
+                default:
+                    throw new UnknownTexImageContainerMagicException(magic);
             }
+
+            container.ImageFormat.AssertValid();
+
+            return container;
         }
 
-        public void ReadImagesFromStream(Stream stream, Tex tex)
+        public void ReadImagesFrom(BinaryReader reader, Tex tex)
         {
             for (var i = 0; i < tex.ImagesContainer.ImageCount; i++)
             {
-                var image = _texImageReader.ReadFromStream(stream, tex);
+                var image = _texImageReader.ReadFrom(reader, tex);
                 tex.ImagesContainer.Images.Add(image);
             }
         }

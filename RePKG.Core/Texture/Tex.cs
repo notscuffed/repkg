@@ -8,6 +8,7 @@ namespace RePKG.Core.Texture
         public string Magic2 { get; set; } // always: TEXI0001
         public TexHeader Header { get; set; }
         public TexImageContainer ImagesContainer { get; set; }
+        public TexFrameInfoContainer FrameInfoContainer { get; set; }
         
         public bool IsGif => HasFlag(TexFlags.IsGif);
         public TexImage FirstImage => ImagesContainer?.Images.FirstOrDefault();

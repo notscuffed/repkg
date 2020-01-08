@@ -9,13 +9,16 @@ namespace RePKG.Application.Texture
     {
         private readonly ITexHeaderWriter _texHeaderWriter;
         private readonly ITexImageContainerWriter _texImageContainerWriter;
+        private readonly ITexFrameInfoContainerWriter _texFrameInfoContainerWriter;
 
         public TexWriter(
             ITexHeaderWriter texHeaderWriter,
-            ITexImageContainerWriter texImageContainerWriter)
+            ITexImageContainerWriter texImageContainerWriter,
+            ITexFrameInfoContainerWriter texFrameInfoContainerWriter)
         {
             _texHeaderWriter = texHeaderWriter;
             _texImageContainerWriter = texImageContainerWriter;
+            _texFrameInfoContainerWriter = texFrameInfoContainerWriter;
         }
 
         public void WriteToStream(Tex tex, Stream stream)
@@ -36,6 +39,9 @@ namespace RePKG.Application.Texture
             _texImageContainerWriter.WriteToStream(tex.ImagesContainer, stream);
             
             _texImageContainerWriter.WriteImagesToStream(tex, stream);
+            
+            if (tex.IsGif)
+                _texFrameInfoContainerWriter.WriteToStream(tex.FrameInfoContainer, stream);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace RePKG.Tests
             var mipmapDecompressor = new TexMipmapDecompressor();
             var mipmapReader = new TexImageReader(mipmapDecompressor);
             var containerReader = new TexImageContainerReader(mipmapReader);
-            var frameInfoReader = new TexFrameInfoReader();
+            var frameInfoReader = new TexFrameInfoContainerReader();
 
             _reader = new TexReader(headerReader, containerReader, frameInfoReader);
         }

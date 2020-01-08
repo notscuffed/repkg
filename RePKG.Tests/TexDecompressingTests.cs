@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using NUnit.Framework;
 using RePKG.Application.Texture;
 using RePKG.Core.Texture;
@@ -46,7 +47,7 @@ namespace RePKG.Tests
             bool validateBytes = true,
             TexFlags? validateFlags = TexFlags.None)
         {
-            var texture = _reader.ReadFromStream(LoadTestFile(name));
+            var texture = _reader.ReadFrom(LoadTestFile(name));
 
             var firstMipmap = texture.FirstImage.FirstMipmap;
             var bytes = firstMipmap.Bytes;
@@ -65,13 +66,13 @@ namespace RePKG.Tests
             }
         }
 
-        public static Stream LoadTestFile(string name)
+        public static BinaryReader LoadTestFile(string name)
         {
-            return File.Open(
+            return new BinaryReader(File.Open(
                 $"{TestHelper.BasePath}\\{InputDirectoryName}\\{name}.tex",
                 FileMode.Open,
                 FileAccess.Read,
-                FileShare.Read);
+                FileShare.Read), Encoding.UTF8);
         }
 
         public static void SaveValidatedBytes(byte[] bytes, string name)

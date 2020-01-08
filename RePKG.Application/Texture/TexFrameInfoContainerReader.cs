@@ -1,5 +1,4 @@
 using System.IO;
-using System.Text;
 using RePKG.Application.Exceptions;
 using RePKG.Core.Texture;
 
@@ -7,34 +6,31 @@ namespace RePKG.Application.Texture
 {
     public class TexFrameInfoContainerReader : ITexFrameInfoContainerReader
     {
-        public TexFrameInfoContainer ReadFromStream(Stream stream)
+        public TexFrameInfoContainer ReadFrom(BinaryReader reader)
         {
-            using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
+            var container = new TexFrameInfoContainer
             {
-                var container = new TexFrameInfoContainer
-                {
-                    Magic = reader.ReadNString(maxLength: 16),
-                    FrameCount = reader.ReadInt32()
-                };
-                
-                container.Frames = new TexFrameInfo[container.FrameCount];
+                Magic = reader.ReadNString(maxLength: 16),
+                FrameCount = reader.ReadInt32()
+            };
 
-                switch (container.Magic)
-                {
-                    case "TEXS0002":
-                        ReadV2(container, reader);
-                        break;
-                    
-                    case "TEXS0003":
-                        ReadV3(container, reader);
-                        break;
-                    
-                    default:
-                        throw new UnknownTexFrameInfoContainerMagicException(container.Magic);
-                }
-                
-                return container;
+            container.Frames = new TexFrameInfo[container.FrameCount];
+
+            switch (container.Magic)
+            {
+                case "TEXS0002":
+                    ReadV2(container, reader);
+                    break;
+
+                case "TEXS0003":
+                    ReadV3(container, reader);
+                    break;
+
+                default:
+                    throw new UnknownTexFrameInfoContainerMagicException(container.Magic);
             }
+
+            return container;
         }
 
         private static void ReadV2(TexFrameInfoContainer container, BinaryReader reader)

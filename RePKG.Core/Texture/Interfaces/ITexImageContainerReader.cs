@@ -4,7 +4,7 @@ namespace RePKG.Core.Texture
 {
     public interface ITexImageContainerReader
     {
-        TexImageContainer ReadFromStream(Stream stream);
-        void ReadImagesFromStream(Stream stream, Tex tex);
+        TexImageContainer ReadFrom(BinaryReader reader);
+        void ReadImagesFrom(BinaryReader reader, Tex tex);
     }
 }

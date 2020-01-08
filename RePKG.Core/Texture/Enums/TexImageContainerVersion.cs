@@ -1,6 +1,6 @@
 namespace RePKG.Core.Texture
 {
-    public enum TexMipmapContainerVersion
+    public enum TexImageContainerVersion
     {
         Version3,
         Version2,

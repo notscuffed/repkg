@@ -29,11 +29,11 @@ namespace RePKG.Command
         {
             var texHeaderReader = new TexHeaderReader();
             var texMipmapDecompressor = new TexMipmapDecompressor();
-            var texMipmapReader = new TexMipmapReader(texMipmapDecompressor);
-            var texMipmapContainerReader = new TexMipmapContainerReader(texMipmapReader);
+            var texMipmapReader = new TexImageReader(texMipmapDecompressor);
+            var texImageContainerReader = new TexImageContainerReader(texMipmapReader);
             var texFrameInfoReader = new TexFrameInfoReader();
 
-            _texReader = new TexReader(texHeaderReader, texMipmapContainerReader, texFrameInfoReader);
+            _texReader = new TexReader(texHeaderReader, texImageContainerReader, texFrameInfoReader);
             _texJsonInfoGenerator = new TexJsonInfoGenerator();
             
             _packageReader = new PackageReader();

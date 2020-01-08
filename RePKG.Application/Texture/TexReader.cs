@@ -8,16 +8,16 @@ namespace RePKG.Application.Texture
     public class TexReader : ITexReader
     {
         private readonly ITexHeaderReader _texHeaderReader;
-        private readonly ITexMipmapContainerReader _texMipmapContainerReader;
+        private readonly ITexImageContainerReader _texImageContainerReader;
         private readonly ITexFrameInfoReader _texFrameInfoReader;
 
         public TexReader(
             ITexHeaderReader texHeaderReader,
-            ITexMipmapContainerReader texMipmapContainerReader,
+            ITexImageContainerReader texImageContainerReader,
             ITexFrameInfoReader texFrameInfoReader)
         {
             _texHeaderReader = texHeaderReader;
-            _texMipmapContainerReader = texMipmapContainerReader;
+            _texImageContainerReader = texImageContainerReader;
             _texFrameInfoReader = texFrameInfoReader;
         }
 
@@ -36,9 +36,9 @@ namespace RePKG.Application.Texture
                     throw new UnknownTexHeaderMagicException(nameof(tex.Magic2), tex.Magic2);
 
                 tex.Header = _texHeaderReader.ReadFromStream(stream);
-                tex.MipmapsContainer = _texMipmapContainerReader.ReadFromStream(stream);
+                tex.ImagesContainer = _texImageContainerReader.ReadFromStream(stream);
 
-                _texMipmapContainerReader.ReadMipmapsFromStream(stream, tex);
+                _texImageContainerReader.ReadImagesFromStream(stream, tex);
 
                 if (tex.IsGif)
                     _texFrameInfoReader.ReadFromStream(stream);

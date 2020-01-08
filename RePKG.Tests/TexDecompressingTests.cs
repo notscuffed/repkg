@@ -21,8 +21,8 @@ namespace RePKG.Tests
 
             var headerReader = new TexHeaderReader();
             var mipmapDecompressor = new TexMipmapDecompressor();
-            var mipmapReader = new TexMipmapReader(mipmapDecompressor);
-            var containerReader = new TexMipmapContainerReader(mipmapReader);
+            var mipmapReader = new TexImageReader(mipmapDecompressor);
+            var containerReader = new TexImageContainerReader(mipmapReader);
             var frameInfoReader = new TexFrameInfoReader();
 
             _reader = new TexReader(headerReader, containerReader, frameInfoReader);
@@ -48,7 +48,7 @@ namespace RePKG.Tests
         {
             var texture = _reader.ReadFromStream(LoadTestFile(name));
 
-            var firstMipmap = texture.FirstMipmap;
+            var firstMipmap = texture.FirstImage.FirstMipmap;
             var bytes = firstMipmap.Bytes;
 
             if (validateFlags.HasValue)

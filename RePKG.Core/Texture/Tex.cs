@@ -7,10 +7,10 @@ namespace RePKG.Core.Texture
         public string Magic1 { get; set; } // always: TEXV0005
         public string Magic2 { get; set; } // always: TEXI0001
         public TexHeader Header { get; set; }
-        public TexMipmapContainer MipmapsContainer { get; set; }
+        public TexImageContainer ImagesContainer { get; set; }
         
         public bool IsGif => HasFlag(TexFlags.IsGif);
-        public TexMipmap FirstMipmap => MipmapsContainer?.Mipmaps.FirstOrDefault();
+        public TexImage FirstImage => ImagesContainer?.Images.FirstOrDefault();
         
         public bool HasFlag(TexFlags flag)
         {

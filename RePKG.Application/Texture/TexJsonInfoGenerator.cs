@@ -12,7 +12,7 @@ namespace RePKG.Application.Texture
                 bleedtransparentcolors = true,
                 clampuvs = tex.HasFlag(TexFlags.ClampUVs),
                 format = tex.Header.Format.ToString().ToLower(),
-                nomip = (tex.MipmapsContainer.Mipmaps.Count == 1).ToString().ToLower(),
+                nomip = (tex.ImagesContainer.Images.Count == 1).ToString().ToLower(),
                 nointerpolation = tex.HasFlag(TexFlags.NoInterpolation).ToString().ToLower(),
                 nonpoweroftwo = (!NumberIsPowerOfTwo(tex.Header.ImageWidth) ||
                                  !NumberIsPowerOfTwo(tex.Header.ImageHeight)).ToString().ToLower()

@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <Version>0.2.0</Version>
+        <Version>0.2.1</Version>
         <Copyright>Copyright © NotScuffed 2020</Copyright>
     </PropertyGroup>
 

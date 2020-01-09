@@ -12,7 +12,8 @@ namespace RePKG.Tests
         public const string ValidatedDirectoryName = "TestTexturesValidated";
         public const string OutputDirectoryName = "Output";
         public const string InputDirectoryName = "TestTextures";
-        protected TexReader _reader;
+        private TexReader _reader;
+        private TexToImageConverter _texToImageConverter;
 
         [SetUp]
         public void SetUp()
@@ -27,6 +28,7 @@ namespace RePKG.Tests
             var frameInfoReader = new TexFrameInfoContainerReader();
 
             _reader = new TexReader(headerReader, containerReader, frameInfoReader);
+            _texToImageConverter = new TexToImageConverter();
         }
 
         [Test]
@@ -62,8 +64,17 @@ namespace RePKG.Tests
             else
             {
                 SaveValidatedBytes(bytes, name);
-                TexPreviewWriter.WriteTexture(texture, $"{TestHelper.BasePath}\\{OutputDirectoryName}\\{name}");
+                ConvertToImageAndSave(texture, name);
             }
+        }
+
+        private void ConvertToImageAndSave(Tex tex, string name)
+        {
+            var resultImage = _texToImageConverter.ConvertToImage(tex);
+            
+            var path = $"{TestHelper.BasePath}\\{OutputDirectoryName}\\{name}.{resultImage.Format.GetFileExtension()}";
+            
+            File.WriteAllBytes(path, resultImage.Bytes);
         }
 
         public static BinaryReader LoadTestFile(string name)

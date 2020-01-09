@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using CommandLine;
 using RePKG.Command;
 
@@ -48,18 +47,6 @@ namespace RePKG
                     .WithParsed<InfoOptions>(Info.Action)
                     .WithNotParsed(NotParsedAction);
             }
-        }
-
-
-        private static void NotParsedAction(IEnumerable<Error> errors)
-        {
-            /*foreach (var error in errors)
-            {
-                if (error.Tag == ErrorType.HelpRequestedError)
-                    continue;
-
-                Console.WriteLine(error.Tag);
-            }*/
         }
     }
 }

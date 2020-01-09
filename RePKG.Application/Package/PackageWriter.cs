@@ -5,7 +5,7 @@ using System.Text;
 using RePKG.Core.Package;
 using RePKG.Core.Package.Interfaces;
 
-namespace RePKG.Application
+namespace RePKG.Application.Package
 {
     public class PackageWriter : IPackageWriter
     {

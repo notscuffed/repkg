@@ -25,6 +25,7 @@ namespace RePKG.Command
         private static readonly ITexReader _texReader;
         private static readonly ITexJsonInfoGenerator _texJsonInfoGenerator;
         private static readonly IPackageReader _packageReader;
+        private static readonly TexToImageConverter _texToImageConverter;
 
         static Extract()
         {
@@ -36,6 +37,7 @@ namespace RePKG.Command
 
             _texReader = new TexReader(texHeaderReader, texImageContainerReader, texFrameInfoReader);
             _texJsonInfoGenerator = new TexJsonInfoGenerator();
+            _texToImageConverter = new TexToImageConverter();
 
             _packageReader = new PackageReader();
         }
@@ -116,7 +118,7 @@ namespace RePKG.Command
                     var filePath = Path.Combine(_options.OutputDirectory,
                         Path.GetFileNameWithoutExtension(fileInfo.Name));
 
-                    TexPreviewWriter.WriteTexture(tex, filePath, _options.Overwrite);
+                    ConvertToImageAndSave(tex, filePath, _options.Overwrite);
                     var jsonInfo = _texJsonInfoGenerator.GenerateInfo(tex);
                     File.WriteAllText($"{filePath}.tex-json", jsonInfo);
                 }
@@ -172,13 +174,12 @@ namespace RePKG.Command
                     var filePath = Path.Combine(_options.OutputDirectory,
                         Path.GetFileNameWithoutExtension(fileInfo.Name));
 
-                    TexPreviewWriter.WriteTexture(tex, filePath, _options.Overwrite);
+                    ConvertToImageAndSave(tex, filePath, _options.Overwrite);
                     var jsonInfo = _texJsonInfoGenerator.GenerateInfo(tex);
                     File.WriteAllText($"{filePath}.tex-json", jsonInfo);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"");
                     Console.WriteLine(e);
                 }
             }
@@ -289,7 +290,7 @@ namespace RePKG.Command
 
             try
             {
-                TexPreviewWriter.WriteTexture(tex, filePathWithoutExtension, _options.Overwrite);
+                ConvertToImageAndSave(tex, filePathWithoutExtension, _options.Overwrite);
                 var jsonInfo = _texJsonInfoGenerator.GenerateInfo(tex);
                 File.WriteAllText($"{filePathWithoutExtension}.tex-json", jsonInfo);
             }
@@ -358,6 +359,19 @@ namespace RePKG.Command
             }
 
             return null;
+        }
+        
+        private static void ConvertToImageAndSave(Tex tex, string path, bool overwrite)
+        {
+            var format = _texToImageConverter.GetConvertedFormat(tex);
+            var outputPath = $"{path}.{format.GetFileExtension()}";
+
+            if (!overwrite && File.Exists(outputPath))
+                return;
+            
+            var resultImage = _texToImageConverter.ConvertToImage(tex);
+
+            File.WriteAllBytes(outputPath, resultImage.Bytes);
         }
     }
 

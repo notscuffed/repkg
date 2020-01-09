@@ -11,6 +11,32 @@ namespace RePKG.Core.Texture
         {
             return (int) format >= 1000;
         }
+        
+        /// <summary>
+        /// Checks if the mipmap format is an raw uncompressed format
+        /// </summary>
+        public static bool IsRawFormat(this MipmapFormat format)
+        {
+            var formatId = (int) format;
+            return formatId >= 1 && formatId <= 3;
+        }
+        
+        /// <summary>
+        /// Checks if the mipmap format is an raw compressed format
+        /// </summary>
+        public static bool IsCompressed(this MipmapFormat format)
+        {
+            switch (format)
+            {
+                case MipmapFormat.CompressedDXT5:
+                case MipmapFormat.CompressedDXT3:
+                case MipmapFormat.CompressedDXT1:
+                    return true;
+                
+                default:
+                    return false;
+            }
+        }
 
         /// <summary>
         /// Returns file extension for an image format

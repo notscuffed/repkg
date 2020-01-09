@@ -2,20 +2,22 @@ namespace RePKG.Core.Texture
 {
     public enum MipmapFormat
     {
+        Invalid = 0,
+        
         /// <summary>
         /// Raw pixels (4 bytes per pixel) (RGBA8888)
         /// </summary>
-        RGBA8888,
+        RGBA8888 = 1,
 
         /// <summary>
         /// Raw pixels (1 byte per pixel) (R8)
         /// </summary>
-        R8,
+        R8 = 2,
 
         /// <summary>
         /// Raw pixels (2 bytes per pixel) (RG88)
         /// </summary>
-        RG88,
+        RG88 = 3,
 
         /// <summary>
         /// Raw pixels compressed using DXT5

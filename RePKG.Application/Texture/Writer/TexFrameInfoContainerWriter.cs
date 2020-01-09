@@ -37,8 +37,8 @@ namespace RePKG.Application.Texture
 
         private static void WriteV3(TexFrameInfoContainer container, BinaryWriter writer)
         {
-            writer.Write(container.Unk0);
-            writer.Write(container.Unk1);
+            writer.Write(container.GifWidth);
+            writer.Write(container.GifHeight);
 
             WriteFrames(container, writer);
         }

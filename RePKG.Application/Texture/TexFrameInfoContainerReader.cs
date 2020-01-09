@@ -36,12 +36,17 @@ namespace RePKG.Application.Texture
         private static void ReadV2(TexFrameInfoContainer container, BinaryReader reader)
         {
             ReadFrames(container, reader);
+            
+            // This version doesn't save gif width/height so we will get it from first frame
+            // Because we use those values in TexToImageConverter
+            container.GifWidth = (int) container.Frames[0].Width;
+            container.GifHeight = (int) container.Frames[0].Height;
         }
 
         private static void ReadV3(TexFrameInfoContainer container, BinaryReader reader)
         {
-            container.Unk0 = reader.ReadInt32();
-            container.Unk1 = reader.ReadInt32();
+            container.GifWidth = reader.ReadInt32();
+            container.GifHeight = reader.ReadInt32();
 
             ReadFrames(container, reader);
         }

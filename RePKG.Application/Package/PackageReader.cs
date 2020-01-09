@@ -17,7 +17,7 @@ namespace RePKG.Application.Package
                 var packageStart = stream.Position;
                 var package = new Core.Package.Package
                 {
-                    Magic = reader.ReadStringI32Size(32)
+                    Magic = reader.ReadStringI32Size(maxLength: 32)
                 };
 
                 ReadEntries(package.Entries, reader);
@@ -40,7 +40,7 @@ namespace RePKG.Application.Package
 
             for (var i = 1; i <= entryCount; i++)
             {
-                var fullPath = reader.ReadStringI32Size(255);
+                var fullPath = reader.ReadStringI32Size(maxLength: 255);
 
                 list.Add(new PackageEntry
                 {

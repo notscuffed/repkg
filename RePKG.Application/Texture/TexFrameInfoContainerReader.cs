@@ -10,8 +10,7 @@ namespace RePKG.Application.Texture
         {
             var container = new TexFrameInfoContainer
             {
-                Magic = reader.ReadNString(maxLength: 16),
-                FrameCount = reader.ReadInt32()
+                Magic = reader.ReadNString(maxLength: 16)
             };
 
             container.Frames = new TexFrameInfo[container.FrameCount];

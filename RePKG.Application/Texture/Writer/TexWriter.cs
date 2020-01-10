@@ -27,10 +27,10 @@ namespace RePKG.Application.Texture
             if (tex == null) throw new ArgumentNullException(nameof(tex));
             
             if (tex.Magic1 != "TEXV0005")
-                throw new UnknownTexHeaderMagicException(nameof(tex.Magic1), tex.Magic1);
+                throw new UnknownMagicException(nameof(TexWriter), nameof(tex.Magic1), tex.Magic1);
 
             if (tex.Magic2 != "TEXI0001")
-                throw new UnknownTexHeaderMagicException(nameof(tex.Magic2), tex.Magic2);
+                throw new UnknownMagicException(nameof(TexWriter), nameof(tex.Magic2), tex.Magic2);
             
             writer.WriteNString(tex.Magic1);
             writer.WriteNString(tex.Magic2);

@@ -10,7 +10,8 @@ namespace RePKG.Application
         public static string ReadNString(this BinaryReader reader, int maxLength = -1)
         {
             if (reader == null) throw new ArgumentNullException(nameof(reader));
-            var builder = new StringBuilder(16);
+            
+            var builder = new StringBuilder(maxLength <= 0 ? 16 : maxLength);
             var c = reader.ReadChar();
 
             while (c != '\0' && (maxLength == -1 || builder.Length < maxLength))

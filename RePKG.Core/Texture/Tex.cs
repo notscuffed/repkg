@@ -11,7 +11,7 @@ namespace RePKG.Core.Texture
         public TexFrameInfoContainer FrameInfoContainer { get; set; }
         
         public bool IsGif => HasFlag(TexFlags.IsGif);
-        public TexImage FirstImage => ImagesContainer?.Images?.FirstOrDefault();
+        public TexImage FirstImage => ImagesContainer?.Images.FirstOrDefault();
         
         public bool HasFlag(TexFlags flag)
         {

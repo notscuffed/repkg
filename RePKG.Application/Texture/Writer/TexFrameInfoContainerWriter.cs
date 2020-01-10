@@ -26,7 +26,7 @@ namespace RePKG.Application.Texture
                     break;
 
                 default:
-                    throw new UnknownTexFrameInfoContainerMagicException(frameInfoContainer.Magic);
+                    throw new UnknownMagicException(nameof(TexFrameInfoContainerWriter), frameInfoContainer.Magic);
             }
         }
 

@@ -34,7 +34,7 @@ namespace RePKG.Application.Package
             }
         }
 
-        private void ReadEntries(List<PackageEntry> list, BinaryReader reader)
+        private static void ReadEntries(List<PackageEntry> list, BinaryReader reader)
         {
             var entryCount = reader.ReadInt32();
 
@@ -52,7 +52,7 @@ namespace RePKG.Application.Package
             }
         }
 
-        private void PopulateEntriesWithData(int dataStart, List<PackageEntry> entries, BinaryReader reader)
+        private static void PopulateEntriesWithData(int dataStart, List<PackageEntry> entries, BinaryReader reader)
         {
             foreach (var entry in entries)
             {

@@ -9,6 +9,5 @@ namespace RePKG.Core.Texture
         public int ImageWidth { get; set; }
         public int ImageHeight { get; set; }
         public uint UnkInt0 { get; set; }
-
     }
 }

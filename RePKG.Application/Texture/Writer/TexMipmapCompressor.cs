@@ -29,8 +29,10 @@ namespace RePKG.Application.Texture
             var compressedSize = LZ4Codec.Encode(
                 bytes, 0, bytes.Length,
                 buffer, 0, buffer.Length);
-
-            mipmap.BytesCount = compressedSize;
+            
+            if (compressedSize < maximumSize)
+                Array.Resize(ref buffer, compressedSize);
+            
             mipmap.DecompressedBytesCount = bytes.Length;
             mipmap.Bytes = buffer;
             mipmap.IsLZ4Compressed = true;

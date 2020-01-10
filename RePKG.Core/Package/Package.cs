@@ -7,11 +7,6 @@ namespace RePKG.Core.Package
         public string Magic { get; set; }
         public int HeaderSize { get; set; }
 
-        public readonly List<PackageEntry> Entries;
-
-        public Package()
-        {
-            Entries = new List<PackageEntry>();
-        }
+        public List<PackageEntry> Entries { get; } = new List<PackageEntry>();
     }
 }

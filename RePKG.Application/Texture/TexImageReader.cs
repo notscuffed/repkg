@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using RePKG.Application.Exceptions;
 using RePKG.Core.Texture;
 
 namespace RePKG.Application.Texture
@@ -15,78 +16,98 @@ namespace RePKG.Application.Texture
             _texMipmapDecompressor = texMipmapDecompressor;
         }
 
-        public TexImage ReadFrom(BinaryReader reader, Tex tex)
+        public TexImage ReadFrom(
+            BinaryReader reader,
+            TexImageContainer container,
+            TexFormat texFormat)
         {
-            var version = tex.ImagesContainer.ImageContainerVersion;
+            var mipmapCount = reader.ReadInt32();
 
-            var image = new TexImage(reader.ReadInt32());
-
-            Func<BinaryReader, TexMipmap> mipmapReader;
-            switch (version)
+            if (mipmapCount > Constants.MaximumMipmapCount)
+                throw new UnsafeTexException(
+                    $"Mipmap count exceeds limit: {mipmapCount}/{Constants.MaximumMipmapCount}");
+            
+            var readFunction = PickMipmapReader(container.ImageContainerVersion);
+            var format = TexMipmapFormatGetter.GetFormatForTex(container.ImageFormat, texFormat);
+            var image = new TexImage();
+            
+            for (var i = 0; i < mipmapCount; i++)
             {
-                case TexImageContainerVersion.Version1:
-                    mipmapReader = ReadMipmapV1;
-                    break;
-                case TexImageContainerVersion.Version2:
-                case TexImageContainerVersion.Version3:
-                    mipmapReader = ReadMipmapV2And3;
-                    break;
-                default:
-                    throw new NotImplementedException($"Tex image container version: {version} is not supported!");
-            }
-
-            var format = TexMipmapFormatGetter.GetFormatForTex(tex);
-            for (var i = 0; i < image.MipmapCount; i++)
-            {
-                var mipmap = mipmapReader(reader);
+                var mipmap = readFunction(reader);
                 mipmap.Format = format;
-                ReadBytes(reader, mipmap);
 
-                image.Mipmaps[i] = mipmap;
+                if (DecompressMipmapBytes)
+                    _texMipmapDecompressor.DecompressMipmap(mipmap);
+
+                image.Mipmaps.Add(mipmap);
             }
 
             return image;
         }
 
-        private static TexMipmap ReadMipmapV1(BinaryReader reader)
+        private TexMipmap ReadMipmapV1(BinaryReader reader)
         {
-            return new TexMipmap()
+            return new TexMipmap
             {
                 Width = reader.ReadInt32(),
                 Height = reader.ReadInt32(),
-                BytesCount = reader.ReadInt32(),
+                Bytes = ReadBytes(reader)
             };
         }
 
-        private static TexMipmap ReadMipmapV2And3(BinaryReader reader)
+        private TexMipmap ReadMipmapV2And3(BinaryReader reader)
         {
-            return new TexMipmap()
+            return new TexMipmap
             {
                 Width = reader.ReadInt32(),
                 Height = reader.ReadInt32(),
                 IsLZ4Compressed = reader.ReadInt32() == 1,
                 DecompressedBytesCount = reader.ReadInt32(),
-                BytesCount = reader.ReadInt32()
+                Bytes = ReadBytes(reader)
             };
         }
 
-        private void ReadBytes(BinaryReader reader, TexMipmap mipmap)
+        private byte[] ReadBytes(BinaryReader reader)
         {
+            var byteCount = reader.ReadInt32();
+            
+            if (reader.BaseStream.Position + byteCount > reader.BaseStream.Length)
+                throw new UnsafeTexException("Detected invalid mipmap byte count - exceeds stream length");
+
+            if (byteCount > Constants.MaximumMipmapByteCount)
+                throw new UnsafeTexException(
+                    $"Mipmap byte count exceeds maximum size: {byteCount}/{Constants.MaximumMipmapByteCount}");
+
             if (!ReadMipmapBytes)
             {
-                reader.BaseStream.Seek(mipmap.BytesCount, SeekOrigin.Current);
-                return;
+                reader.BaseStream.Seek(byteCount, SeekOrigin.Current);
+                return null;
             }
 
-            mipmap.Bytes = new byte[mipmap.BytesCount];
+            var bytes = new byte[byteCount];
+            var bytesRead = reader.Read(bytes, 0, byteCount);
 
-            var bytesRead = reader.Read(mipmap.Bytes, 0, mipmap.BytesCount);
-
-            if (bytesRead != mipmap.BytesCount)
+            if (bytesRead != byteCount)
                 throw new Exception("Failed to read bytes from stream while reading mipmap");
 
-            if (DecompressMipmapBytes)
-                _texMipmapDecompressor.DecompressMipmap(mipmap);
+            return bytes;
+        }
+
+        private Func<BinaryReader, TexMipmap> PickMipmapReader(TexImageContainerVersion containerVersion)
+        {
+            switch (containerVersion)
+            {
+                case TexImageContainerVersion.Version1:
+                    return ReadMipmapV1;
+
+                case TexImageContainerVersion.Version2:
+                case TexImageContainerVersion.Version3:
+                    return ReadMipmapV2And3;
+
+                default:
+                    throw new InvalidOperationException(
+                        $"Tex image container version: {containerVersion} is not supported!");
+            }
         }
     }
 }

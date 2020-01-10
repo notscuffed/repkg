@@ -26,6 +26,7 @@ namespace RePKG.Application
         public static void WriteNString(this BinaryWriter writer, string input)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
+            if (input == null) throw new ArgumentNullException(nameof(input));
 
             writer.Write(Encoding.UTF8.GetBytes(input));
             writer.Write((byte) 0);

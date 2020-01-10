@@ -6,10 +6,15 @@ namespace RePKG.Core.Texture
     {
         public static MipmapFormat GetFormatForTex(Tex tex)
         {
-            if (tex.ImagesContainer.ImageFormat != FreeImageFormat.FIF_UNKNOWN)
-                return FreeImageFormatToMipmapFormat(tex.ImagesContainer.ImageFormat);
+            return GetFormatForTex(tex.ImagesContainer.ImageFormat, tex.Header.Format);
+        }
+        
+        public static MipmapFormat GetFormatForTex(FreeImageFormat imageFormat, TexFormat texFormat)
+        {
+            if (imageFormat != FreeImageFormat.FIF_UNKNOWN)
+                return FreeImageFormatToMipmapFormat(imageFormat);
             
-            switch (tex.Header.Format)
+            switch (texFormat)
             {
                 case TexFormat.RGBA8888:
                     return MipmapFormat.RGBA8888;

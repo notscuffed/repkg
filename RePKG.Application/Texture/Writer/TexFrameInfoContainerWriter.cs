@@ -13,7 +13,7 @@ namespace RePKG.Application.Texture
             if (frameInfoContainer == null) throw new ArgumentNullException(nameof(frameInfoContainer));
 
             writer.WriteNString(frameInfoContainer.Magic);
-            writer.Write(frameInfoContainer.Frames.Length);
+            writer.Write(frameInfoContainer.Frames.Count);
 
             switch (frameInfoContainer.Magic)
             {

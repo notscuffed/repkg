@@ -33,9 +33,7 @@ namespace RePKG.Application.Texture
                 throw new UnknownTexHeaderMagicException(nameof(tex.Magic2), tex.Magic2);
 
             tex.Header = _texHeaderReader.ReadFrom(reader);
-            tex.ImagesContainer = _texImageContainerReader.ReadFrom(reader);
-
-            _texImageContainerReader.ReadImagesFrom(reader, tex);
+            tex.ImagesContainer = _texImageContainerReader.ReadFrom(reader, tex.Header.Format);
 
             if (tex.IsGif)
                 tex.FrameInfoContainer = _texFrameInfoContainerReader.ReadFrom(reader);

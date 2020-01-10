@@ -27,7 +27,7 @@ namespace RePKG.Application.Texture
                     throw new ArgumentOutOfRangeException();
             }
             
-            writer.Write(image.Mipmaps.Length);
+            writer.Write(image.Mipmaps.Count);
 
             foreach (var mipmap in image.Mipmaps)
             {
@@ -43,7 +43,7 @@ namespace RePKG.Application.Texture
 
             writer.Write(mipmap.Width);
             writer.Write(mipmap.Height);
-            writer.Write(mipmap.BytesCount);
+            writer.Write(mipmap.Bytes.Length);
             writer.Write(mipmap.Bytes);
         }
 
@@ -53,7 +53,7 @@ namespace RePKG.Application.Texture
             writer.Write(mipmap.Height);
             writer.Write(mipmap.IsLZ4Compressed ? 1 : 0);
             writer.Write(mipmap.DecompressedBytesCount);
-            writer.Write(mipmap.BytesCount);
+            writer.Write(mipmap.Bytes.Length);
             writer.Write(mipmap.Bytes);
         }
     }

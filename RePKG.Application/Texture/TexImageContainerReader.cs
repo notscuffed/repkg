@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using RePKG.Application.Exceptions;
 using RePKG.Core.Texture;
@@ -13,73 +14,42 @@ namespace RePKG.Application.Texture
             _texImageReader = texImageReader;
         }
 
-        public TexImageContainer ReadFrom(BinaryReader reader)
+        public TexImageContainer ReadFrom(BinaryReader reader, TexFormat texFormat)
         {
-            var magic = reader.ReadNString(16);
+            var container = new TexImageContainer
+            {
+                Magic = reader.ReadNString(maxLength: 16)
+            };
 
-            TexImageContainer container;
+            var imageCount = reader.ReadInt32();
 
-            switch (magic)
+            if (imageCount > Constants.MaximumImageCount)
+                throw new UnsafeTexException(
+                    $"Image count exceeds limit: {imageCount}/{Constants.MaximumImageCount}");
+ 
+            switch (container.Magic)
             {
                 case "TEXB0001":
-                    container = ReadV1(reader);
-                    break;
-
                 case "TEXB0002":
-                    container = ReadV2(reader);
                     break;
 
                 case "TEXB0003":
-                    container = ReadV3(reader);
+                    container.ImageFormat = (FreeImageFormat) reader.ReadInt32();
                     break;
 
                 default:
-                    throw new UnknownTexImageContainerMagicException(magic);
+                    throw new UnknownTexImageContainerMagicException(container.Magic);
             }
 
+            container.ImageContainerVersion = (TexImageContainerVersion) Convert.ToInt32(container.Magic.Substring(4));
             container.ImageFormat.AssertValid();
+            
+            for (var i = 0; i < imageCount; i++)
+            {
+               container.Images.Add(_texImageReader.ReadFrom(reader, container, texFormat));
+            }
 
             return container;
-        }
-
-        public void ReadImagesFrom(BinaryReader reader, Tex tex)
-        {
-            for (var i = 0; i < tex.ImagesContainer.ImageCount; i++)
-            {
-                var image = _texImageReader.ReadFrom(reader, tex);
-                tex.ImagesContainer.Images.Add(image);
-            }
-        }
-
-        private static TexImageContainer ReadV1(BinaryReader reader)
-        {
-            return new TexImageContainer
-            {
-                ImageContainerVersion = TexImageContainerVersion.Version1,
-                Magic = "TEXB0001",
-                ImageCount = reader.ReadInt32()
-            };
-        }
-
-        private static TexImageContainer ReadV2(BinaryReader reader)
-        {
-            return new TexImageContainer
-            {
-                ImageContainerVersion = TexImageContainerVersion.Version2,
-                Magic = "TEXB0002",
-                ImageCount = reader.ReadInt32()
-            };
-        }
-
-        private static TexImageContainer ReadV3(BinaryReader reader)
-        {
-            return new TexImageContainer
-            {
-                ImageContainerVersion = TexImageContainerVersion.Version3,
-                Magic = "TEXB0003",
-                ImageCount = reader.ReadInt32(),
-                ImageFormat = (FreeImageFormat) reader.ReadInt32()
-            };
         }
     }
 }

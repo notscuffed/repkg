@@ -20,48 +20,26 @@ namespace RePKG.Application.Texture
             if (imageContainer == null) throw new ArgumentNullException(nameof(imageContainer));
             
             writer.WriteNString(imageContainer.Magic);
+            writer.Write(imageContainer.Images.Count);
 
-            switch (imageContainer.Magic)
+            switch (imageContainer.ImageContainerVersion)
             {
-                case "TEXB0001":
-                    WriteV1(imageContainer, writer);
+                case TexImageContainerVersion.Version1:
+                case TexImageContainerVersion.Version2:
                     break;
 
-                case "TEXB0002":
-                    WriteV2(imageContainer, writer);
-                    break;
-
-                case "TEXB0003":
-                    WriteV3(imageContainer, writer);
+                case TexImageContainerVersion.Version3:
+                    writer.Write((int) imageContainer.ImageFormat);
                     break;
 
                 default:
                     throw new UnknownMagicException(nameof(TexImageContainerWriter), imageContainer.Magic);
             }
-        }
-
-        public void WriteImagesTo(BinaryWriter writer, Tex tex)
-        {
-            foreach (var image in tex.ImagesContainer.Images)
+            
+            foreach (var image in imageContainer.Images)
             {
-                _texImageWriter.WriteTo(writer, tex, image);
+                _texImageWriter.WriteTo(writer, imageContainer.ImageContainerVersion, image);
             }
-        }
-
-        private static void WriteV1(TexImageContainer container, BinaryWriter writer)
-        {
-            writer.Write(container.Images.Count);
-        }
-
-        private static void WriteV2(TexImageContainer container, BinaryWriter writer)
-        {
-            writer.Write(container.Images.Count);
-        }
-
-        private static void WriteV3(TexImageContainer container, BinaryWriter writer)
-        {
-            writer.Write(container.Images.Count);
-            writer.Write((int) container.ImageFormat);
         }
     }
 }

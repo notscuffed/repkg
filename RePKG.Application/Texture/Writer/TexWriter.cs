@@ -38,8 +38,6 @@ namespace RePKG.Application.Texture
             _texHeaderWriter.WriteTo(writer, tex.Header);
             _texImageContainerWriter.WriteTo(writer, tex.ImagesContainer);
 
-            _texImageContainerWriter.WriteImagesTo(writer, tex);
-
             if (tex.IsGif)
                 _texFrameInfoContainerWriter.WriteTo(writer, tex.FrameInfoContainer);
         }

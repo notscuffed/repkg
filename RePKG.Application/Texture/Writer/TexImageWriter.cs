@@ -6,26 +6,12 @@ namespace RePKG.Application.Texture
 {
     public class TexImageWriter : ITexImageWriter
     {
-        public void WriteTo(BinaryWriter writer, Tex tex, TexImage image)
+        public void WriteTo(BinaryWriter writer, TexImageContainerVersion containerVersion, TexImage image)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
-            if (tex == null) throw new ArgumentNullException(nameof(tex));
             if (image == null) throw new ArgumentNullException(nameof(image));
 
-            Action<BinaryWriter, TexMipmap> mipmapWriter;
-
-            switch (tex.ImagesContainer.ImageContainerVersion)
-            {
-                case TexImageContainerVersion.Version1:
-                    mipmapWriter = WriteMipmapV1;
-                    break;
-                case TexImageContainerVersion.Version2:
-                case TexImageContainerVersion.Version3:
-                    mipmapWriter = WriteMipmapV2And3;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            var mipmapWriter = PickMipmapWriter(containerVersion);
             
             writer.Write(image.Mipmaps.Count);
 
@@ -55,6 +41,22 @@ namespace RePKG.Application.Texture
             writer.Write(mipmap.DecompressedBytesCount);
             writer.Write(mipmap.Bytes.Length);
             writer.Write(mipmap.Bytes);
+        }
+
+        private static Action<BinaryWriter, TexMipmap> PickMipmapWriter(TexImageContainerVersion containerVersion)
+        {
+            switch (containerVersion)
+            {
+                case TexImageContainerVersion.Version1:
+                    return WriteMipmapV1;
+
+                case TexImageContainerVersion.Version2:
+                case TexImageContainerVersion.Version3:
+                    return WriteMipmapV2And3;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(containerVersion));
+            }
         }
     }
 }

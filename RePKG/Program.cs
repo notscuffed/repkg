@@ -20,8 +20,7 @@ namespace RePKG
 
             Parser.Default.ParseArguments<ExtractOptions, InfoOptions>(args)
                 .WithParsed<ExtractOptions>(Extract.Action)
-                .WithParsed<InfoOptions>(Info.Action)
-                .WithNotParsed(NotParsedAction);
+                .WithParsed<InfoOptions>(Info.Action);
         }
 
         private static void Cancel(object sender, ConsoleCancelEventArgs e)
@@ -44,8 +43,7 @@ namespace RePKG
 
                 Parser.Default.ParseArguments<ExtractOptions, InfoOptions>(interactiveArgs)
                     .WithParsed<ExtractOptions>(Extract.Action)
-                    .WithParsed<InfoOptions>(Info.Action)
-                    .WithNotParsed(NotParsedAction);
+                    .WithParsed<InfoOptions>(Info.Action);
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using RePKG.Core.Texture;
 
@@ -7,6 +8,8 @@ namespace RePKG.Application.Texture
     {
         public TexHeader ReadFrom(BinaryReader reader)
         {
+            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            
             var header = new TexHeader
             {
                 Format = (TexFormat) reader.ReadInt32(),

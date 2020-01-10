@@ -16,6 +16,9 @@ namespace RePKG.Application.Texture
 
         public TexImageContainer ReadFrom(BinaryReader reader, TexFormat texFormat)
         {
+            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            texFormat.AssertValid();
+            
             var container = new TexImageContainer
             {
                 Magic = reader.ReadNString(maxLength: 16)
@@ -38,7 +41,7 @@ namespace RePKG.Application.Texture
                     break;
 
                 default:
-                    throw new UnknownTexImageContainerMagicException(container.Magic);
+                    throw new UnknownMagicException(nameof(TexImageContainerReader), container.Magic);
             }
 
             container.ImageContainerVersion = (TexImageContainerVersion) Convert.ToInt32(container.Magic.Substring(4));

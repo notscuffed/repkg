@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using RePKG.Application.Exceptions;
 using RePKG.Core.Texture;
@@ -8,6 +9,8 @@ namespace RePKG.Application.Texture
     {
         public TexFrameInfoContainer ReadFrom(BinaryReader reader)
         {
+            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            
             var container = new TexFrameInfoContainer
             {
                 Magic = reader.ReadNString(maxLength: 16)
@@ -29,7 +32,7 @@ namespace RePKG.Application.Texture
                     break;
 
                 default:
-                    throw new UnknownTexFrameInfoContainerMagicException(container.Magic);
+                    throw new UnknownMagicException(nameof(TexFrameInfoContainerReader), container.Magic);
             }
 
             for (var i = 0; i < frameCount; i++)

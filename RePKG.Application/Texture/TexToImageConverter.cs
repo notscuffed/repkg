@@ -14,6 +14,8 @@ namespace RePKG.Application.Texture
     {
         public ImageResult ConvertToImage(Tex tex)
         {
+            if (tex == null) throw new ArgumentNullException(nameof(tex));
+            
             if (tex.IsGif)
                 return ConvertToGif(tex);
 
@@ -52,6 +54,8 @@ namespace RePKG.Application.Texture
 
         public MipmapFormat GetConvertedFormat(Tex tex)
         {
+            if (tex == null) throw new ArgumentNullException(nameof(tex));
+            
             if (tex.IsGif)
                 return MipmapFormat.ImageGIF;
 

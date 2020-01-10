@@ -7,6 +7,6 @@ namespace RePKG.Core.Texture
     {
         public List<TexMipmap> Mipmaps { get; } = new List<TexMipmap>();
 
-        public TexMipmap FirstMipmap => Mipmaps?.FirstOrDefault();
+        public TexMipmap FirstMipmap => Mipmaps.FirstOrDefault();
     }
 }

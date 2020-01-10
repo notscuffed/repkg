@@ -21,6 +21,10 @@ namespace RePKG.Application.Texture
             TexImageContainer container,
             TexFormat texFormat)
         {
+            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            if (container == null) throw new ArgumentNullException(nameof(container));
+            texFormat.AssertValid();
+
             var mipmapCount = reader.ReadInt32();
 
             if (mipmapCount > Constants.MaximumMipmapCount)

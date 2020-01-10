@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using RePKG.Application.Exceptions;
 using RePKG.Core.Texture;
@@ -22,15 +23,17 @@ namespace RePKG.Application.Texture
 
         public Tex ReadFrom(BinaryReader reader)
         {
+            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            
             var tex = new Tex {Magic1 = reader.ReadNString(maxLength: 16)};
 
             if (tex.Magic1 != "TEXV0005")
-                throw new UnknownTexHeaderMagicException(nameof(tex.Magic1), tex.Magic1);
+                throw new UnknownMagicException(nameof(TexReader), nameof(tex.Magic1), tex.Magic1);
 
             tex.Magic2 = reader.ReadNString(maxLength: 16);
 
             if (tex.Magic2 != "TEXI0001")
-                throw new UnknownTexHeaderMagicException(nameof(tex.Magic2), tex.Magic2);
+                throw new UnknownMagicException(nameof(TexReader), nameof(tex.Magic2), tex.Magic2);
 
             tex.Header = _texHeaderReader.ReadFrom(reader);
             tex.ImagesContainer = _texImageContainerReader.ReadFrom(reader, tex.Header.Format);

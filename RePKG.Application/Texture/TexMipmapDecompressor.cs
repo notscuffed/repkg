@@ -1,4 +1,6 @@
+using System;
 using K4os.Compression.LZ4;
+using RePKG.Application.Texture.Helpers;
 using RePKG.Core.Texture;
 
 namespace RePKG.Application.Texture
@@ -7,6 +9,8 @@ namespace RePKG.Application.Texture
     {
         public void DecompressMipmap(TexMipmap mipmap)
         {
+            if (mipmap == null) throw new ArgumentNullException(nameof(mipmap));
+
             if (mipmap.IsLZ4Compressed)
             {
                 mipmap.Bytes = Lz4Decompress(mipmap.Bytes, mipmap.DecompressedBytesCount);
@@ -19,15 +23,15 @@ namespace RePKG.Application.Texture
             switch (mipmap.Format)
             {
                 case MipmapFormat.CompressedDXT5:
-                    mipmap.Bytes = DXT.DecompressImage(mipmap.Width, mipmap.Height, mipmap.Bytes, DXT.DXTFlags.DXT5);
+                    mipmap.Bytes = DXT.DecompressImage(mipmap.Width, mipmap.Height, mipmap.Bytes, DXTFlags.DXT5);
                     mipmap.Format = MipmapFormat.RGBA8888;
                     break;
                 case MipmapFormat.CompressedDXT3:
-                    mipmap.Bytes = DXT.DecompressImage(mipmap.Width, mipmap.Height, mipmap.Bytes, DXT.DXTFlags.DXT3);
+                    mipmap.Bytes = DXT.DecompressImage(mipmap.Width, mipmap.Height, mipmap.Bytes, DXTFlags.DXT3);
                     mipmap.Format = MipmapFormat.RGBA8888;
                     break;
                 case MipmapFormat.CompressedDXT1:
-                    mipmap.Bytes = DXT.DecompressImage(mipmap.Width, mipmap.Height, mipmap.Bytes, DXT.DXTFlags.DXT1);
+                    mipmap.Bytes = DXT.DecompressImage(mipmap.Width, mipmap.Height, mipmap.Bytes, DXTFlags.DXT1);
                     mipmap.Format = MipmapFormat.RGBA8888;
                     break;
             }

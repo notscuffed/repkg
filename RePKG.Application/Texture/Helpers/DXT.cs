@@ -20,23 +20,13 @@
 
 // most of the algorithms and data used in this Class-file has been ported from LibSquish!
 // http://code.google.com/p/libsquish/
-// ReSharper disable InconsistentNaming
 
-using System;
+using RePKG.Core.Texture;
 
-namespace RePKG.Core.Texture
+namespace RePKG.Application.Texture.Helpers
 {
     public static class DXT
     {
-        [Flags]
-        public enum DXTFlags
-        {
-            DXT1 = 1,
-            DXT3 = 1 << 1,
-            DXT5 = 1 << 2,
-            // Additional Enums not implemented :o
-        }
-
         private static void Decompress(byte[] rgba, byte[] block, int blockIndex, DXTFlags flags)
         {
             // get the block locations

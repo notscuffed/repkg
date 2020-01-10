@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json;
 using RePKG.Core.Texture;
 
@@ -7,6 +8,8 @@ namespace RePKG.Application.Texture
     {
         public string GenerateInfo(Tex tex)
         {
+            if (tex == null) throw new ArgumentNullException(nameof(tex));
+            
             return JsonConvert.SerializeObject(new
             {
                 bleedtransparentcolors = true,

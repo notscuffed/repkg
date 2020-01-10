@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using RePKG.Core.Package;
 using RePKG.Core.Package.Interfaces;
 
@@ -10,28 +10,27 @@ namespace RePKG.Application.Package
     {
         public bool ReadEntryBytes { get; set; } = true;
 
-        public Core.Package.Package ReadFromStream(Stream stream)
+        public Core.Package.Package ReadFrom(BinaryReader reader)
         {
-            using (var reader = new BinaryReader(stream, Encoding.UTF8, true))
+            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            
+            var packageStart = reader.BaseStream.Position;
+            var package = new Core.Package.Package
             {
-                var packageStart = stream.Position;
-                var package = new Core.Package.Package
-                {
-                    Magic = reader.ReadStringI32Size(maxLength: 32)
-                };
+                Magic = reader.ReadStringI32Size(maxLength: 32)
+            };
 
-                ReadEntries(package.Entries, reader);
+            ReadEntries(package.Entries, reader);
 
-                var dataStart = (int) stream.Position;
-                package.HeaderSize = (int) (dataStart - packageStart);
+            var dataStart = (int) reader.BaseStream.Position;
+            package.HeaderSize = (int) (dataStart - packageStart);
 
-                if (!ReadEntryBytes)
-                    return package;
-
-                PopulateEntriesWithData(dataStart, package.Entries, reader);
-
+            if (!ReadEntryBytes)
                 return package;
-            }
+
+            PopulateEntriesWithData(dataStart, package.Entries, reader);
+
+            return package;
         }
 
         private static void ReadEntries(List<PackageEntry> list, BinaryReader reader)

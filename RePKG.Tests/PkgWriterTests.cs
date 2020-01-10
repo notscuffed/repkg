@@ -15,13 +15,13 @@ namespace RePKG.Tests
         public void TestWriteAndRead()
         {
             var package = new Package {Magic = "PKGV0005"};
-            
+
             package.Entries.Add(new PackageEntry
             {
                 Bytes = Encoding.ASCII.GetBytes("Hello world!"),
                 FullPath = "hello_world.txt",
             });
-            
+
             package.Entries.Add(new PackageEntry
             {
                 Bytes = Encoding.ASCII.GetBytes("Test"),
@@ -31,12 +31,20 @@ namespace RePKG.Tests
             // Write
             IPackageWriter writer = new PackageWriter();
             var stream = new MemoryStream();
-            writer.WriteToStream(package, stream);
+            using (var binaryWriter = new BinaryWriter(stream, Encoding.UTF8, true))
+            {
+                writer.WriteTo(binaryWriter, package);
+            }
 
             // Read
             stream.Position = 0;
             var packageReader = new PackageReader {ReadEntryBytes = true};
-            var readPackage = packageReader.ReadFromStream(stream);
+            
+            Package readPackage;
+            using (var binaryReader = new BinaryReader(stream, Encoding.UTF8, true))
+            {
+                readPackage = packageReader.ReadFrom(binaryReader);
+            }
 
             // Verify
             Assert.AreEqual(package.Magic, readPackage.Magic);
@@ -46,7 +54,7 @@ namespace RePKG.Tests
             {
                 var entry = package.Entries[i];
                 var readEntry = readPackage.Entries[i];
-                
+
                 Assert.AreEqual(entry.Bytes, readEntry.Bytes);
                 Assert.AreEqual(entry.Extension, readEntry.Extension);
                 Assert.AreEqual(entry.Length, readEntry.Length);

@@ -1,0 +1,22 @@
+*        text=auto eol=lf
+*.csproj text=auto eol=crlf
+*.sln    text=auto eol=crlf
+
+# Binary files
+*.gif     -text diff
+*.gz      -text diff
+*.ico     -text diff
+*.jpeg    -text diff
+*.jpg     -text diff
+*.png     -text diff
+*.phar    -text diff
+*.pdf     -text diff
+*.exe     -text diff
+*.svgz    -text diff
+*.eot     -text diff
+*.ttf     -text diff
+*.woff    -text diff
+*.woff2   -text diff
+*.mp4     -text diff
+*.tex     -text diff
+*.pkg     -text diff

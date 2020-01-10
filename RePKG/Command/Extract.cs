@@ -192,7 +192,12 @@ namespace RePKG.Command
             Console.WriteLine($"\r\n### Extracting package: {file.FullName}");
 
             // Load package
-            var package = _packageReader.ReadFromStream(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read));
+            Package package;
+
+            using (var reader = new BinaryReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
+            {
+                package = _packageReader.ReadFrom(reader);
+            }
 
             // Get output directory
             string outputDirectory;

@@ -5,6 +5,7 @@ using System.Linq;
 using CommandLine;
 using Newtonsoft.Json;
 using RePKG.Application.Package;
+using RePKG.Core.Package;
 using RePKG.Core.Package.Interfaces;
 
 namespace RePKG.Command
@@ -50,7 +51,7 @@ namespace RePKG.Command
                 Console.WriteLine(options.Input);
                 return;
             }
-            
+
             InfoFile(fileInfo);
             Console.WriteLine("Done");
         }
@@ -70,7 +71,6 @@ namespace RePKG.Command
 
         private static void InfoTexDirectory(DirectoryInfo directoryInfo)
         {
-
         }
 
         private static void InfoFile(FileInfo file)
@@ -82,7 +82,7 @@ namespace RePKG.Command
             else
                 Console.WriteLine($"Unrecognized file extension: {file.Extension}");
         }
-        
+
         private static void InfoPkg(FileInfo file, string name)
         {
             var projectInfo = GetProjectInfo(file);
@@ -117,8 +117,12 @@ namespace RePKG.Command
             if (_options.PrintEntries)
             {
                 Console.WriteLine("Package entries:");
-                
-                var package = _reader.ReadFromStream(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read));
+
+                Package package;
+                using (var reader = new BinaryReader(file.Open(FileMode.Open, FileAccess.Read, FileShare.Read)))
+                {
+                    package = _reader.ReadFrom(reader);
+                }
 
                 var entries = package.Entries;
 
@@ -143,7 +147,6 @@ namespace RePKG.Command
 
         private static void InfoTex(FileInfo file)
         {
-
         }
 
         private static dynamic GetProjectInfo(FileInfo packageFile)

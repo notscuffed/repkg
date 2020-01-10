@@ -4,6 +4,6 @@ namespace RePKG.Core.Package.Interfaces
 {
     public interface IPackageReader
     {
-        Package ReadFromStream(Stream stream);
+        Package ReadFrom(BinaryReader reader);
     }
 }

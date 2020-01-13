@@ -17,8 +17,10 @@ namespace RePKG.Application.Texture
         public TexImageContainer ReadFrom(BinaryReader reader, TexFormat texFormat)
         {
             if (reader == null) throw new ArgumentNullException(nameof(reader));
-            texFormat.AssertValid();
-            
+
+            if (!texFormat.IsValid())
+                throw new EnumNotValidException<TexFormat>(texFormat);
+
             var container = new TexImageContainer
             {
                 Magic = reader.ReadNString(maxLength: 16)
@@ -29,7 +31,7 @@ namespace RePKG.Application.Texture
             if (imageCount > Constants.MaximumImageCount)
                 throw new UnsafeTexException(
                     $"Image count exceeds limit: {imageCount}/{Constants.MaximumImageCount}");
- 
+
             switch (container.Magic)
             {
                 case "TEXB0001":
@@ -45,11 +47,13 @@ namespace RePKG.Application.Texture
             }
 
             container.ImageContainerVersion = (TexImageContainerVersion) Convert.ToInt32(container.Magic.Substring(4));
-            container.ImageFormat.AssertValid();
             
+            if (!container.ImageFormat.IsValid())
+                throw new EnumNotValidException<FreeImageFormat>(container.ImageFormat);
+
             for (var i = 0; i < imageCount; i++)
             {
-               container.Images.Add(_texImageReader.ReadFrom(reader, container, texFormat));
+                container.Images.Add(_texImageReader.ReadFrom(reader, container, texFormat));
             }
 
             return container;

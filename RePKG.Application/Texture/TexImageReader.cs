@@ -23,7 +23,9 @@ namespace RePKG.Application.Texture
         {
             if (reader == null) throw new ArgumentNullException(nameof(reader));
             if (container == null) throw new ArgumentNullException(nameof(container));
-            texFormat.AssertValid();
+            
+            if (!texFormat.IsValid())
+                throw new EnumNotValidException<TexFormat>(texFormat);
 
             var mipmapCount = reader.ReadInt32();
 

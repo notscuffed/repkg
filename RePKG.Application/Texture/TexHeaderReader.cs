@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using RePKG.Application.Exceptions;
 using RePKG.Core.Texture;
 
 namespace RePKG.Application.Texture
@@ -21,8 +22,9 @@ namespace RePKG.Application.Texture
                 UnkInt0 = reader.ReadUInt32()
             };
 
-            header.Format.AssertValid();
-
+            if (!header.Format.IsValid())
+                throw new EnumNotValidException<TexFormat>(header.Format);
+            
             return header;
         }
     }

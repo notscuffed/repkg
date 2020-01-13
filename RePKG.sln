@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RePKG.Core", "RePKG.Core\Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RePKG.Application", "RePKG.Application\RePKG.Application.csproj", "{DDFFD8D1-3961-4F1B-B778-1CAC5622AA19}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RePKG.Native", "RePKG.Native\RePKG.Native.csproj", "{0F021351-F248-47AF-8344-1895E915A617}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{DDFFD8D1-3961-4F1B-B778-1CAC5622AA19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDFFD8D1-3961-4F1B-B778-1CAC5622AA19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDFFD8D1-3961-4F1B-B778-1CAC5622AA19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F021351-F248-47AF-8344-1895E915A617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F021351-F248-47AF-8344-1895E915A617}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F021351-F248-47AF-8344-1895E915A617}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F021351-F248-47AF-8344-1895E915A617}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

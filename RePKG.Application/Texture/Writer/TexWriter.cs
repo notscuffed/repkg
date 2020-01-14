@@ -21,7 +21,7 @@ namespace RePKG.Application.Texture
             _texFrameInfoContainerWriter = texFrameInfoContainerWriter;
         }
 
-        public void WriteTo(BinaryWriter writer, Tex tex)
+        public void WriteTo(BinaryWriter writer, ITex tex)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
             if (tex == null) throw new ArgumentNullException(nameof(tex));

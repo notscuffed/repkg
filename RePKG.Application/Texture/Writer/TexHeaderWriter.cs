@@ -6,7 +6,7 @@ namespace RePKG.Application.Texture
 {
     public class TexHeaderWriter : ITexHeaderWriter
     {
-        public void WriteTo(BinaryWriter writer, TexHeader header)
+        public void WriteTo(BinaryWriter writer, ITexHeader header)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
             if (header == null) throw new ArgumentNullException(nameof(header));

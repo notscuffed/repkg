@@ -7,7 +7,7 @@ namespace RePKG.Application.Texture
 {
     public class TexFrameInfoContainerReader : ITexFrameInfoContainerReader
     {
-        public TexFrameInfoContainer ReadFrom(BinaryReader reader)
+        public ITexFrameInfoContainer ReadFrom(BinaryReader reader)
         {
             if (reader == null) throw new ArgumentNullException(nameof(reader));
             

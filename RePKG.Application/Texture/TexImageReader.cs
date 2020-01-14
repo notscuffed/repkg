@@ -16,9 +16,9 @@ namespace RePKG.Application.Texture
             _texMipmapDecompressor = texMipmapDecompressor;
         }
 
-        public TexImage ReadFrom(
+        public ITexImage ReadFrom(
             BinaryReader reader,
-            TexImageContainer container,
+            ITexImageContainer container,
             TexFormat texFormat)
         {
             if (reader == null) throw new ArgumentNullException(nameof(reader));

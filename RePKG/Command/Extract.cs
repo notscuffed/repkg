@@ -29,13 +29,7 @@ namespace RePKG.Command
 
         static Extract()
         {
-            var texHeaderReader = new TexHeaderReader();
-            var texMipmapDecompressor = new TexMipmapDecompressor();
-            var texImageReader = new TexImageReader(texMipmapDecompressor);
-            var texImageContainerReader = new TexImageContainerReader(texImageReader);
-            var texFrameInfoReader = new TexFrameInfoContainerReader();
-
-            _texReader = new TexReader(texHeaderReader, texImageContainerReader, texFrameInfoReader);
+            _texReader = TexReader.Default;
             _texJsonInfoGenerator = new TexJsonInfoGenerator();
             _texToImageConverter = new TexToImageConverter();
 
@@ -343,7 +337,7 @@ namespace RePKG.Command
             outputDirectory = Path.Combine(_options.OutputDirectory, defaultProjectName);
         }
 
-        private static Tex LoadTex(byte[] bytes, string name)
+        private static ITex LoadTex(byte[] bytes, string name)
         {
             if (Program.Closing)
                 Environment.Exit(0);
@@ -366,7 +360,7 @@ namespace RePKG.Command
             return null;
         }
         
-        private static void ConvertToImageAndSave(Tex tex, string path, bool overwrite)
+        private static void ConvertToImageAndSave(ITex tex, string path, bool overwrite)
         {
             var format = _texToImageConverter.GetConvertedFormat(tex);
             var outputPath = $"{path}.{format.GetFileExtension()}";

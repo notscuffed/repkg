@@ -7,7 +7,7 @@ namespace RePKG.Application.Texture
 {
     public class TexMipmapDecompressor : ITexMipmapDecompressor
     {
-        public void DecompressMipmap(TexMipmap mipmap)
+        public void DecompressMipmap(ITexMipmap mipmap)
         {
             if (mipmap == null) throw new ArgumentNullException(nameof(mipmap));
 

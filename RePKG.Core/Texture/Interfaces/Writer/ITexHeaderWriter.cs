@@ -4,6 +4,6 @@ namespace RePKG.Core.Texture
 {
     public interface ITexHeaderWriter
     {
-        void WriteTo(BinaryWriter writer, TexHeader header);
+        void WriteTo(BinaryWriter writer, ITexHeader header);
     }
 }

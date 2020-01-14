@@ -1,6 +1,6 @@
 namespace RePKG.Core.Texture
 {
-    public class TexFrameInfo
+    public class TexFrameInfo : ITexFrameInfo
     {
         public int ImageId { get; set; }
         public float Frametime { get; set; }

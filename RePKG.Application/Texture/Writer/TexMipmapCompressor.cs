@@ -7,7 +7,7 @@ namespace RePKG.Application.Texture
     public class TexMipmapCompressor : ITexMipmapCompressor
     {
         public void CompressMipmap(
-            TexMipmap mipmap,
+            ITexMipmap mipmap,
             MipmapFormat targetCompressFormat,
             bool lz4Compress)
         {
@@ -20,7 +20,7 @@ namespace RePKG.Application.Texture
             if (lz4Compress) LZ4Compress(mipmap);
         }
 
-        private static void LZ4Compress(TexMipmap mipmap)
+        private static void LZ4Compress(ITexMipmap mipmap)
         {
             var bytes = mipmap.Bytes;
             var maximumSize = LZ4Codec.MaximumOutputSize(bytes.Length);

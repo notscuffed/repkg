@@ -3,10 +3,10 @@ using System.Linq;
 
 namespace RePKG.Core.Texture
 {
-    public class TexImage
+    public class TexImage : ITexImage
     {
-        public List<TexMipmap> Mipmaps { get; } = new List<TexMipmap>();
+        public IList<ITexMipmap> Mipmaps { get; } = new List<ITexMipmap>();
 
-        public TexMipmap FirstMipmap => Mipmaps.FirstOrDefault();
+        public ITexMipmap FirstMipmap => Mipmaps.FirstOrDefault();
     }
 }

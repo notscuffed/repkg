@@ -12,7 +12,7 @@ namespace RePKG.Application.Texture
 {
     public class TexToImageConverter
     {
-        public ImageResult ConvertToImage(Tex tex)
+        public ImageResult ConvertToImage(ITex tex)
         {
             if (tex == null) throw new ArgumentNullException(nameof(tex));
             
@@ -52,7 +52,7 @@ namespace RePKG.Application.Texture
             };
         }
 
-        public MipmapFormat GetConvertedFormat(Tex tex)
+        public MipmapFormat GetConvertedFormat(ITex tex)
         {
             if (tex == null) throw new ArgumentNullException(nameof(tex));
             
@@ -67,7 +67,7 @@ namespace RePKG.Application.Texture
             return format.IsRawFormat() ? MipmapFormat.ImagePNG : format;
         }
 
-        private static ImageResult ConvertToGif(Tex tex)
+        private static ImageResult ConvertToGif(ITex tex)
         {
             var frameFormat = tex.FirstImage.FirstMipmap.Format;
 

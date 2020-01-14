@@ -1,6 +1,6 @@
 namespace RePKG.Core.Texture
 {
-    public class TexHeader
+    public class TexHeader : ITexHeader
     {
         public TexFormat Format { get; set; }
         public TexFlags Flags { get; set; }

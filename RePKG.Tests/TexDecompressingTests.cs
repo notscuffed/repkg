@@ -21,13 +21,7 @@ namespace RePKG.Tests
             Directory.CreateDirectory($"{TestHelper.BasePath}\\{OutputDirectoryName}\\");
             Directory.CreateDirectory($"{TestHelper.BasePath}\\{ValidatedDirectoryName}\\");
 
-            var headerReader = new TexHeaderReader();
-            var mipmapDecompressor = new TexMipmapDecompressor();
-            var mipmapReader = new TexImageReader(mipmapDecompressor);
-            var containerReader = new TexImageContainerReader(mipmapReader);
-            var frameInfoReader = new TexFrameInfoContainerReader();
-
-            _reader = new TexReader(headerReader, containerReader, frameInfoReader);
+            _reader = TexReader.Default;
             _texToImageConverter = new TexToImageConverter();
         }
 
@@ -68,7 +62,7 @@ namespace RePKG.Tests
             }
         }
 
-        private void ConvertToImageAndSave(Tex tex, string name)
+        private void ConvertToImageAndSave(ITex tex, string name)
         {
             var resultImage = _texToImageConverter.ConvertToImage(tex);
             

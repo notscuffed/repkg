@@ -4,6 +4,6 @@ namespace RePKG.Core.Texture
 {
     public interface ITexFrameInfoContainerWriter
     {
-        void WriteTo(BinaryWriter writer, TexFrameInfoContainer frameInfoContainer);
+        void WriteTo(BinaryWriter writer, ITexFrameInfoContainer frameInfoContainer);
     }
 }

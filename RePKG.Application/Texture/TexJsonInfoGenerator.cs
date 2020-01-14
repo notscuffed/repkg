@@ -7,7 +7,7 @@ namespace RePKG.Application.Texture
 {
     public class TexJsonInfoGenerator : ITexJsonInfoGenerator
     {
-        public string GenerateInfo(Tex tex)
+        public string GenerateInfo(ITex tex)
         {
             if (tex == null) throw new ArgumentNullException(nameof(tex));
 

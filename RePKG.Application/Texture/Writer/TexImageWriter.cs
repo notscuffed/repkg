@@ -12,7 +12,7 @@ namespace RePKG.Application.Texture
             if (image == null) throw new ArgumentNullException(nameof(image));
 
             var mipmapWriter = PickMipmapWriter(containerVersion);
-            
+
             writer.Write(image.Mipmaps.Count);
 
             foreach (var mipmap in image.Mipmaps)
@@ -32,8 +32,9 @@ namespace RePKG.Application.Texture
 
             using (var stream = mipmap.GetBytesStream())
             {
-                writer.Write(stream.Length);
-                stream.CopyTo(stream);
+                writer.Write((int) stream.Length);
+                writer.Flush();
+                stream.CopyTo(writer.BaseStream);
             }
         }
 
@@ -46,8 +47,9 @@ namespace RePKG.Application.Texture
 
             using (var stream = mipmap.GetBytesStream())
             {
-                writer.Write(stream.Length);
-                stream.CopyTo(stream);
+                writer.Write((int) stream.Length);
+                writer.Flush();
+                stream.CopyTo(writer.BaseStream);
             }
         }
 

@@ -14,7 +14,7 @@ namespace RePKG.Application.Texture
             _texImageReader = texImageReader;
         }
 
-        public TexImageContainer ReadFrom(BinaryReader reader, TexFormat texFormat)
+        public ITexImageContainer ReadFrom(BinaryReader reader, TexFormat texFormat)
         {
             if (reader == null) throw new ArgumentNullException(nameof(reader));
 

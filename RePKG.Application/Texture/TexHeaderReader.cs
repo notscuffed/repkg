@@ -7,7 +7,7 @@ namespace RePKG.Application.Texture
 {
     public class TexHeaderReader : ITexHeaderReader
     {
-        public TexHeader ReadFrom(BinaryReader reader)
+        public ITexHeader ReadFrom(BinaryReader reader)
         {
             if (reader == null) throw new ArgumentNullException(nameof(reader));
             

@@ -4,6 +4,6 @@ namespace RePKG.Core.Texture
 {
     public interface ITexFrameInfoContainerReader
     {
-        TexFrameInfoContainer ReadFrom(BinaryReader reader);
+        ITexFrameInfoContainer ReadFrom(BinaryReader reader);
     }
 }

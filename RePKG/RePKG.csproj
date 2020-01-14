@@ -3,7 +3,6 @@
         <RootNamespace>RePKG</RootNamespace>
         <OutputType>Exe</OutputType>
         <TargetFramework>net472</TargetFramework>
-        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
         <Version>0.2.1</Version>
         <Copyright>Copyright © NotScuffed 2020</Copyright>
     </PropertyGroup>

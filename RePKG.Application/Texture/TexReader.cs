@@ -21,10 +21,24 @@ namespace RePKG.Application.Texture
             _texFrameInfoContainerReader = texFrameInfoContainerReader;
         }
 
-        public Tex ReadFrom(BinaryReader reader)
+        public static TexReader Default
+        {
+            get
+            {
+                var headerReader = new TexHeaderReader();
+                var mipmapDecompressor = new TexMipmapDecompressor();
+                var mipmapReader = new TexImageReader(mipmapDecompressor);
+                var containerReader = new TexImageContainerReader(mipmapReader);
+                var frameInfoReader = new TexFrameInfoContainerReader();
+
+                return new TexReader(headerReader, containerReader, frameInfoReader);
+            }
+        }
+
+        public ITex ReadFrom(BinaryReader reader)
         {
             if (reader == null) throw new ArgumentNullException(nameof(reader));
-            
+
             var tex = new Tex {Magic1 = reader.ReadNString(maxLength: 16)};
 
             if (tex.Magic1 != "TEXV0005")

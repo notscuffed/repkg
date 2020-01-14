@@ -14,7 +14,7 @@ namespace RePKG.Application.Texture
             _texImageWriter = texImageWriter;
         }
 
-        public void WriteTo(BinaryWriter writer, TexImageContainer imageContainer)
+        public void WriteTo(BinaryWriter writer, ITexImageContainer imageContainer)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
             if (imageContainer == null) throw new ArgumentNullException(nameof(imageContainer));

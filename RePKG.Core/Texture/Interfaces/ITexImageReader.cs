@@ -4,9 +4,9 @@ namespace RePKG.Core.Texture
 {
     public interface ITexImageReader
     {
-        TexImage ReadFrom(
+        ITexImage ReadFrom(
             BinaryReader reader,
-            TexImageContainer container,
+            ITexImageContainer container,
             TexFormat texFormat);
     }
 }

@@ -7,7 +7,7 @@ namespace RePKG.Application.Texture
 {
     public class TexFrameInfoContainerWriter : ITexFrameInfoContainerWriter
     {
-        public void WriteTo(BinaryWriter writer, TexFrameInfoContainer frameInfoContainer)
+        public void WriteTo(BinaryWriter writer, ITexFrameInfoContainer frameInfoContainer)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
             if (frameInfoContainer == null) throw new ArgumentNullException(nameof(frameInfoContainer));
@@ -30,12 +30,12 @@ namespace RePKG.Application.Texture
             }
         }
 
-        private static void WriteV2(TexFrameInfoContainer container, BinaryWriter writer)
+        private static void WriteV2(ITexFrameInfoContainer container, BinaryWriter writer)
         {
             WriteFrames(container, writer);
         }
 
-        private static void WriteV3(TexFrameInfoContainer container, BinaryWriter writer)
+        private static void WriteV3(ITexFrameInfoContainer container, BinaryWriter writer)
         {
             writer.Write(container.GifWidth);
             writer.Write(container.GifHeight);
@@ -43,7 +43,7 @@ namespace RePKG.Application.Texture
             WriteFrames(container, writer);
         }
 
-        private static void WriteFrames(TexFrameInfoContainer container, BinaryWriter writer)
+        private static void WriteFrames(ITexFrameInfoContainer container, BinaryWriter writer)
         {
             foreach (var frame in container.Frames)
             {

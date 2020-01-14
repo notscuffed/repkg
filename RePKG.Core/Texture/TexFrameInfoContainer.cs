@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 namespace RePKG.Core.Texture
 {
-    public class TexFrameInfoContainer
+    public class TexFrameInfoContainer : ITexFrameInfoContainer
     {
         public string Magic { get; set; }
-        public List<TexFrameInfo> Frames { get; } = new List<TexFrameInfo>();
+        public IList<ITexFrameInfo> Frames { get; } = new List<ITexFrameInfo>();
         public int GifWidth { get; set; }
         public int GifHeight { get; set; }
     }

@@ -6,7 +6,7 @@ namespace RePKG.Application.Texture
 {
     public class TexImageWriter : ITexImageWriter
     {
-        public void WriteTo(BinaryWriter writer, TexImageContainerVersion containerVersion, TexImage image)
+        public void WriteTo(BinaryWriter writer, TexImageContainerVersion containerVersion, ITexImage image)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
             if (image == null) throw new ArgumentNullException(nameof(image));
@@ -21,7 +21,7 @@ namespace RePKG.Application.Texture
             }
         }
 
-        private static void WriteMipmapV1(BinaryWriter writer, TexMipmap mipmap)
+        private static void WriteMipmapV1(BinaryWriter writer, ITexMipmap mipmap)
         {
             if (mipmap.IsLZ4Compressed)
                 throw new InvalidOperationException(
@@ -29,21 +29,29 @@ namespace RePKG.Application.Texture
 
             writer.Write(mipmap.Width);
             writer.Write(mipmap.Height);
-            writer.Write(mipmap.Bytes.Length);
-            writer.Write(mipmap.Bytes);
+
+            using (var stream = mipmap.GetBytesStream())
+            {
+                writer.Write(stream.Length);
+                stream.CopyTo(stream);
+            }
         }
 
-        private static void WriteMipmapV2And3(BinaryWriter writer, TexMipmap mipmap)
+        private static void WriteMipmapV2And3(BinaryWriter writer, ITexMipmap mipmap)
         {
             writer.Write(mipmap.Width);
             writer.Write(mipmap.Height);
             writer.Write(mipmap.IsLZ4Compressed ? 1 : 0);
             writer.Write(mipmap.DecompressedBytesCount);
-            writer.Write(mipmap.Bytes.Length);
-            writer.Write(mipmap.Bytes);
+
+            using (var stream = mipmap.GetBytesStream())
+            {
+                writer.Write(stream.Length);
+                stream.CopyTo(stream);
+            }
         }
 
-        private static Action<BinaryWriter, TexMipmap> PickMipmapWriter(TexImageContainerVersion containerVersion)
+        private static Action<BinaryWriter, ITexMipmap> PickMipmapWriter(TexImageContainerVersion containerVersion)
         {
             switch (containerVersion)
             {

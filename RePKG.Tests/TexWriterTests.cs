@@ -28,12 +28,7 @@ namespace RePKG.Tests
             _reader = new TexReader(headerReader, containerReader, frameInfoReader);
 
             // Writer
-            var headerWriter = new TexHeaderWriter();
-            var mipmapWriter = new TexImageWriter();
-            var containerWriter = new TexImageContainerWriter(mipmapWriter);
-            var frameInfoWriter = new TexFrameInfoContainerWriter();
-
-            _writer = new TexWriter(headerWriter, containerWriter, frameInfoWriter);
+            _writer = TexWriter.Default;
         }
 
 

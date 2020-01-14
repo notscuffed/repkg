@@ -21,20 +21,33 @@ namespace RePKG.Application.Texture
             _texFrameInfoContainerWriter = texFrameInfoContainerWriter;
         }
 
+        public static TexWriter Default
+        {
+            get
+            {
+                var headerWriter = new TexHeaderWriter();
+                var mipmapWriter = new TexImageWriter();
+                var containerWriter = new TexImageContainerWriter(mipmapWriter);
+                var frameInfoWriter = new TexFrameInfoContainerWriter();
+
+                return new TexWriter(headerWriter, containerWriter, frameInfoWriter);
+            }
+        }
+
         public void WriteTo(BinaryWriter writer, ITex tex)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
             if (tex == null) throw new ArgumentNullException(nameof(tex));
-            
+
             if (tex.Magic1 != "TEXV0005")
                 throw new UnknownMagicException(nameof(TexWriter), nameof(tex.Magic1), tex.Magic1);
 
             if (tex.Magic2 != "TEXI0001")
                 throw new UnknownMagicException(nameof(TexWriter), nameof(tex.Magic2), tex.Magic2);
-            
+
             writer.WriteNString(tex.Magic1);
             writer.WriteNString(tex.Magic2);
-            
+
             _texHeaderWriter.WriteTo(writer, tex.Header);
             _texImageContainerWriter.WriteTo(writer, tex.ImagesContainer);
 

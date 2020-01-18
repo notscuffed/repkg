@@ -2,6 +2,7 @@
     <PropertyGroup>
         <TargetFramework>net472</TargetFramework>
         <IsPackable>false</IsPackable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,5 +13,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\RePKG.Application\RePKG.Application.csproj" />
+      <ProjectReference Include="..\RePKG.Native\RePKG.Native.csproj" />
     </ItemGroup>
 </Project>

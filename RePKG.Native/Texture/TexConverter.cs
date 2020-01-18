@@ -1,4 +1,3 @@
-using System;
 using RePKG.Core.Texture;
 
 namespace RePKG.Native.Texture
@@ -7,7 +6,7 @@ namespace RePKG.Native.Texture
     {
         public static CTex* ConvertToCTex(
             this NativeEnvironment e,
-            Tex tex)
+            ITex tex)
         {
             // tex
             var ctex = e.AllocateStruct<CTex>();
@@ -30,6 +29,7 @@ namespace RePKG.Native.Texture
             ctex->images_container.magic = e.ToCString(imgContainer.Magic);
             ctex->images_container.image_format = imgContainer.ImageFormat;
             ctex->images_container.image_count = images.Count;
+            ctex->images_container.images_length = images.Count;
             ctex->images_container.container_version = imgContainer.ImageContainerVersion;
 
             if (images.Count == 0)
@@ -59,6 +59,7 @@ namespace RePKG.Native.Texture
             ctex->frameinfo_container = e.AllocateStruct<CTexFrameInfoContainer>();
             ctex->frameinfo_container->magic = e.ToCString(frameContainer.Magic);
             ctex->frameinfo_container->frame_count = frames.Count;
+            ctex->frameinfo_container->frames_length = frames.Count;
             ctex->frameinfo_container->gif_width = frameContainer.GifWidth;
             ctex->frameinfo_container->gif_height = frameContainer.GifHeight;
 
@@ -81,11 +82,12 @@ namespace RePKG.Native.Texture
 
         private static void ConvertCTexImage(
             NativeEnvironment e,
-            TexImage src,
+            ITexImage src,
             CTexImage* dst)
         {
             var mipmaps = src.Mipmaps;
             dst->mipmap_count = mipmaps.Count;
+            dst->mipmaps_length = mipmaps.Count;
 
             if (mipmaps.Count == 0)
             {
@@ -104,7 +106,7 @@ namespace RePKG.Native.Texture
 
         private static void ConvertCTexMipmap(
             NativeEnvironment e,
-            TexMipmap src,
+            ITexMipmap src,
             CTexMipmap* dst)
         {
             dst->bytes = e.Pin(src.Bytes);
@@ -118,7 +120,7 @@ namespace RePKG.Native.Texture
 
         private static void ConvertCTexFrameInfo(
             NativeEnvironment e,
-            TexFrameInfo src,
+            ITexFrameInfo src,
             CTexFrameInfo* dst)
         {
             dst->image_id = src.ImageId;

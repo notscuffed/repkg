@@ -22,7 +22,7 @@
         <RootAllApplicationAssemblies>false</RootAllApplicationAssemblies>
         <IlcFoldIdenticalMethodBodies>true</IlcFoldIdenticalMethodBodies>
         <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
-        <IlcGenerateStackTraceData>true</IlcGenerateStackTraceData>
+        <IlcGenerateStackTraceData>false</IlcGenerateStackTraceData>
     </PropertyGroup>
 
 </Project>

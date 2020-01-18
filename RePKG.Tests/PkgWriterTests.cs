@@ -1,7 +1,6 @@
 using System.IO;
 using System.Text;
 using NUnit.Framework;
-using RePKG.Application;
 using RePKG.Application.Package;
 using RePKG.Core.Package;
 using RePKG.Core.Package.Interfaces;

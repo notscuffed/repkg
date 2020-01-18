@@ -9,7 +9,4 @@ copy "%NATIVE_DIR%\RePKG.Native.pdb" "%BINDINGS_DIR%"
 copy "%NATIVE_DIR%\RePKG.Native.exp" "%BINDINGS_DIR%"
 copy "%NATIVE_DIR%\RePKG.Native.lib" "%BINDINGS_DIR%"
 
-cd "%BINDINGS_DIR%"
-repkg_ffi_generate.py
-
 pause

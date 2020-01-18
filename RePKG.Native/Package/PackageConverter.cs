@@ -1,4 +1,3 @@
-using System;
 using RePKG.Core.Package;
 
 namespace RePKG.Native.Package

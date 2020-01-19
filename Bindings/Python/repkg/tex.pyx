@@ -1,5 +1,6 @@
 cimport crepkg
 from libc.stdlib cimport calloc, free
+from cpython.bytearray cimport PyByteArray_FromStringAndSize
 
 #
 # DO NOT EDIT - GENERATED FILE
@@ -11,13 +12,14 @@ cdef class BytesResult(object):
 
     # bytes_data
     @property
-    def bytes_data(self) -> bytes:
+    def bytes_data(self) -> bytearray:
         if self.bytesresult.bytes_data == NULL:
             return None
-        return self.bytesresult.bytes_data
+        return PyByteArray_FromStringAndSize(self.bytesresult.bytes_data, self.bytesresult.length)
 
     @bytes_data.setter
-    def bytes_data(self, value: bytes):
+    def bytes_data(self, value: bytearray):
+        self.bytesresult.length = len(value)
         self.bytesresult.bytes_data = value
 
     # length
@@ -145,13 +147,14 @@ cdef class PackageEntry(object):
 
     # bytes_data
     @property
-    def bytes_data(self) -> bytes:
+    def bytes_data(self) -> bytearray:
         if self.packageentry.bytes_data == NULL:
             return None
-        return self.packageentry.bytes_data
+        return PyByteArray_FromStringAndSize(self.packageentry.bytes_data, self.packageentry.length)
 
     @bytes_data.setter
-    def bytes_data(self, value: bytes):
+    def bytes_data(self, value: bytearray):
+        self.packageentry.length = len(value)
         self.packageentry.bytes_data = value
 
     # type
@@ -724,13 +727,14 @@ cdef class TexMipmap(object):
 
     # bytes_data
     @property
-    def bytes_data(self) -> bytes:
+    def bytes_data(self) -> bytearray:
         if self.texmipmap.bytes_data == NULL:
             return None
-        return self.texmipmap.bytes_data
+        return PyByteArray_FromStringAndSize(self.texmipmap.bytes_data, self.texmipmap.bytes_count)
 
     @bytes_data.setter
-    def bytes_data(self, value: bytes):
+    def bytes_data(self, value: bytearray):
+        self.texmipmap.bytes_count = len(value)
         self.texmipmap.bytes_data = value
 
     # bytes_count

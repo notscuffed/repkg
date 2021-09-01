@@ -23,6 +23,7 @@ namespace RePKG.Application.Texture
 
             switch (container.Magic)
             {
+                case "TEXS0001":
                 case "TEXS0002":
                     break;
 
@@ -35,22 +36,48 @@ namespace RePKG.Application.Texture
                     throw new UnknownMagicException(nameof(TexFrameInfoContainerReader), container.Magic);
             }
 
-            for (var i = 0; i < frameCount; i++)
+            switch (container.Magic)
             {
-                container.Frames.Add(new TexFrameInfo
-                {
-                    ImageId = reader.ReadInt32(),
-                    Frametime = reader.ReadSingle(),
-                    X = reader.ReadSingle(),
-                    Y = reader.ReadSingle(),
-                    Width = reader.ReadSingle(),
-                    Unk0 = reader.ReadSingle(),
-                    Unk1 = reader.ReadSingle(),
-                    Height = reader.ReadSingle(),
-                });
+                case "TEXS0001":
+                    for (var i = 0; i < frameCount; i++)
+                    {
+                        container.Frames.Add(new TexFrameInfo
+                        {
+                            ImageId = reader.ReadInt32(),
+                            Frametime = reader.ReadSingle(),
+                            X = reader.ReadInt32(),
+                            Y = reader.ReadInt32(),
+                            Width = reader.ReadInt32(),
+                            WidthY = reader.ReadInt32(),
+                            HeightX = reader.ReadInt32(),
+                            Height = reader.ReadInt32(),
+                        });
+                    }
+                    break;
+                
+                case "TEXS0002":
+                case "TEXS0003":
+                    for (var i = 0; i < frameCount; i++)
+                    {
+                        container.Frames.Add(new TexFrameInfo
+                        {
+                            ImageId = reader.ReadInt32(),
+                            Frametime = reader.ReadSingle(),
+                            X = reader.ReadSingle(),
+                            Y = reader.ReadSingle(),
+                            Width = reader.ReadSingle(),
+                            WidthY = reader.ReadSingle(),
+                            HeightX = reader.ReadSingle(),
+                            Height = reader.ReadSingle(),
+                        });
+                    }
+                    break;
+                    
+                default:
+                    throw new UnknownMagicException(nameof(TexFrameInfoContainerReader), container.Magic);
             }
 
-            // TEXS0002 doesn't save gif width/height so we will get it from first frame
+            // TEXS0001 and TEXS0002 don't save gif width/height so we will get it from first frame
             // Because we use those values in TexToImageConverter
             if (container.GifWidth == 0 ||
                 container.GifHeight == 0)

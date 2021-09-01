@@ -128,8 +128,8 @@ namespace RePKG.Native.Texture
             dst->x = src.X;
             dst->y = src.Y;
             dst->width = src.Width;
-            dst->unk0 = src.Unk0;
-            dst->unk1 = src.Unk1;
+            dst->unk0 = src.WidthY;
+            dst->unk1 = src.HeightX;
             dst->height = src.Height;
         }
     }

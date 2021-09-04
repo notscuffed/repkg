@@ -17,6 +17,10 @@ namespace RePKG.Application.Texture
 
             switch (frameInfoContainer.Magic)
             {
+                case "TEXS0001":
+                    WriteV1(frameInfoContainer, writer);
+                    break;
+
                 case "TEXS0002":
                     WriteV2(frameInfoContainer, writer);
                     break;
@@ -27,6 +31,21 @@ namespace RePKG.Application.Texture
 
                 default:
                     throw new UnknownMagicException(nameof(TexFrameInfoContainerWriter), frameInfoContainer.Magic);
+            }
+        }
+
+        private static void WriteV1(ITexFrameInfoContainer container, BinaryWriter writer)
+        {
+            foreach (var frame in container.Frames)
+            {
+                writer.Write(frame.ImageId);
+                writer.Write(frame.Frametime);
+                writer.Write((int) frame.X);
+                writer.Write((int) frame.Y);
+                writer.Write((int) frame.Width);
+                writer.Write((int) frame.WidthY);
+                writer.Write((int) frame.HeightX);
+                writer.Write((int) frame.Height);
             }
         }
 

@@ -32,6 +32,7 @@ namespace RePKG.Tests
         }
 
 
+        // V%i - The number is TexImageContainer.ImageContainerVersion
         [Test]
         [TestCase("V1_DXT5")]
         [TestCase("V1_RGBA8888")]
@@ -40,6 +41,7 @@ namespace RePKG.Tests
         [TestCase("V2_R8")]
         [TestCase("V2_RG88")]
         [TestCase("V2_RGBA8888N")]
+        [TestCase("V2_GIF_ROTATED_FRAMES_TEXS0001")]
         [TestCase("V3_RGBA8888_JPEG")]
         [TestCase("V3_DXT1")]
         [TestCase("V3_DXT3")]

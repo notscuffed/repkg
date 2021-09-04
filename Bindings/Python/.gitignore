@@ -1,6 +1,0 @@
-*
-!.gitignore
-!*.py
-!*.pxd
-!*.pyx
-!repkg

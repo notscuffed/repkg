@@ -89,14 +89,24 @@ namespace RePKG.Application.Texture
 
             foreach (var frameInfo in tex.FrameInfoContainer.Frames)
             {
+                // Frames can be turned to fit into the map so we need to compute cropping coordinates first
+                // We're keeping width and height signed for the rotation angle calculation
+                var width = frameInfo.Width != 0 ? frameInfo.Width : frameInfo.HeightX;
+                var height = frameInfo.Height != 0 ? frameInfo.Height : frameInfo.WidthY;
+                var x = Math.Min(frameInfo.X, frameInfo.X + width);
+                var y = Math.Min(frameInfo.Y, frameInfo.Y + height);
+                
+                // This formula gives us the angle for which we need to turn the frame,
+                // assuming that either Width or HeightX is 0 (same with Height and WidthY)
+                var rotationAngle = -(Math.Atan2(Math.Sign(height), Math.Sign(width)) - Math.PI / 4);
+                
                 var frame = sequenceImages[frameInfo.ImageId].Clone(
                     context => context.Crop(new Rectangle(
-                        (int) frameInfo.X,
-                        (int) frameInfo.Y,
-                        (int) frameInfo.Width,
-                        (int) frameInfo.Height)
-                    )
-                );
+                        (int) x,
+                        (int) y,
+                        (int) Math.Abs(width),
+                        (int) Math.Abs(height))
+                    ).Rotate((float) Math.Round(rotationAngle * 180 / Math.PI)));
 
                 var metadata = frame.Frames.RootFrame.Metadata.GetFormatMetadata(GifFormat.Instance);
                 metadata.FrameDelay = (int) Math.Round(frameInfo.Frametime * 100.0f);

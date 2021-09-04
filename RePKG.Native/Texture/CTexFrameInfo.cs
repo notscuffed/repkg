@@ -55,13 +55,13 @@ namespace RePKG.Native.Texture
             set => Self->width = value;
         }
 
-        public float Unk0
+        public float WidthY
         {
             get => Self->unk0;
             set => Self->unk0 = value;
         }
 
-        public float Unk1
+        public float HeightX
         {
             get => Self->unk1;
             set => Self->unk1 = value;

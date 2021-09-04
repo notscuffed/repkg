@@ -7,8 +7,8 @@ namespace RePKG.Core.Texture
         public float X { get; set; }
         public float Y { get; set; }
         public float Width { get; set; }
-        public float Unk0 { get; set; }
-        public float Unk1 { get; set; }
+        public float WidthY { get; set; }
+        public float HeightX { get; set; }
         public float Height { get; set; }
     }
 }

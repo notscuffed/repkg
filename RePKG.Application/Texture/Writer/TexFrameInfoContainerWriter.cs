@@ -52,8 +52,8 @@ namespace RePKG.Application.Texture
                 writer.Write(frame.X);
                 writer.Write(frame.Y);
                 writer.Write(frame.Width);
-                writer.Write(frame.Unk0);
-                writer.Write(frame.Unk1);
+                writer.Write(frame.WidthY);
+                writer.Write(frame.HeightX);
                 writer.Write(frame.Height);
             }
         }

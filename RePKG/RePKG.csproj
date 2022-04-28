@@ -1,26 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <RootNamespace>RePKG</RootNamespace>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net472</TargetFramework>
-        <Version>0.2.2</Version>
-        <Copyright>Copyright © NotScuffed 2020</Copyright>
-    </PropertyGroup>
-    
-    <ItemGroup>
-        <ProjectReference Include="..\RePKG.Application\RePKG.Application.csproj" />
-        <ProjectReference Include="..\RePKG.Core\RePKG.Core.csproj" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <PackageReference Include="CommandLineParser" Version="2.7.82" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Reference Include="Microsoft.CSharp" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Include="$(ProjectDir)/../THIRD-PARTY-NOTICES.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-    </ItemGroup>
+  <PropertyGroup>
+    <RootNamespace>RePKG</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <Version>0.2.2</Version>
+    <Copyright>Copyright © NotScuffed 2020</Copyright>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RePKG.Application\RePKG.Application.csproj" />
+    <ProjectReference Include="..\RePKG.Core\RePKG.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.7.82" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(ProjectDir)/../THIRD-PARTY-NOTICES.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

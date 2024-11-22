@@ -3,8 +3,8 @@
         <RootNamespace>RePKG</RootNamespace>
         <OutputType>Exe</OutputType>
         <TargetFramework>net472</TargetFramework>
-        <Version>0.2.2</Version>
-        <Copyright>Copyright © NotScuffed 2020</Copyright>
+        <Version>0.3.0</Version>
+        <Copyright>Copyright © NotScuffed 2024</Copyright>
     </PropertyGroup>
     
     <ItemGroup>
@@ -13,7 +13,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="CommandLineParser" Version="2.7.82" />
+        <PackageReference Include="CommandLineParser" Version="2.9.1" />
     </ItemGroup>
     
     <ItemGroup>

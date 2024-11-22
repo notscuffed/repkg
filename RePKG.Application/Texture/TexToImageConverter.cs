@@ -1,13 +1,11 @@
 using System;
 using System.IO;
-using System.Net.Mime;
 using RePKG.Application.Texture.Helpers;
 using RePKG.Core.Texture;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Gif;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.Primitives;
 
 namespace RePKG.Application.Texture
 {
@@ -102,7 +100,7 @@ namespace RePKG.Application.Texture
             var image = ImageFromRawFormat(frameFormat, null,
                 tex.FrameInfoContainer.GifWidth,
                 tex.FrameInfoContainer.GifHeight);
-
+            
             var sequenceImages = new Image[tex.ImagesContainer.Images.Count];
 
             for (var i = 0; i < sequenceImages.Length; i++)
@@ -159,8 +157,8 @@ namespace RePKG.Application.Texture
             {
                 case MipmapFormat.R8:
                     return bytes == null
-                        ? new Image<Gray8>(width, height)
-                        : Image.LoadPixelData<Gray8>(bytes, width, height);
+                        ? new Image<L8>(width, height)
+                        : Image.LoadPixelData<L8>(bytes, width, height);
 
                 case MipmapFormat.RG88:
                     return bytes == null

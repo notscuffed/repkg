@@ -9,6 +9,7 @@ namespace RePKG.Core.Texture
         ITexFrameInfoContainer FrameInfoContainer { get; set; }
 
         bool IsGif { get; }
+        bool IsVideoTexture { get; }
         ITexImage FirstImage { get; }
 
         bool HasFlag(TexFlags flag);

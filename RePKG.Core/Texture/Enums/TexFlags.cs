@@ -12,7 +12,7 @@ namespace RePKG.Core.Texture
         // Placeholders
         Unk3 = 8,
         Unk4 = 16,
-        Unk5 = 32,
+        IsVideoTexture = 32,
         Unk6 = 64,
         Unk7 = 128,
     }

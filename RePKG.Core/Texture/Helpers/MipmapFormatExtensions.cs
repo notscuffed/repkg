@@ -115,6 +115,8 @@ namespace RePKG.Core.Texture
                     return "pict";
                 case MipmapFormat.ImageRAW:
                     return "raw";
+                case MipmapFormat.VideoMp4:
+                    return "mp4";
                 default:
                     throw new ArgumentOutOfRangeException(nameof(format), format, null);
             }

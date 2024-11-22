@@ -40,6 +40,7 @@ namespace RePKG.Tests
         [TestCase("V3_DXT3", true, null)]
         [TestCase("V3_DXT5", true, null)]
         [TestCase("V3_RGBA8888_GIF_TEXS0003", true, TexFlags.IsGif)]
+        [TestCase("V3_VIDEOTEXTURE_MP4", true, TexFlags.IsVideoTexture)]
         public void TestTexDecompressing(
             string name,
             bool validateBytes = true,

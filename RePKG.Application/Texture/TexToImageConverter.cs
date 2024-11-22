@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net.Mime;
 using RePKG.Application.Texture.Helpers;
 using RePKG.Core.Texture;
 using SixLabors.ImageSharp;
@@ -15,11 +16,32 @@ namespace RePKG.Application.Texture
         public ImageResult ConvertToImage(ITex tex)
         {
             if (tex == null) throw new ArgumentNullException(nameof(tex));
-            
+
             if (tex.IsGif)
                 return ConvertToGif(tex);
-
+            
             var sourceMipmap = tex.FirstImage.FirstMipmap;
+
+            if (tex.IsVideoTexture)
+            {
+                if (sourceMipmap.Bytes.Length < 4)
+                {
+                    throw new InvalidOperationException("Expected mp4 magic header");
+                }
+
+                var bytes = sourceMipmap.Bytes;
+                if (bytes[0] != 0x00 || bytes[1] != 0x00 || bytes[2] != 0x00 || bytes[3] != 0x20)
+                {
+                    throw new InvalidOperationException("Expected mp4 magic header");
+                }
+                
+                return new ImageResult
+                {
+                    Bytes = sourceMipmap.Bytes,
+                    Format = MipmapFormat.VideoMp4
+                };
+            }
+
             var format = sourceMipmap.Format;
 
             if (format.IsCompressed())
@@ -55,9 +77,11 @@ namespace RePKG.Application.Texture
         public MipmapFormat GetConvertedFormat(ITex tex)
         {
             if (tex == null) throw new ArgumentNullException(nameof(tex));
-            
-            if (tex.IsGif)
-                return MipmapFormat.ImageGIF;
+
+            if (tex.IsVideoTexture)
+            {
+                return MipmapFormat.VideoMp4;
+            }
 
             var format = tex.FirstImage.FirstMipmap.Format;
 
@@ -95,11 +119,11 @@ namespace RePKG.Application.Texture
                 var height = frameInfo.Height != 0 ? frameInfo.Height : frameInfo.WidthY;
                 var x = Math.Min(frameInfo.X, frameInfo.X + width);
                 var y = Math.Min(frameInfo.Y, frameInfo.Y + height);
-                
+
                 // This formula gives us the angle for which we need to turn the frame,
                 // assuming that either Width or HeightX is 0 (same with Height and WidthY)
                 var rotationAngle = -(Math.Atan2(Math.Sign(height), Math.Sign(width)) - Math.PI / 4);
-                
+
                 var frame = sequenceImages[frameInfo.ImageId].Clone(
                     context => context.Crop(new Rectangle(
                         (int) x,

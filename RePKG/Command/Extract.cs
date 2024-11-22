@@ -374,7 +374,6 @@ namespace RePKG.Command
         }
     }
 
-
     [Verb("extract", HelpText = "Extract PKG/Convert TEX into image.")]
     public class ExtractOptions
     {

@@ -33,6 +33,11 @@ namespace RePKG.Core.Texture
         /// Raw pixels compressed using DXT1
         /// </summary>
         CompressedDXT1,
+        
+        /// <summary>
+        /// MP4 Video
+        /// </summary>
+        VideoMp4,
 
         /// <summary>
         /// Windows or OS/2 Bitmap File (*.BMP)

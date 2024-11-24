@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using RePKG.Application.Texture.Helpers;
 using RePKG.Core.Texture;
 using SixLabors.ImageSharp;
@@ -22,13 +23,15 @@ namespace RePKG.Application.Texture
 
             if (tex.IsVideoTexture)
             {
-                if (sourceMipmap.Bytes.Length < 4)
+                if (sourceMipmap.Bytes.Length < 12)
                 {
                     throw new InvalidOperationException("Expected mp4 magic header");
                 }
 
-                var bytes = sourceMipmap.Bytes;
-                if (bytes[0] != 0x00 || bytes[1] != 0x00 || bytes[2] != 0x00 || bytes[3] != 0x20)
+                var mp4magic = Encoding.ASCII.GetString(sourceMipmap.Bytes, 4, 8);
+
+                if (!mp4magic.Equals("ftypisom", StringComparison.OrdinalIgnoreCase)
+                    && !mp4magic.Equals("ftypmsnv", StringComparison.OrdinalIgnoreCase))
                 {
                     throw new InvalidOperationException("Expected mp4 magic header");
                 }

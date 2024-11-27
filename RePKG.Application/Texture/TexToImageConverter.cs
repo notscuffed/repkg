@@ -31,7 +31,8 @@ namespace RePKG.Application.Texture
                 var mp4magic = Encoding.ASCII.GetString(sourceMipmap.Bytes, 4, 8);
 
                 if (!mp4magic.Equals("ftypisom", StringComparison.OrdinalIgnoreCase)
-                    && !mp4magic.Equals("ftypmsnv", StringComparison.OrdinalIgnoreCase))
+                    && !mp4magic.Equals("ftypmsnv", StringComparison.OrdinalIgnoreCase)
+                    && !mp4magic.Equals("ftypmp42", StringComparison.OrdinalIgnoreCase))
                 {
                     throw new InvalidOperationException("Expected mp4 magic header");
                 }

@@ -46,18 +46,18 @@ namespace RePKG.Tests
             }
 
             // Verify
-            Assert.AreEqual(package.Magic, readPackage.Magic);
-            Assert.AreEqual(package.Entries.Count, readPackage.Entries.Count);
+            Assert.That(package.Magic,Is.EqualTo( readPackage.Magic));
+            Assert.That(package.Entries.Count, Is.EqualTo(readPackage.Entries.Count));
 
             for (var i = 0; i < package.Entries.Count; i++)
             {
                 var entry = package.Entries[i];
                 var readEntry = readPackage.Entries[i];
 
-                Assert.AreEqual(entry.Bytes, readEntry.Bytes);
-                Assert.AreEqual(entry.Extension, readEntry.Extension);
-                Assert.AreEqual(entry.Length, readEntry.Length);
-                Assert.AreEqual(entry.Offset, readEntry.Offset);
+                Assert.That(entry.Bytes, Is.EqualTo(readEntry.Bytes));
+                Assert.That(entry.Extension, Is.EqualTo(readEntry.Extension));
+                Assert.That(entry.Length, Is.EqualTo(readEntry.Length));
+                Assert.That(entry.Offset, Is.EqualTo(readEntry.Offset));
             }
         }
     }

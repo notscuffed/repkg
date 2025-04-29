@@ -2,9 +2,10 @@
     <PropertyGroup>
         <RootNamespace>RePKG</RootNamespace>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net472</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Version>0.4.0</Version>
         <Copyright>Copyright © NotScuffed 2025</Copyright>
+        <Platforms>x64</Platforms>
     </PropertyGroup>
     
     <ItemGroup>
@@ -14,13 +15,5 @@
     
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Reference Include="Microsoft.CSharp" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Include="$(ProjectDir)/../THIRD-PARTY-NOTICES.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
 </Project>

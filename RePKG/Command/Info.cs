@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using CommandLine;
-using Newtonsoft.Json;
 using RePKG.Application.Package;
 using RePKG.Core.Package;
 using RePKG.Core.Package.Interfaces;
@@ -159,7 +159,7 @@ namespace RePKG.Command
             if (projectJson.Length == 0 || !projectJson[0].Exists)
                 return null;
 
-            return JsonConvert.DeserializeObject(File.ReadAllText(projectJson[0].FullName));
+            return JsonSerializer.Deserialize<dynamic>(File.ReadAllText(projectJson[0].FullName));
         }
 
         private static bool MatchesFilter(dynamic project)

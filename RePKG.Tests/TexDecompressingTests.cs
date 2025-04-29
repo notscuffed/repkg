@@ -55,7 +55,7 @@ namespace RePKG.Tests
             var bytes = firstMipmap.Bytes;
 
             if (validateFlags.HasValue)
-                Assert.IsTrue(texture.Header.Flags.HasFlag(validateFlags));
+                Assert.That(texture.Header.Flags.HasFlag(validateFlags));
 
             if (validateBytes)
             {
@@ -102,7 +102,7 @@ namespace RePKG.Tests
         {
             var validatedBytes = File.ReadAllBytes($"{TestHelper.BasePath}\\{ValidatedDirectoryName}\\{name}.bytes");
 
-            Assert.AreEqual(bytes.Length, validatedBytes.Length);
+            Assert.That(bytes.Length, Is.EqualTo(validatedBytes.Length));
 
             for (var i = 0; i < validatedBytes.Length; i++)
             {

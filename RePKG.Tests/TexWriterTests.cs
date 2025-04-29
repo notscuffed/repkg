@@ -55,7 +55,9 @@ namespace RePKG.Tests
             var inputFileReader = TexDecompressingTests.LoadTestFile(name);
             var inputBytes = new byte[inputFileReader.BaseStream.Length];
             var bytesRead = inputFileReader.Read(inputBytes, 0, (int) inputFileReader.BaseStream.Length);
-            Assert.AreEqual(inputFileReader.BaseStream.Length, bytesRead, "Failed to read input file");
+            
+            Assert.That(inputFileReader.BaseStream.Length, Is.EqualTo(bytesRead), "Failed to read input file");
+
             inputFileReader.Close();
 
             // Read tex
@@ -69,7 +71,8 @@ namespace RePKG.Tests
             var outputBytes = memoryStream.ToArray();
 
             // Verify
-            Assert.AreEqual(inputBytes.Length, outputBytes.Length, "Written tex size doesn't match input size");
+            
+            Assert.That(inputBytes.Length, Is.EqualTo( outputBytes.Length), "Written tex size doesn't match input size");
 
             for (var i = 0; i < inputBytes.Length; i++)
             {

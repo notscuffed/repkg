@@ -4,8 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using CommandLine;
-using Newtonsoft.Json;
 using RePKG.Application.Package;
 using RePKG.Application.Texture;
 using RePKG.Core.Package;
@@ -310,9 +310,9 @@ namespace RePKG.Command
             if (projectJson.Length == 0 || !projectJson[0].Exists)
                 return;
 
-            dynamic json = JsonConvert.DeserializeObject(File.ReadAllText(projectJson[0].FullName));
-            title = json.title;
-            preview = json.preview;
+            var json = JsonSerializer.Deserialize<JsonElement>(File.ReadAllText(projectJson[0].FullName));
+            title = json.GetProperty("title").GetString();
+            preview = json.GetProperty("preview").GetString();
         }
 
         private static void GetProjectFolderNameAndPreviewImage(FileInfo packageFile, string defaultProjectName,

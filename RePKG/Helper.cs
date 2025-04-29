@@ -1,21 +1,15 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-
+using System.Linq;
+using System.Text.Json;
 namespace RePKG
 {
     public static class Helper
     {
         public static IEnumerable<string> GetPropertyKeysForDynamic(dynamic dynamicToGetPropertiesFor)
         {
-            JObject attributesAsJObject = dynamicToGetPropertiesFor;
-            var values = attributesAsJObject.ToObject<Dictionary<string, object>>();
-            var toReturn = new List<string>();
-            foreach (var key in values.Keys)
-            {
-                toReturn.Add(key);
-            }
-
-            return toReturn;
+            var jsonString = JsonSerializer.Serialize(dynamicToGetPropertiesFor);
+            using JsonDocument jsonDoc = JsonDocument.Parse(jsonString);
+            return jsonDoc.RootElement.EnumerateObject().Select(p => p.Name).ToList();
         }
     }
 }

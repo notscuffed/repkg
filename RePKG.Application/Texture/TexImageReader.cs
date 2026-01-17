@@ -111,10 +111,6 @@ namespace RePKG.Application.Texture
             if (reader.BaseStream.Position + byteCount > reader.BaseStream.Length)
                 throw new UnsafeTexException("Detected invalid mipmap byte count - exceeds stream length");
 
-            if (byteCount > Constants.MaximumMipmapByteCount)
-                throw new UnsafeTexException(
-                    $"Mipmap byte count exceeds maximum size: {byteCount}/{Constants.MaximumMipmapByteCount}");
-
             if (!ReadMipmapBytes)
             {
                 reader.BaseStream.Seek(byteCount, SeekOrigin.Current);

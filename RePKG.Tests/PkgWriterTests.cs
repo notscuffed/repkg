@@ -1,9 +1,7 @@
-using System.IO;
-using System.Text;
 using NUnit.Framework;
-using RePKG.Application.Package;
 using RePKG.Core.Package;
 using RePKG.Core.Package.Interfaces;
+using System.Text;
 
 namespace RePKG.Tests
 {
@@ -13,7 +11,7 @@ namespace RePKG.Tests
         [Test]
         public void TestWriteAndRead()
         {
-            var package = new Package {Magic = "PKGV0005"};
+            var package = new Package { Magic = "PKGV0005" };
 
             package.Entries.Add(new PackageEntry
             {
@@ -37,8 +35,8 @@ namespace RePKG.Tests
 
             // Read
             stream.Position = 0;
-            var packageReader = new PackageReader {ReadEntryBytes = true};
-            
+            var packageReader = new PackageReader { ReadEntryBytes = true };
+
             Package readPackage;
             using (var binaryReader = new BinaryReader(stream, Encoding.UTF8, true))
             {

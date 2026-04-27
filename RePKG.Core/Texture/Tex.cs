@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace RePKG.Core.Texture
 {
     public class Tex : ITex
@@ -9,11 +7,11 @@ namespace RePKG.Core.Texture
         public ITexHeader Header { get; set; }
         public ITexImageContainer ImagesContainer { get; set; }
         public ITexFrameInfoContainer FrameInfoContainer { get; set; }
-        
+
         public bool IsGif => HasFlag(TexFlags.IsGif);
         public bool IsVideoTexture => HasFlag(TexFlags.IsVideoTexture);
         public ITexImage FirstImage => ImagesContainer?.Images.FirstOrDefault();
-        
+
         public bool HasFlag(TexFlags flag)
         {
             if (Header == null)

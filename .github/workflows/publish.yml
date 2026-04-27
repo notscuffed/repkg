@@ -1,0 +1,119 @@
+on:
+  workflow_dispatch:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: write
+
+jobs:
+  get-version:
+    name: Extract Version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Extract version tag
+        id: version
+        run: |
+          git fetch --tags --force
+          VERSION_TAG=$(git tag --points-at "$GITHUB_SHA" | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$' | head -n 1 || echo "")
+          if [ -n "$VERSION_TAG" ]; then
+            echo "version=$VERSION_TAG" >> $GITHUB_OUTPUT
+            echo "Found version tag: $VERSION_TAG"
+          else
+            SHORT_SHA=$(git rev-parse --short HEAD)
+            echo "version=${SHORT_SHA}" >> $GITHUB_OUTPUT
+            echo "No version tag found, using: ${SHORT_SHA}"
+          fi
+
+  build:
+    name: ${{ matrix.rid }}
+    needs: get-version
+    strategy:
+      fail-fast: false
+      matrix:
+        rid:
+          - win-x64
+          - linux-x64
+          - linux-arm64
+          - osx-arm64
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10'
+
+      - name: Publish
+        run: >
+          dotnet publish RePKG/RePKG.csproj
+          -c Release
+          -r ${{ matrix.rid }}
+          --no-self-contained
+          -p:PublishSingleFile=true
+          -p:PublishReadyToRun=true
+          -p:GeneratePackageOnBuild=false
+          -o publish/out
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: repkg-${{ needs.get-version.outputs.version }}-${{ matrix.rid }}
+          path: publish/out/
+          if-no-files-found: error
+
+  verify-builds:
+    name: Verify All Builds Passed
+    if: github.event_name == 'workflow_dispatch'
+    needs:
+      - get-version
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: All builds succeeded
+        run: |
+          echo "✅ All matrix builds passed for version: ${{ needs.get-version.outputs.version }}"
+          echo "Artifacts are NOT uploaded to any release (manual trigger)."
+
+  publish-release:
+    name: Upload to Release
+    if: github.event_name == 'release'
+    needs:
+      - get-version
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v7
+        with:
+          path: release-assets
+          merge-multiple: false
+
+      - name: Package artifacts
+        run: |
+          mkdir -p packaged
+          for dir in release-assets/*/; do
+            name=$(basename "$dir")
+            if [[ "$name" == *win-x64* ]]; then
+              (cd "$dir" && zip -r "${GITHUB_WORKSPACE}/packaged/${name}.zip" .)
+            else
+              tar -czf "packaged/${name}.tar.gz" -C "$dir" .
+            fi
+          done
+          echo "--- Packaged files ---"
+          ls -lh packaged/
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v3
+        with:
+          files: packaged/*
+          token: ${{ secrets.GITHUB_TOKEN }}

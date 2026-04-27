@@ -14,14 +14,15 @@ namespace RePKG.Core.Texture
                 case TexFormat.RG88:
                 case TexFormat.R8:
                     return true;
+
                 default:
                     return false;
             }
         }
-        
+
         public static bool IsValid(this FreeImageFormat format)
         {
-            var formatId = (int) format;
+            var formatId = (int)format;
 
             return formatId >= -1 && formatId <= 35;
         }

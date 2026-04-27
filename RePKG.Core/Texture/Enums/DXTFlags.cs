@@ -1,5 +1,3 @@
-using System;
-
 namespace RePKG.Core.Texture
 {
     [Flags]

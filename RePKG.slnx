@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="RePKG.Core/RePKG.Core.csproj" />
+  <Project Path="RePKG.Tests/RePKG.Tests.csproj" />
+  <Project Path="RePKG/RePKG.csproj" />
+</Solution>

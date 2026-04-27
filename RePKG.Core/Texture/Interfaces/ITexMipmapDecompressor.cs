@@ -1,4 +1,4 @@
-namespace RePKG.Core.Texture
+namespace RePKG.Core.Texture.Interfaces
 {
     public interface ITexMipmapDecompressor
     {

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace RePKG.Core.Texture
 {
     public interface ITexImageContainer

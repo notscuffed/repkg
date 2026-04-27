@@ -3,7 +3,7 @@ namespace RePKG.Core.Texture
     public enum MipmapFormat
     {
         Invalid = 0,
-        
+
         /// <summary>
         /// Raw pixels (4 bytes per pixel) (RGBA8888)
         /// </summary>
@@ -33,7 +33,7 @@ namespace RePKG.Core.Texture
         /// Raw pixels compressed using DXT1
         /// </summary>
         CompressedDXT1,
-        
+
         /// <summary>
         /// MP4 Video
         /// </summary>

@@ -1,9 +1,6 @@
-using System;
-using System.IO;
-using System.Text;
 using NUnit.Framework;
-using RePKG.Application.Texture;
 using RePKG.Core.Texture;
+using System.Text;
 
 namespace RePKG.Tests
 {
@@ -31,7 +28,6 @@ namespace RePKG.Tests
             _writer = TexWriter.Default;
         }
 
-
         // V%i - The number is TexImageContainer.ImageContainerVersion
         [Test]
         [TestCase("V1_DXT5")]
@@ -48,13 +44,12 @@ namespace RePKG.Tests
         [TestCase("V3_DXT5")]
         [TestCase("V3_RGBA8888_GIF_TEXS0003")]
         [TestCase("V3_VIDEOTEXTURE_MP4")]
-        // TODO: V4_ ones are failing but we don't really need writing functionality
         public void TestWriteAndRead(string name)
         {
             // Load file
             var inputFileReader = TexDecompressingTests.LoadTestFile(name);
             var inputBytes = new byte[inputFileReader.BaseStream.Length];
-            var bytesRead = inputFileReader.Read(inputBytes, 0, (int) inputFileReader.BaseStream.Length);
+            var bytesRead = inputFileReader.Read(inputBytes, 0, (int)inputFileReader.BaseStream.Length);
             Assert.AreEqual(inputFileReader.BaseStream.Length, bytesRead, "Failed to read input file");
             inputFileReader.Close();
 

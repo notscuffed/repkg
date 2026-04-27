@@ -2,22 +2,19 @@
     <PropertyGroup>
         <RootNamespace>RePKG</RootNamespace>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net472</TargetFramework>
-        <Version>0.4.0</Version>
+        <TargetFramework>net10.0</TargetFramework>
+        <Version>0.5.0</Version>
         <Copyright>Copyright © NotScuffed 2025</Copyright>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     
     <ItemGroup>
-        <ProjectReference Include="..\RePKG.Application\RePKG.Application.csproj" />
         <ProjectReference Include="..\RePKG.Core\RePKG.Core.csproj" />
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Reference Include="Microsoft.CSharp" />
+        <PackageReference Include="System.CommandLine" Version="3.0.0-preview.3.26207.106" />
     </ItemGroup>
 
     <ItemGroup>

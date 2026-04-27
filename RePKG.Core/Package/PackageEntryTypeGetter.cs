@@ -1,4 +1,3 @@
-using System.IO;
 using RePKG.Core.Package.Enums;
 
 namespace RePKG.Core.Package

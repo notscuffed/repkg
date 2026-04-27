@@ -1,5 +1,3 @@
-using System;
-
 namespace RePKG.Core.Texture
 {
     [Flags]
@@ -9,8 +7,10 @@ namespace RePKG.Core.Texture
         NoInterpolation = 1,
         ClampUVs = 2,
         IsGif = 4,
+
         // Placeholders
         Unk3 = 8,
+
         Unk4 = 16,
         IsVideoTexture = 32,
         Unk6 = 64,

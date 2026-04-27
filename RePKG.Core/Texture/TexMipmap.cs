@@ -1,5 +1,3 @@
-using System.IO;
-
 namespace RePKG.Core.Texture
 {
     public class TexMipmap : ITexMipmap
@@ -10,7 +8,7 @@ namespace RePKG.Core.Texture
         public int DecompressedBytesCount { get; set; }
         public bool IsLZ4Compressed { get; set; }
         public MipmapFormat Format { get; set; }
-        
+
         public Stream GetBytesStream()
         {
             return new MemoryStream(Bytes);

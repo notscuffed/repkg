@@ -1,5 +1,3 @@
-using System;
-
 namespace RePKG.Tests
 {
     public static class TestHelper
@@ -7,10 +5,10 @@ namespace RePKG.Tests
         static TestHelper()
         {
             BasePath = AppContext.BaseDirectory.Split(
-                           new[] {"RePKG.Tests"}, 
+                           new[] { "RePKG.Tests" },
                            StringSplitOptions.RemoveEmptyEntries)[0] + "RePKG.Tests";
         }
-        
+
         public static string BasePath { get; }
     }
 }

@@ -53,9 +53,12 @@ namespace RePKG.Application.Texture
             {
                 var image = ImageFromRawFormat(format, sourceMipmap.Bytes, sourceMipmap.Width, sourceMipmap.Height);
 
-                if (sourceMipmap.Width != tex.Header.ImageWidth ||
-                    sourceMipmap.Height != tex.Header.ImageHeight)
+                if (sourceMipmap.Width > tex.Header.ImageWidth ||
+                    sourceMipmap.Height > tex.Header.ImageHeight)
                     image.Mutate(x => x.Crop(tex.Header.ImageWidth, tex.Header.ImageHeight));
+                else if (sourceMipmap.Width < tex.Header.ImageWidth ||
+                    sourceMipmap.Height < tex.Header.ImageHeight)
+                    image.Mutate(x => x.Resize(tex.Header.ImageWidth, tex.Header.ImageHeight));
 
                 using (var memoryStream = new MemoryStream())
                 {

@@ -6,12 +6,12 @@ namespace RePKG.Application.Texture
 {
     public class TexImageWriter : ITexImageWriter
     {
-        public void WriteTo(BinaryWriter writer, TexImageContainerVersion containerVersion, ITexImage image)
+        public void WriteTo(BinaryWriter writer, TexImageContainerVersion containerVersion, FreeImageFormat format, ITexImage image)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
             if (image == null) throw new ArgumentNullException(nameof(image));
 
-            var mipmapWriter = PickMipmapWriter(containerVersion);
+            var mipmapWriter = PickMipmapWriter(containerVersion, format);
 
             writer.Write(image.Mipmaps.Count);
 
@@ -53,7 +53,26 @@ namespace RePKG.Application.Texture
             }
         }
 
-        private static Action<BinaryWriter, ITexMipmap> PickMipmapWriter(TexImageContainerVersion containerVersion)
+        private static void WriteMipmapV4(BinaryWriter writer, ITexMipmap mipmap)
+        {
+            writer.Write(1); // param1
+            writer.Write(2); // param2
+            writer.WriteNString(""); // conditionJson (empty)
+            writer.Write(1); // param3
+            writer.Write(mipmap.Width);
+            writer.Write(mipmap.Height);
+            writer.Write(mipmap.IsLZ4Compressed ? 1 : 0);
+            writer.Write(mipmap.DecompressedBytesCount);
+
+            using (var stream = mipmap.GetBytesStream())
+            {
+                writer.Write((int) stream.Length);
+                writer.Flush();
+                stream.CopyTo(writer.BaseStream);
+            }
+        }
+
+        private static Action<BinaryWriter, ITexMipmap> PickMipmapWriter(TexImageContainerVersion containerVersion, FreeImageFormat format)
         {
             switch (containerVersion)
             {
@@ -62,6 +81,11 @@ namespace RePKG.Application.Texture
 
                 case TexImageContainerVersion.Version2:
                 case TexImageContainerVersion.Version3:
+                    return WriteMipmapV2And3;
+
+                case TexImageContainerVersion.Version4:
+                    if (format == FreeImageFormat.FIF_MP4)
+                        return WriteMipmapV4;
                     return WriteMipmapV2And3;
 
                 default:

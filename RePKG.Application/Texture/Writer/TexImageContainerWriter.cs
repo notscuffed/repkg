@@ -32,13 +32,18 @@ namespace RePKG.Application.Texture
                     writer.Write((int) imageContainer.ImageFormat);
                     break;
 
+                case TexImageContainerVersion.Version4:
+                    writer.Write((int) imageContainer.ImageFormat);
+                    writer.Write(imageContainer.ImageFormat == FreeImageFormat.FIF_MP4 ? 1 : 0);
+                    break;
+
                 default:
                     throw new UnknownMagicException(nameof(TexImageContainerWriter), imageContainer.Magic);
             }
             
             foreach (var image in imageContainer.Images)
             {
-                _texImageWriter.WriteTo(writer, imageContainer.ImageContainerVersion, image);
+                _texImageWriter.WriteTo(writer, imageContainer.ImageContainerVersion, imageContainer.ImageFormat, image);
             }
         }
     }

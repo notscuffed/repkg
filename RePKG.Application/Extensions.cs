@@ -53,8 +53,9 @@ namespace RePKG.Application
             if (writer == null) throw new ArgumentNullException(nameof(writer));
             if (input == null) throw new ArgumentNullException(nameof(input));
 
-            writer.Write(input.Length);
-            writer.Write(Encoding.UTF8.GetBytes(input));
+            var bytes = Encoding.UTF8.GetBytes(input);
+            writer.Write(bytes.Length);
+            writer.Write(bytes);
         }
     }
 }
